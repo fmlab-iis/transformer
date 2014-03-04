@@ -14,12 +14,13 @@ _out_path_g = ""
 
 def _getDefaultArgs():
   global _exe_path_g, _conf_path_g, _out_path_g
+  assert os.path.exists(_out_path_g)
+  for f in os.listdir(_out_path_g):
+    os.remove(_out_path_g+'/'+f)
+
   default_args = [_exe_path_g]
   default_args.extend(["-config", _conf_path_g])
   default_args.extend(["-outputpath", _out_path_g])
-  # Clear output directory
-  for f in os.listdir(_out_path_g):
-    os.remove(_out_path_g+'/'+f)
   return default_args
 
 def setExePath(exe_path):
@@ -31,6 +32,12 @@ def setConfigPath(conf_path):
 def setOutputPath(out_path):
   global _out_path_g
   _out_path_g = out_path
+  # Clear output directory
+  if os.path.exists(_out_path_g):
+    for f in os.listdir(_out_path_g):
+      os.remove(_out_path_g+'/'+f)
+  else:
+    os.makedirs(_out_path_g)
 
 def verify(in_file, entry_func="main"):
   # Copy default arguments

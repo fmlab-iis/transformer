@@ -34,8 +34,11 @@ def setOutputPath(out_path):
   global _output_path_g
   _output_path_g = out_path
   # Clear output directory
-  for f in os.listdir(_output_path_g):
-    os.remove(_output_path_g+'/'+f)
+  if os.path.exists(_output_path_g):
+    for f in os.listdir(_output_path_g):
+      os.remove(_output_path_g+'/'+f)
+  else:
+    os.makedirs(_output_path_g)
 
 def create_under_approx_file(uw_times):
   global _count_g, _in_name_g
