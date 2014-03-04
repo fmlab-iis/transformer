@@ -37,7 +37,7 @@ instance, the following command always terminates normally:
 \begin{equation*}
   \mathtt{assume\ false};\ \ \mathtt{assert\ false}
 \end{equation*}
-\todo{no computation means terminate normally?}
+\todo{no computation means terminate normally? I think yes.}
 Our simple language also allows functions to return multiple
 values. Together with simultaneous assignments, functions can update
 several variables at once.
@@ -163,6 +163,6 @@ subclass of program checker. A \emph{recursion-free
 recursion-free programs by computing inductive invariants, and reports
 an error trace when an assertion fails. Several recursion-free
 inductive program checkers are available such as \textsc{CPAChecker},
-\textsc{Blast}, \textsc{SLAM} \todo{more?}. Our goal is to check
+\textsc{Blast}, \textsc{UFO}, \textsc{} \todo{more? SLAM is not recursion-free}. Our goal is to check
 recursive programs by using a recursion-free inductive program checker
 as a black box. 
