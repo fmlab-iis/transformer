@@ -216,6 +216,32 @@ check the over-approximation $\overline{G}_k$.
   \label{figure:over-mccarthy91}
 \end{figure}
 
+In order to refine approximations, our algorithm unwinds recursive
+functions as usual. More precisely, consider a recursive function
+$\mathtt{f}$ with formal parameters $\mathtt{u_0}, \mathtt{u_1},
+\ldots, \mathtt{u_l})$ and $h$ return values. Let $G_{\mathtt{f}}$ be
+the control flow graph of $\mathtt{f}$ and $G_k$ a control flow graph
+that invokes $\mathtt{f}$. To unwind $\mathtt{f}$ in $G_k$, 
+we first construct a control flow graph $H_{\mathtt{f}}$ by 
+replacing every $\mathtt{return}\ F_1, F_2, \ldots, F_h$ command in
+$\mathtt{f}$ with the assignment $\mathtt{ret^f_1}, \mathtt{ret^f_2}, \ldots,
+\mathtt{ret^f_h} := F_1, F_2, \ldots, F_h$. For each edge $(\ell,
+ell')$ labeled with the command $\mathtt{x_1}, \mathtt{x_2}, \ldots,
+\mathtt{x_h} := \mathtt{f}(E_0, E_1, \ldots, E_l)$ in $G_k$, we remove
+the edge $(\ell, ell')$, make a fresh $H'_{\mathtt{f}}$ by
+renaming every nodes and variables in $H_{\mathtt{f}}$, add an edge
+from $\ell$ to the entry node of $H'_{\mathtt{f}}$ that assigns $E_0,
+E_1, \ldots, E_l$ to fresh copies of formal parameters in
+$H'_{\mathtt{f}}$, and another edge from the exit node to $\ell'$ that
+assigns fresh copies of return variables to $\mathtt{x_1},
+\mathtt{x_2}, \ldots, \mathtt{x_h}$. The control flow graph $G_{k+1}$
+is obtained by unwinding every function calls in $G_k$. 
+Figure~\ref{figure:unwind-mccarthy91} shows the control flow graph
+$\mathtt{mc91_1(m)}$ by unwinding $\mathtt{mc91(m)}$. Note that the
+unwinding graph $G_{k+1}$ still has recursive function calls. Its
+approximations $\underline{G}_{k+1}$ and $\overline{G}_{k+1}$ however
+are informative than $\underline{G}_k$ and $\overline{G}_k$
+respectively. 
 
 \begin{figure}
   \centering
@@ -277,15 +303,15 @@ check the over-approximation $\overline{G}_k$.
              edge [bend left=30]
              node [right] {$\mathtt{assume\ not(m' > 100)}$} (2')
         (1') edge [bend right=30]
-             node [left] {$\mathtt{ret^{mc91}_0 := m' - 10}$} (e')
+             node [left] {$\mathtt{ret^{mc91'}_0 := m' - 10}$} (e')
         (2') edge 
              node [right] {$\mathtt{s' := mc91(m'+11)}$} (3')
         (3') edge 
              node [right] {$\mathtt{t' := mc91(s')}$} (4')
         (4') edge [bend left=30]
-            node [right] {$\mathtt{ret^{mc91}_0 := t'}$} (e')
+            node [right] {$\mathtt{ret^{mc91'}_0 := t'}$} (e')
         (e') edge 
-             node [above] {$\mathtt{s := ret^{mc91}_0}$} (3)
+             node [above] {$\mathtt{s := ret^{mc91'}_0}$} (3)
 
         (s'') edge [bend right=30]
               node [left] {$\mathtt{assume\ m'' > 100}$} (1'')
@@ -294,7 +320,7 @@ check the over-approximation $\overline{G}_k$.
         (1'') edge [bend right=30]
               node [left] {$
                 \begin{array}{c}
-                \mathtt{ret^{mc91}_0 :=}\\
+                \mathtt{ret^{mc91''}_0 :=}\\
                 \mathtt{m'' - 10}  
                 \end{array}
                 $} (e'')
@@ -303,9 +329,9 @@ check the over-approximation $\overline{G}_k$.
         (3'') edge 
               node [right] {$\mathtt{t'' := mc91(s'')}$} (4'')
         (4'') edge [bend left=30]
-              node [right] {$\mathtt{ret^{mc91}_0 := t''}$} (e'')
+              node [right] {$\mathtt{ret^{mc91''}_0 := t''}$} (e'')
         (e'') edge [bend left=50]
-              node [below left] {$\mathtt{t := ret^{mc91}_0}$} (4)
+              node [below left] {$\mathtt{t := ret^{mc91''}_0}$} (4)
         ;
     \end{tikzpicture}
   \caption{$\mathtt{mc91_1(m)}$}
