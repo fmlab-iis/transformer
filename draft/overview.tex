@@ -53,7 +53,7 @@ To see how to under approximate computation, consider a control flow
 graph $G_k$ with recursive functions $f_0 (\ox_0), f_1 (\ox_1),
 \ldots, f_m (\ox_m)$. The under-approximation $\underline{G}_k$ is
 obtained by substituting the command $\mathtt{assume\ false}$ for
-every recursive function calls
+every command with recursive function calls
 (Figure~\ref{figure:under-mccarthy91}). The substitution
 effectively blocks all recursive invocations. Any computation of
 $\underline{G}_k$ hence is also a computation of $G_k$. Note that
@@ -77,9 +77,9 @@ check the under-approximation $\underline{G}_k$.
         (1) edge 
             node [left] {$\mathtt{assume\ false}$} (2)
         (2) edge 
-            node [left] {$\mathtt{assert\ ret^{mc91}_0 >= 91}$} (3)
+            node [left] {$\mathtt{assert\ r >= 91}$} (3)
         (3) edge 
-            node [left] {$\mathtt{ret^{main}_0 := 0}$} (4);
+            node [left] {$\mathtt{return\ 0}$} (4);
     \end{tikzpicture}
     \caption{$\mathtt{\underline{main}()}$}
   \end{subfigure}
@@ -100,13 +100,13 @@ check the under-approximation $\underline{G}_k$.
             edge [bend left=30]
             node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
         (1) edge [bend right=30]
-            node [left] {$\mathtt{ret^{mc91}_0  := m - 10}$} (5)
+            node [left] {$\mathtt{return\ m - 10}$} (5)
         (2) edge 
             node [right] {$\mathtt{assume\ false}$} (3)
         (3) edge 
-            node [right] {$\mathtt{s := ret^{mc91}_0}$} (4)
+            node [right] {$\mathtt{assume\ false}$} (4)
         (4) edge [bend left=30]
-            node [right] {$\mathtt{assume\ false}$} (5);
+            node [right] {$\mathtt{return\ t}$} (5);
     \end{tikzpicture}
     \caption{$\mathtt{\underline{mc91}(m)}$}
   \end{subfigure}
@@ -116,26 +116,32 @@ check the under-approximation $\underline{G}_k$.
 
 To construct the over-approximation $\overline{G}_k$ from a
 recursive control flow graph $G_k$, we maintain a summary for each
-recursive function. Informally, a summary $S_f$ is a first-order
+recursive function. For each recursive function $\mathtt{f}$ with $h$
+return values, we introduce a set of \emph{return variables} 
+$\mathtt{ret^f_1}, \mathtt{ret^f_2}, \ldots, \mathtt{ret^f_h}$ to
+denote return values. Informally, a summary $S_{\mathtt{f}}$ is a
+first-order 
 conjunctive formula which specifies the relation between formal
-parameters and return values of the recursive function
-$f$. Initially, the summary $S_f$ is set to $\mathtt{true}$. The
-initial summary thus does not enforce any relation between formal
-parameters and return values of recursive functions. To construct
-$\overline{G}_k$, we replace every recursive function call $\mathtt{f}
-(E_0, E_1, \ldots, E_l)$ by
+parameters and return variables of the recursive function
+$\mathtt{f}$. Initially, the summary $S_{\mathtt{f}}$ is set to
+$\mathtt{true}$. The initial summary thus does not enforce any
+relation between formal parameters and return values of recursive
+functions. To construct $\overline{G}_k$, we replace every recursive
+function call $\mathtt{x_1}, \mathtt{x_2}, \ldots, \mathtt{x_h} :=
+\mathtt{f} (E_0, E_1, \ldots, E_l)$ by 
 \begin{equation*}
   \begin{array}{l}
-    \mathtt{ret^{f}_1}, \ldots, \mathtt{ret^{f}_h} :=
+    \mathtt{x_1}, \ldots, \mathtt{x_h} :=
     \mathtt{nondet}, \ldots, \mathtt{nondet};\\
     \mathtt{assume}\ S_f[\mathtt{u_0} \mapsto E_0, \ldots, 
-    \mathtt{u_l} \mapsto E_l]
+    \mathtt{u_l} \mapsto E_l, 
+    \mathtt{ret^f_1} \mapsto \mathtt{x_1}, \ldots,
+    \mathtt{ret^f_h} \mapsto \mathtt{x_h}]
   \end{array}
 \end{equation*}
-where $\mathtt{u_0}, \mathtt{u_1}, \ldots, \mathtt{u_l}$ and
-$\mathtt{ret^f_0}, \mathtt{ret^f_1}, \ldots, \mathtt{ret^f_h}$ are the
-formal parameters and return variables of the recursive function
-$\mathtt{f}$ respectively (Figure~\ref{figure:over-mccarthy91}).
+where $\mathtt{u_0}, \mathtt{u_1}, \ldots, \mathtt{u_l}$
+are the formal parameters of the recursive function
+$\mathtt{f}$ (Figure~\ref{figure:over-mccarthy91}).
 The replacement effectively enforce the relation between formal
 parameters and return values specified in the summary. Any computation
 of $G_k$ is hence a computation of $\overline{G}_k$. Observe that
@@ -159,13 +165,13 @@ check the over-approximation $\overline{G}_k$.
         (1) edge 
             node [left] {$
               \begin{array}{l}
-                \mathtt{ret^{mc91}_0 := nondet;}\\
+                \mathtt{r := nondet;}\\
                 \mathtt{\newline assume\ true}                
               \end{array}$} (2)
         (2) edge 
-            node [left] {$\mathtt{assert\ ret^{mc91}_0 >= 91}$} (3)
+            node [left] {$\mathtt{assert\ r >= 91}$} (3)
         (3) edge 
-            node [left] {$\mathtt{ret^{main}_0 := 0}$} (4);
+            node [left] {$\mathtt{return\ 0}$} (4);
     \end{tikzpicture}
     \caption{$\mathtt{\overline{main}()}$}
   \end{subfigure}
@@ -186,23 +192,22 @@ check the over-approximation $\overline{G}_k$.
             edge [bend left=30]
             node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
         (1) edge [bend right=30]
-            node [left] {$\mathtt{ret^{mc91}_0 := m - 10}$} (5)
+            node [left] {$\mathtt{return\ m - 10}$} (5)
         (2) edge 
             node [right] {$
               \begin{array}{l}
-              \mathtt{ret^{mc91}_0 := nondet;}\\
+              \mathtt{s := nondet;}\\
               \mathtt{assume\ true}
               \end{array}
               $} (3)
         (3) edge 
-            node [right] {$\mathtt{s := ret^{mc91}_0}$} (4)
-        (4) edge [bend left=30]
             node [right] {$
               \begin{array}{l}
-              \mathtt{ret^{mc91}_0 := nondet;}\\
+              \mathtt{t := nondet;}\\
               \mathtt{assume\ true}
-              \end{array}
-              $} (5)
+              \end{array}$} (4)
+        (4) edge [bend left=30]
+            node [right] {$\mathtt{return\ t}$} (5)
         ;
     \end{tikzpicture}
     \caption{$\mathtt{\overline{mc91}(m)}$}
@@ -216,70 +221,91 @@ check the over-approximation $\overline{G}_k$.
   \centering
     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (s) at ( 0,  0) {$\ell_s$};
-      \node[node] (1) at (-1, -2) {$\ell_1$};
+      \node[node] (s) at (-1,  0) {$\ell_s$};
+      \node[node] (1) at (-2, -2) {$\ell_1$};
       \node[node] (2) at ( 1, -0.8) {$\ell_2$};
       \node[node] (3) at ( 1, -2) {$\ell_3$};
       \node[node] (4) at ( 1, -3.2) {$\ell_4$};
-      \node[node] (e) at ( 0, -4) {$\ell_e$};
+      \node[node] (e) at (-1, -4) {$\ell_e$};
 
-      \node[node] (s') at ( 5,  2.0) {$\ell_{s'}$};
-      \node[node] (1') at ( 4,  0.0) {$\ell_{1'}$};
-      \node[node] (2') at ( 6,  1.2) {$\ell_{2'}$};
-      \node[node] (3') at ( 6,  0.0) {$\ell_{3'}$};
-      \node[node] (4') at ( 6, -1.2) {$\ell_{4'}$};
-      \node[node] (e') at ( 5, -2) {$\ell_{e'}$};
+      \node[node] (s') at ( 5,  2.6) {$\ell_{s'}$};
+      \node[node] (1') at ( 4,  0.6) {$\ell_{1'}$};
+      \node[node] (2') at ( 6,  1.8) {$\ell_{2'}$};
+      \node[node] (3') at ( 6,  0.6) {$\ell_{3'}$};
+      \node[node] (4') at ( 6, -0.6) {$\ell_{4'}$};
+      \node[node] (e') at ( 5, -1.4) {$\ell_{e'}$};
 
-      \node[node] (s'') at ( 5, -3.2) {$\ell_{s''}$};
-      \node[node] (1'') at ( 4, -5.2) {$\ell_{1''}$};
-      \node[node] (2'') at ( 6, -4.0) {$\ell_{2''}$};
-      \node[node] (3'') at ( 6, -5.2) {$\ell_{3''}$};
-      \node[node] (4'') at ( 6, -6.4) {$\ell_{4''}$};
-      \node[node] (e'') at ( 5, -7.2) {$\ell_{e''}$};
+      \node[node] (s'') at ( 5, -2.6) {$\ell_{s''}$};
+      \node[node] (1'') at ( 4, -4.6) {$\ell_{1''}$};
+      \node[node] (2'') at ( 6, -3.4) {$\ell_{2''}$};
+      \node[node] (3'') at ( 6, -4.6) {$\ell_{3''}$};
+      \node[node] (4'') at ( 6, -5.8) {$\ell_{4''}$};
+      \node[node] (e'') at ( 5, -6.6) {$\ell_{e''}$};
 
       \path
         (s) edge [bend right=30]
-            node [left] {$\mathtt{assume\ m > 100}$} (1)
-            edge [bend left=30]
-            node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
+            node [left] {$
+              \begin{array}{c}
+                \mathtt{assume}\\ 
+                \mathtt{m > 100}                
+              \end{array}$} (1)
+            edge [bend left=20]
+            node [above] {$
+              \begin{array}{c}
+                \mathtt{assume}\\
+                \mathtt{not(m > 100)}
+              \end{array}$} (2)
         (1) edge [bend right=30]
-            node [left] {$\mathtt{ret^{mc91}_0 := m - 10}$} (5)
-        (2) edge [bend left=45]
-            node [left] {$\mathtt{m' := m + 11}$} (s')
+            node [left] {$
+              \begin{array}{c}
+                \mathtt{return}\\
+                \mathtt{m - 10}
+              \end{array}$} (e)
+        (2) edge [bend left=50]
+            node [above left] {$\mathtt{m' := m + 11}$} (s')
         (3) edge 
-            node [right] {$\mathtt{s := ret^{mc91}_0}$} (4)
-        (4) edge 
-            node [above] {$\mathtt{m'' := s}$} (s'')
+            node [below] {$\mathtt{m'' := s}$} (s'')
+        (4) edge [bend left=30]
+            node [below] {$\mathtt{return\ t}$} (e)
 
         (s') edge [bend right=30]
-             node [left] {$\mathtt{assume\ m' > 100}$} (1')
+             node [left] {$
+               \begin{array}{c}
+                 \mathtt{assume}\\
+                 \mathtt{m' > 100}
+               \end{array}$} (1')
              edge [bend left=30]
              node [right] {$\mathtt{assume\ not(m' > 100)}$} (2')
         (1') edge [bend right=30]
              node [left] {$\mathtt{ret^{mc91}_0 := m' - 10}$} (e')
         (2') edge 
-             node [right] {$\mathtt{mc91(m'+11)}$} (3')
+             node [right] {$\mathtt{s' := mc91(m'+11)}$} (3')
         (3') edge 
-             node [right] {$\mathtt{s' := ret^{mc91}_0}$} (4')
+             node [right] {$\mathtt{t' := mc91(s')}$} (4')
         (4') edge [bend left=30]
-            node [right] {$\mathtt{mc91(s')}$} (e')
-        (e') edge
-             node        {$\mathtt{skip}$} (3)
+            node [right] {$\mathtt{ret^{mc91}_0 := t'}$} (e')
+        (e') edge 
+             node [above] {$\mathtt{s := ret^{mc91}_0}$} (3)
 
         (s'') edge [bend right=30]
               node [left] {$\mathtt{assume\ m'' > 100}$} (1'')
               edge [bend left=30]
               node [right] {$\mathtt{assume\ not(m'' > 100)}$} (2'')
         (1'') edge [bend right=30]
-              node [left] {$\mathtt{ret^{mc91}_0 := m'' - 10}$} (e'')
+              node [left] {$
+                \begin{array}{c}
+                \mathtt{ret^{mc91}_0 :=}\\
+                \mathtt{m'' - 10}  
+                \end{array}
+                $} (e'')
         (2'') edge 
-              node [right] {$\mathtt{mc91(m''+11)}$} (3'')
+              node [right] {$\mathtt{s'' := mc91(m''+11)}$} (3'')
         (3'') edge 
-              node [right] {$\mathtt{s'' := ret^{mc91}_0}$} (4'')
+              node [right] {$\mathtt{t'' := mc91(s'')}$} (4'')
         (4'') edge [bend left=30]
-              node [right] {$\mathtt{mc91(s'')}$} (e'')
-        (e'') edge [bend left=40]
-              node         {$\mathtt{skip}$} (e)
+              node [right] {$\mathtt{ret^{mc91}_0 := t''}$} (e'')
+        (e'') edge [bend left=50]
+              node [below left] {$\mathtt{t := ret^{mc91}_0}$} (4)
         ;
     \end{tikzpicture}
   \caption{$\mathtt{mc91_1(m)}$}
