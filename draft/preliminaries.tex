@@ -13,19 +13,19 @@ We consider a variant of the WHILE language~\cite{}:
     & & \mid &
     \mathtt{nondet} & \textmd{nodeterministic value}\\
     & & \mid &
+    \mathtt{f}(E, E, \ldots, E) &
+    \textmd{function invocation}\\
+    & & \mid &
     E \odot E  & \odot \in \{ +, -, =, >, \mathtt{and} \}\\
     & & \mid & \mathtt{not}\ E\\
     \mathtt{Command} & \ni C & ::= &
     \mathtt{x}, \mathtt{x}, \ldots, \mathtt{x} := 
     E, E, \ldots, E & \textmd{assignment}\\
     & & \mid &
-    \mathtt{skip} & \textmd{no operation}\\
-    & & \mid &
-    \mathtt{f}(E, E, \ldots, E) &
-    \textmd{function invocation}\\
-    & & \mid &
     C\mathtt{;}\ C &
     \textmd{sequential composition}\\
+    & & \mid &
+    \mathtt{return}\ E, E, \ldots, E & \textmd{function return}\\
     & & \mid &
     \mathtt{assume}\ E & \textmd{assumption}\\
     & & \mid &
@@ -37,8 +37,10 @@ nondeterministic value.
 Note that simultaneous assignments are allowed in our language. To
 execute a simultaneous assignment, all expressions on the right hand
 side are first evaluated and then assign to respective variables. 
-The
-assumption command excludes all computation not satisfying the given
+The $\mathtt{return}$ command accepts several expressions as arguments.
+Together with simultaneous assignments, functions can have several
+return values. 
+The assumption command excludes all computation not satisfying the given
 expression. The assert command terminates computation
 abnormally if the given expression is not satisfied. For
 instance, the following command always terminates normally:
@@ -46,11 +48,6 @@ instance, the following command always terminates normally:
   \mathtt{assume\ false};\ \ \mathtt{assert\ false}
 \end{equation*}
 \todo{no computation means terminate normally?}
-A set of \emph{return variables} $\mathtt{ret^f_0}, \mathtt{ret^f_1},
-\ldots, \mathtt{ret^f_k}$ is reserved for each function $\mathtt{f}$. 
-A return variable is assigned to a return value at the end of
-function. Together with simultaneous assignments, functions can have
-several return values.
 
 A function is represented as a \emph{control flow graph} $G = \langle
 V, E \rangle$ where the nodes in $V$ are \emph{program locations}, and
@@ -89,9 +86,9 @@ figure. Loops can be modeled similarly.
         (0) edge 
             node [left] {$\mathtt{assume\ n >= 0}$} (1)
         (1) edge 
-            node [left] {$\mathtt{mc91(n)}$} (2)
+            node [left] {$\mathtt{r := mc91(n)}$} (2)
         (2) edge 
-            node [left] {$\mathtt{assert\ ret^{mc91}_0 >= 91}$} (3)
+            node [left] {$\mathtt{assert\ r >= 91}$} (3)
         (3) edge 
             node [left] {$\mathtt{return\ 0}$} (4);
     \end{tikzpicture}
@@ -115,13 +112,13 @@ figure. Loops can be modeled similarly.
             edge [bend left=30]
             node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
         (1) edge [bend right=30]
-            node [left] {$\mathtt{ret^{mc91}_0\ :=\ m - 10}$} (5)
+            node [left] {$\mathtt{return\ m - 10}$} (5)
         (2) edge 
-            node [right] {$\mathtt{mc91(m + 11)}$} (3)
+            node [right] {$\mathtt{s := mc91(m + 11)}$} (3)
         (3) edge 
-            node [right] {$\mathtt{s\ :=\ ret^{mc91}_0}$} (4)
+            node [right] {$\mathtt{t := mc91(s)}$} (4)
         (4) edge [bend left=30]
-            node [right] {$\mathtt{mc91(s)}$} (5);
+            node [right] {$\mathtt{return\ t}$} (5);
     \end{tikzpicture}
     \caption{$\mathtt{mc91(m)}$}
     \label{figure:mccarthy91:mc91}
