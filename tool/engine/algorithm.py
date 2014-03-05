@@ -1,8 +1,9 @@
 import sys
 import time
+"""
 # Avoid writing Python Bytecode
 sys.dont_write_bytecode=True
-
+"""
 import cil_manager as cil_mgr
 import verifier_manager as verifier_mgr
 import redlog_manager as rl_mgr
@@ -10,17 +11,18 @@ import design_analysis
 import proof_analysis
 
 def initialize(design_path):
+  """
   # Set Initial Configuration
-  cil_mgr.setExePath("./cil/tran.native")
+  cil_mgr.setExePath("../cil/tran.native")
   cil_mgr.setDesignPath(design_path)
-  cil_mgr.setOutputPath("transformed/")
-  verifier_mgr.setExePath("./verifier/scripts/cpa.sh")
-  verifier_mgr.setConfigPath("config/myCPA-PredAbstract-LIA.properties")
-  verifier_mgr.setOutputPath("proofs/")
-  rl_mgr.setExePath("redlog/reduce")
-  rl_mgr.setScriptPath("redlog/cmd.in")
+  cil_mgr.setOutputPath("../transformed/")
+  verifier_mgr.setExePath("../verifier/scripts/cpa.sh")
+  verifier_mgr.setConfigPath("../config/myCPA-PredAbstract-LIA.properties")
+  verifier_mgr.setOutputPath("../proofs/")
+  rl_mgr.setExePath("../redlog/reduce")
+  rl_mgr.setScriptPath("cmd.in")
   rl_mgr.setOutputPath("summary")
-
+  """
   out_name = cil_mgr.create_under_approx_file(0)
   design_analysis.setRecursiveFuncList(out_name)
 
@@ -68,10 +70,10 @@ def oneIteration(unwind_times):
 
   printProcessStatus("Guess Summaries")
   design_info = design_analysis.TransformedDesignInfo(out_file_name)
-  # sum_list = guessSummary(proof_info, out_file_name)
   sum_list = proof_analysis.guessSummaries(design_info, proof_info)
   for func_name, summary in sum_list:
-    print func_name + ": " + summary
+    print "Function Name: " + func_name
+    print "  Guess: "+ summary
 
   printProcessStatus("Verify Summaries")
   for func_name, summary in sum_list:
