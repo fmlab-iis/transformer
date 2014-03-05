@@ -1,0 +1,35 @@
+Given a CFG $G=\langle
+V, E \rangle$. The rename function $\textsc{rename}(G)$ returns a pair of a CFG and a vector of its formal parameters obtained by renaming all variables in $G$ by annotating them with some fresh index numbers. The function $\textsc{unwind}(G)$ (Algorithm~\ref{algorithm:unwind}) returns a CFG obtained by replacing all function call edges in $G$ with the CFG of the called function after renaming. 
+\begin{algorithm}
+  \KwIn{$G = \langle V, E \rangle$ : a control flow graph}
+  $V' \leftarrow V$\;
+  $E' \leftarrow E$\;
+  \ForEach{$(\ell, \ell')\in E$ with $\textmd{cmd} (\ell, \ell')= x_1,\ldots,x_n:=\mathtt{f}(E_1, \ldots, E_n)$}
+  {
+  	Let $G_f$ b
+  
+    \uIf {\textsc{BasicChecker} ($\underline{G}_k$) =
+      $\mathit{ErrorTrace} (\tau)$}
+    {
+      \tcp{find an error trace in the under-approximation $\underline{G}_k$}
+      \Return $\mathit{ErrorTrace} (\tau)$\;
+    }
+    \uElseIf {\textsc{BasicChecker} ($\overline{G}_k$) =
+      $\mathit{Pass}$}
+    {
+      \tcp{prove all assertions in the over-approximation $\overline{G}_k$}
+      \Return $\mathit{Pass}$\;
+    }
+    \uElse {
+      $G_{k+1} \leftarrow $ unwind $G_k$\;
+      $k \leftarrow k + 1$\;
+    }
+  }
+  \caption{The $\textsc{unwind}(G)$ function}
+  \label{algorithm:unwind}
+\end{algorithm}
+
+
+Formally, $\textsc{unwind}(G) = \langle
+V', E' \rangle$ such that 
+(1) For all edges $(\ell, \ell')\in E$ with $\textmd{cmd} (\ell, \ell')=$
