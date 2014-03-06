@@ -1,5 +1,18 @@
 Given a CFG $G=\langle
-V, E \rangle$. The rename function $\textsc{rename}(G)$ returns a pair of a CFG and a vector of its formal parameters obtained by renaming all variables in $G$ by annotating them with some fresh index numbers. The function $\textsc{unwind}(G)$ (Algorithm~\ref{algorithm:unwind}) returns a CFG obtained by replacing all function call edges in $G$ with the CFG of the called function after renaming. 
+V, E \rangle$. The rename function $\textsc{rename}(G)$ returns a triple of a CFG, a vector of its formal parameters, and a vector of its return variables obtained by renaming all variables in $G$ by annotating them with some fresh index numbers. The function $\textsc{unwind}(G)$ returns a CFG obtained by replacing all function call edges in $G$ with the CFG of the called function after renaming. 
+
+Given a function $\mathtt{f}$, we use $G_f=\langle
+V_f, E_f \rangle$ to denotes its corresponding CFG.
+Let $\hat{E} =\{e\in E: \textmd{cmd} (e)= \bar{x}:=\mathtt{f}(\bar{A})\}$ be the set of function call edges in $E$ and define a function $\textsc{toCFG}(e)$ that maps a call edge $e$ of function $f$ to the triple $\textsc{rename}(G_f)$.
+Formally, $\textsc{unwind}(G) = \langle V', E' \rangle$ such that (1) $V' = V\cup \bigcup\{V_f: e\in \hat{E} \wedge \textsc{toCFG}(e)= (\langle V_f, E_f \rangle, \bar{F}, \bar{R} \}$ (2) $E'= E \setminus \hat{E} \cup \bigcup\{E_f\cup\{(\ell, {\ell_s}_f),({\ell_e}_f, \ell')\}: (\ell, \ell')\in \hat{E} \wedge \textsc{toCFG}(\ell, \ell')= (\langle V_f, E_f \rangle, \bar{E}, \bar{R} \}$ with $\textmd{cmd} (\ell, {\ell_s}_f) = (\bar{A}=\bar{F})$ and $\textmd{cmd} ({\ell_e}_f, \ell') = (\bar{x}=\bar{R})$.
+\todo{Can we merge commands to egde, i.e., make an edge a triple $(l,op, l')$?}
+%$\textsc{unwind}(G) = \langle
+%V', E' \rangle$ such that 
+%(1) For all edges $(\ell, \ell')\in E$ with $\textmd{cmd} (\ell, \ell')=$
+
+
+
+\hide{
 \begin{algorithm}
   \KwIn{$G = \langle V, E \rangle$ : a control flow graph}
   $V' \leftarrow V$\;
@@ -28,8 +41,5 @@ V, E \rangle$. The rename function $\textsc{rename}(G)$ returns a pair of a CFG 
   \caption{The $\textsc{unwind}(G)$ function}
   \label{algorithm:unwind}
 \end{algorithm}
+}
 
-
-Formally, $\textsc{unwind}(G) = \langle
-V', E' \rangle$ such that 
-(1) For all edges $(\ell, \ell')\in E$ with $\textmd{cmd} (\ell, \ell')=$
