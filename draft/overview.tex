@@ -14,13 +14,13 @@ $G$. That is, every computation of $\underline{G}$ is also a
 computation of $G$. If \textsc{BasicChecker} finds an error trace in
 $\underline{G}$, our algorithm terminates and reports the error
 trace. The program $\overline{G}$ on the other hand over-approximates
-the computation of $G$; every computation of $G$ is also a computation
-of $\overline{G}$. If \textsc{BasicChecker} proves that all assertions
-in $\overline{G}$ are satisfied, our algorithm terminates and reports
-that all assertions in $G$ are satisfied. If \textsc{BasicChecker}
-fails to prove assertions in $\overline{G}$, our algorithm refines the
-approximations by unwinding recursive functions and
-reiterates~(Algorithm~\ref{algorithm:overview}). 
+the compuation of $G$; every computation of $G$ is also a computation
+of $\overline{G}$. If \textsc{BasicChecker} proves
+that all assertions in $\overline{G}$ are satisfied, our algorithm
+terminates and reports that all assertions in $G$ are satisfied. If
+\textsc{BasicChecker} fails to prove assertions in $\overline{G}$, our
+algorithm refines the under-approximation by unwinding recursive functions
+and reiterates~(Algorithm~\ref{algorithm:overview}). 
 
 \begin{algorithm}
   \KwIn{$G = \langle V, E \rangle$ : a control flow graph}
@@ -31,13 +31,13 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
     \uIf {\textsc{BasicChecker} ($\underline{G}_k$) =
       $\mathit{ErrorTrace} (\tau)$}
     {
-      \tcp{find an error trace in the under-approximation $\underline{G}_k$}
+      \tcp{find an error trace in $G$}
       \Return $\mathit{ErrorTrace} (\tau)$\;
     }
     \uElseIf {\textsc{BasicChecker} ($\overline{G}_k$) =
       $\mathit{Pass}$}
     {
-      \tcp{prove all assertions in the over-approximation $\overline{G}_k$}
+      \tcp{all computation of $G$ has been considered}
       \Return $\mathit{Pass}$\;
     }
     \uElse {
@@ -114,6 +114,7 @@ check the under-approximation $\underline{G}_k$.
   \label{figure:under-mccarthy91}
 \end{figure}
 
+
 To construct the over-approximation $\overline{G}_k$ from a
 recursive control flow graph $G_k$, we maintain a summary for each
 recursive function. For each recursive function $\mathtt{f}$ with $h$
@@ -150,49 +151,23 @@ check the over-approximation $\overline{G}_k$.
 
 \begin{figure}
   \centering
-  \begin{subfigure}[b]{.3\textwidth}
     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (0) at (0, 0) {$\ell_s$}; %[label=above:$\mathtt{main()}$]
-      \node[node] (1) at (0, -1) {$\ell_1$};
-      \node[node] (2) at (0, -2) {$\ell_2$};
-      \node[node] (3) at (0, -3) {$\ell_3$};
-      \node[node] (4) at (0, -4) {$\ell_e$};
-
-      \path
-        (0) edge 
-            node [left] {$\mathtt{assume\ n >= 0}$} (1)
-        (1) edge 
-            node [left] {$
-              \begin{array}{l}
-                \mathtt{r := nondet;}\\
-                \mathtt{\newline assume\ true}                
-              \end{array}$} (2)
-        (2) edge 
-            node [left] {$\mathtt{assert\ r >= 91}$} (3)
-        (3) edge 
-            node [left] {$\mathtt{return\ 0}$} (4);
-    \end{tikzpicture}
-    \caption{$\mathtt{\overline{main}()}$}
-  \end{subfigure}
-  ~
-  \begin{subfigure}[b]{.6\textwidth}
-    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
-      distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (0) at ( 0,  0) {$\ell_s$}; %[label=above:$\mathtt{mc91(n)}$]
+      \node[node] (s) at ( 0,  0) {$\ell_s$}; %[label=above:$\mathtt{mc91(n)}$]
       \node[node] (1) at (-1, -2) {$\ell_1$};
       \node[node] (2) at ( 1, -0.8) {$\ell_2$};
       \node[node] (3) at ( 1, -2) {$\ell_3$};
       \node[node] (4) at ( 1, -3.2) {$\ell_4$};
-      \node[node] (5) at ( 0, -4) {$\ell_e$};
+      \node[node] (5) at ( 0, -4) {$\ell_5$};
+      \node[node] (e) at ( 0, -5) {$\ell_e$};
 
       \path
-        (0) edge [bend right=30]
+        (s) edge [bend right=30]
             node [left] {$\mathtt{assume\ m > 100}$} (1)
             edge [bend left=30]
             node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
         (1) edge [bend right=30]
-            node [left] {$\mathtt{return\ m - 10}$} (5)
+            node [left] {$\mathtt{ret^{mc91}_0 := m - 10}$} (5)
         (2) edge 
             node [right] {$
               \begin{array}{l}
@@ -207,13 +182,13 @@ check the over-approximation $\overline{G}_k$.
               \mathtt{assume\ true}
               \end{array}$} (4)
         (4) edge [bend left=30]
-            node [right] {$\mathtt{return\ t}$} (5)
+            node [right] {$\mathtt{ret^{mc91}_0 := t}$} (5)
+        (5) edge 
+            node [right] {$\mathtt{assert\ true}$} (e)
         ;
     \end{tikzpicture}
-    \caption{$\mathtt{\overline{mc91}(m)}$}
-  \end{subfigure}
-  \caption{Over Approximation of McCarthy 91}
-  \label{figure:over-mccarthy91}
+  \caption{Check Summary in McCarthy 91}
+  \label{figure:check-summary-mccarthy91}
 \end{figure}
 
 In order to refine approximations, our algorithm unwinds recursive
@@ -226,9 +201,9 @@ we first construct a control flow graph $H_{\mathtt{f}}$ by
 replacing every $\mathtt{return}\ F_1, F_2, \ldots, F_h$ command in
 $\mathtt{f}$ with the assignment $\mathtt{ret^f_1}, \mathtt{ret^f_2}, \ldots,
 \mathtt{ret^f_h} := F_1, F_2, \ldots, F_h$. For each edge $(\ell,
-ell')$ labeled with the command $\mathtt{x_1}, \mathtt{x_2}, \ldots,
+\ell')$ labeled with the command $\mathtt{x_1}, \mathtt{x_2}, \ldots,
 \mathtt{x_h} := \mathtt{f}(E_0, E_1, \ldots, E_l)$ in $G_k$, we remove
-the edge $(\ell, ell')$, make a fresh $H'_{\mathtt{f}}$ by
+the edge $(\ell, \ell')$, make a fresh $H'_{\mathtt{f}}$ by
 renaming every nodes and variables in $H_{\mathtt{f}}$, add an edge
 from $\ell$ to the entry node of $H'_{\mathtt{f}}$ that assigns $E_0,
 E_1, \ldots, E_l$ to fresh copies of formal parameters in
@@ -240,7 +215,7 @@ Figure~\ref{figure:unwind-mccarthy91} shows the control flow graph
 $\mathtt{mc91_1(m)}$ by unwinding $\mathtt{mc91(m)}$. Note that the
 unwinding graph $G_{k+1}$ still has recursive function calls. Its
 approximations $\underline{G}_{k+1}$ and $\overline{G}_{k+1}$ however
-are informative than $\underline{G}_k$ and $\overline{G}_k$
+are more informative than $\underline{G}_k$ and $\overline{G}_k$
 respectively. 
 
 \begin{figure}
