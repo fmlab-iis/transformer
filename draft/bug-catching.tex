@@ -1,0 +1,17 @@
+
+Let $G = \langle V, E, \textmd{cmd} \rangle$ be a control flow
+graph. The control flow graph $\underline{G} = \langle V, E,
+\underline{\textmd{cmd}} \rangle$ is obtained by replacing every
+function calls in $G$ with $\mathtt{assume\ false}$. That is,
+\begin{equation*}
+  \underline{\textmd{cmd}} (\ell, \ell') =
+  \left\{
+    \begin{array}{ll}
+      \textmd{cmd} (\ell, \ell') & 
+      \textmd{if } \textmd{cmd} (\ell, \ell') 
+      \textmd{ does not contain function calls}\\
+      \mathtt{assume\ false} &
+      \textmd{otherwise}
+    \end{array}
+  \right.
+\end{equation*}
