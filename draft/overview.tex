@@ -7,43 +7,54 @@ $\mathtt{main()}$ and recursive functions. If $G$ does not contain
 recursive functions, \textsc{BasicChecker} is able to check $G$ by
 computing inductive invariants.
 
-When $G$ contains recursive functions, we transform $G$ into two
-recursion-free programs $\underline{G}$ and $\overline{G}$. The
-program $\underline{G}$ under-approximates the computation of
-$G$. That is, every computation of $\underline{G}$ is also a
-computation of $G$. If \textsc{BasicChecker} finds an error trace in
-$\underline{G}$, our algorithm terminates and reports the error
-trace. The program $\overline{G}$ on the other hand over-approximates
-the compuation of $G$; every computation of $G$ is also a computation
-of $\overline{G}$. If \textsc{BasicChecker} proves
-that all assertions in $\overline{G}$ are satisfied, our algorithm
-terminates and reports that all assertions in $G$ are satisfied. If
-\textsc{BasicChecker} fails to prove assertions in $\overline{G}$, our
-algorithm refines the under-approximation by unwinding recursive functions
-and reiterates~(Algorithm~\ref{algorithm:overview}). 
+When $G$ contains recursive functions, we transform $G$ into a
+recursion-free program $\underline{G}$. The program $\underline{G}$
+under-approximates the computation of $G$. That is, every computation
+of $\underline{G}$ is also a computation of $G$. If
+\textsc{BasicChecker} finds an error trace in $\underline{G}$, our
+algorithm terminates and reports the error trace. Otherwise,
+\textsc{BasicChecker} has computed an inductive invariant for the
+recursive-free under-approximation $\underline{G}$. Our algorithm
+updates function summaries of $G$ from the inductive invariant of
+$\underline{G}$. It then checks if every function summary
+over-approximations the computation of the corresponding function. If
+so, the algorithm terminates and reports that all assertions in $G$
+are satisified. If a function summary does not over-approximate the
+computation, our algorithm unwind the recursive function and
+reiterates~(Algorithm~\ref{algorithm:overview}).
 
 \begin{algorithm}
   \KwIn{$G = \langle V, E \rangle$ : a control flow graph}
   $k \leftarrow 0$\;
   $G_0 \leftarrow G$\;
-  \Repeat{forever}
+  \lForEach{function $\mathtt{f}$ in $G$}
   {
-    \uIf {\textsc{BasicChecker} ($\underline{G}_k$) =
-      $\mathit{ErrorTrace} (\tau)$}
+    $S[\mathtt{f}] \leftarrow \mathtt{true}$\;
+  }
+  \Repeat{$\textmd{complete?}$}
+  {
+    \Switch{\textsc{BasicChecker} ($\underline{G}_k$)}
     {
-      \tcp{find an error trace in $G$}
-      \Return $\mathit{ErrorTrace} (\tau)$\;
+      \lCase{$\mathit{Pass(\Pi (\underline{G}_k, I_0))}$:}
+      {    
+        UpdateSummary ($G$, $S$, $\Pi (\underline{G}_k, I_0)$)\;
+      }
+      \lCase{$\mathit{ErrorTrace} (\tau)$:}
+      {
+        \Return $\mathit{ErrorTrace} (\tau)$\;
+      }
     }
-    \uElseIf {\textsc{BasicChecker} ($\overline{G}_k$) =
-      $\mathit{Pass}$}
+    $\textmd{complete?} \leftarrow \top$\;
+    \ForEach{function $\mathtt{f}$ in $G$}
     {
-      \tcp{all computation of $G$ has been considered}
-      \Return $\mathit{Pass}$\;
+      \lIf {\textsc{BasicChecker} ($\overline{G}_{\mathtt{f}}$) =
+        $\mathit{ErrorTrace}\ \_$}
+      {
+        $\textmd{complete?} \leftarrow \bot$\;
+      }
     }
-    \uElse {
-      $G_{k+1} \leftarrow $ unwind $G_k$\;
-      $k \leftarrow k + 1$\;
-    }
+    $G_{k+1} \leftarrow $ unwind $G_k$\;
+    $k \leftarrow k + 1$\;
   }
   \caption{Overview}
   \label{algorithm:overview}
@@ -77,7 +88,12 @@ check the under-approximation $\underline{G}_k$.
         (1) edge 
             node [left] {$\mathtt{assume\ false}$} (2)
         (2) edge 
-            node [left] {$\mathtt{assert\ r >= 91}$} (3)
+            node [left] {$
+              \begin{array}{l}
+                \mathtt{assert\ {[}r = 91\ or}\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ (n > 101\ and\ \ }\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ \ r = n - 10){]}}
+              \end{array}$} (3) 
         (3) edge 
             node [left] {$\mathtt{return\ 0}$} (4);
     \end{tikzpicture}
@@ -114,40 +130,56 @@ check the under-approximation $\underline{G}_k$.
   \label{figure:under-mccarthy91}
 \end{figure}
 
+When $\textsc{BasicChecker}$ does not find any error trace in the
+under-approximation $\underline{G}_k$, it computes an inductive
+invariant $\Pi (\underline{G}_k, I_0)$. Our algorithm then updates
+summaries of functions in $G$. For each function $\mathtt{f}$ with
+formal parameters $\mathtt{u_0}, \mathtt{u_1}, \ldots, \mathtt{u_l}$
+and $h$ return values, a \emph{function summary} for $\mathtt{f}$ is a
+first-order conjunctive formula which specifies the relation between
+its formal parameters and return variables. The algorithm
+$\textmd{UpdateSummary}$ updates function summaries $S$ by inspecting
+the inductive invariant $\Pi (\underline{G}_k, I_0)$
+(Section~\ref{subsection:property-proving}). 
 
-To construct the over-approximation $\overline{G}_k$ from a
-recursive control flow graph $G_k$, we maintain a summary for each
-recursive function. For each recursive function $\mathtt{f}$ with $h$
-return values, we introduce a set of \emph{return variables} 
-$\mathtt{ret^f_1}, \mathtt{ret^f_2}, \ldots, \mathtt{ret^f_h}$ to
-denote return values. Informally, a summary $S_{\mathtt{f}}$ is a
-first-order 
-conjunctive formula which specifies the relation between formal
-parameters and return variables of the recursive function
-$\mathtt{f}$. Initially, the summary $S_{\mathtt{f}}$ is set to
-$\mathtt{true}$. The initial summary thus does not enforce any
-relation between formal parameters and return values of recursive
-functions. To construct $\overline{G}_k$, we replace every recursive
-function call $\mathtt{x_1}, \mathtt{x_2}, \ldots, \mathtt{x_h} :=
-\mathtt{f} (E_0, E_1, \ldots, E_l)$ by 
-\begin{equation*}
-  \begin{array}{l}
-    \mathtt{x_1}, \ldots, \mathtt{x_h} :=
-    \mathtt{nondet}, \ldots, \mathtt{nondet};\\
-    \mathtt{assume}\ S_f[\mathtt{u_0} \mapsto E_0, \ldots, 
-    \mathtt{u_l} \mapsto E_l, 
-    \mathtt{ret^f_1} \mapsto \mathtt{x_1}, \ldots,
-    \mathtt{ret^f_h} \mapsto \mathtt{x_h}]
-  \end{array}
-\end{equation*}
-where $\mathtt{u_0}, \mathtt{u_1}, \ldots, \mathtt{u_l}$
-are the formal parameters of the recursive function
-$\mathtt{f}$ (Figure~\ref{figure:over-mccarthy91}).
-The replacement effectively enforce the relation between formal
-parameters and return values specified in the summary. Any computation
-of $G_k$ is hence a computation of $\overline{G}_k$. Observe that
-$\overline{G}_k$ is recursion-free. \textsc{BasicChecker} is able to
-check the over-approximation $\overline{G}_k$.
+After function summaries are updated, Algorithm~\ref{algorithm:overview} 
+verifies whether function summaries correctly specify computation of
+functions. The algorithm checks this by constructing a control flow
+graph $\overline{G}_{\mathtt{f}}$ with additional assertions for each
+function $\mathtt{f}$, and verifying $\overline{G}_{\mathtt{f}}$ with
+\textsc{BasicChecker}. The control flow graph
+$\overline{G}_{\mathtt{f}}$ is obtained by substituting function
+summaries for function calls. More precisely, we transform
+$G_{\mathtt{f}}$ into $\overline{G}_{\mathtt{f}}$ by the following
+three steps:
+\begin{enumerate}
+\item Replace every function call $\mathtt{x_1}, \mathtt{x_2}, \ldots,
+  \mathtt{x_q} := \mathtt{g} (E_0, E_1, \ldots, E_p)$ in $G_{\mathtt{f}}$ by 
+  \begin{equation*}
+    \begin{array}{l}
+      \mathtt{x_1}, \ldots, \mathtt{x_q} :=
+      \mathtt{nondet}, \ldots, \mathtt{nondet};\\
+      \mathtt{assume}\ 
+      S_{\mathtt{g}}[\mathtt{u_0} \mapsto E_0, \ldots, 
+      \mathtt{u_p} \mapsto E_p, \mathtt{ret^g_1} \mapsto \mathtt{x_1},
+      \ldots, \mathtt{ret^g_q} \mapsto \mathtt{x_q}]
+    \end{array}
+  \end{equation*}
+  where $\mathtt{u_0}, \mathtt{u_1}, \ldots, \mathtt{u_p}$
+  are the formal parameters of the function $\mathtt{g}$;
+\item Replace every $\mathtt{return\ }F_1, F_2, \ldots, F_h$ command by
+  \begin{equation*}
+    \mathtt{ret^f_1}, \ldots, \mathtt{ret^f_h} := F_1, \ldots, F_h
+  \end{equation*}
+\item Add the command $\mathtt{assert\ }S_{\mathtt{f}}$ the end of
+  $G_{\mathtt{f}}$. 
+\end{enumerate}
+Figure~\ref{figure:check-summary-mccarthy91} shows the control flow
+graph $\overline{G}_{\mathtt{mc91}}$ with the function summary
+$S_{\mathtt{mc91}} = \mathtt{not (m \geq 0)}$. Observe that
+$\overline{G}_{\mathtt{mc91}}$ is
+recursion-free. \textsc{BasicChecker} is able to check the
+over-approximation $\overline{G}_{\mathtt{mc91}}$. 
 
 \begin{figure}
   \centering
@@ -172,19 +204,19 @@ check the over-approximation $\overline{G}_k$.
             node [right] {$
               \begin{array}{l}
               \mathtt{s := nondet;}\\
-              \mathtt{assume\ true}
+              \mathtt{assume\ not(m + 11 \geq 0)}
               \end{array}
               $} (3)
         (3) edge 
             node [right] {$
               \begin{array}{l}
               \mathtt{t := nondet;}\\
-              \mathtt{assume\ true}
+              \mathtt{assume\ not(s \geq 0)}
               \end{array}$} (4)
         (4) edge [bend left=30]
             node [right] {$\mathtt{ret^{mc91}_0 := t}$} (5)
         (5) edge 
-            node [right] {$\mathtt{assert\ true}$} (e)
+            node [right] {$\mathtt{assert\ not(m \geq 0)}$} (e)
         ;
     \end{tikzpicture}
   \caption{Check Summary in McCarthy 91}
