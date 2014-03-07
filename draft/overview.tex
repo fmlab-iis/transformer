@@ -140,7 +140,7 @@ first-order conjunctive formula which specifies the relation between
 its formal parameters and return variables. The algorithm
 $\textmd{UpdateSummary}$ updates function summaries $S$ by inspecting
 the inductive invariant $\Pi (\underline{G}_k, I_0)$
-(Section~\ref{subsection:property-proving}). 
+(Section~\ref{subsection:updating-summary}). 
 
 After function summaries are updated, Algorithm~\ref{algorithm:overview} 
 verifies whether function summaries correctly specify computation of
@@ -228,7 +228,7 @@ over-approximation $\overline{G}_{\mathtt{mc91}}$.
 In order to refine approximations, our algorithm unwinds recursive
 functions as usual. More precisely, consider a recursive function
 $\mathtt{f}$ with formal parameters $\mathtt{u_0}, \mathtt{u_1},
-\ldots, \mathtt{u_l})$ and $h$ return values. Let $G_{\mathtt{f}}$ be
+\ldots, \mathtt{u_l}$ and $h$ return values. Let $G_{\mathtt{f}}$ be
 the control flow graph of $\mathtt{f}$ and $G_k$ a control flow graph
 that invokes $\mathtt{f}$. To unwind $\mathtt{f}$ in $G_k$, 
 we first construct a control flow graph $H_{\mathtt{f}}$ by 
