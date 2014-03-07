@@ -1,37 +1,23 @@
-import sys
 import time
-"""
-# Avoid writing Python Bytecode
-sys.dont_write_bytecode=True
-"""
+import fileinput
+
 import cil_manager as cil_mgr
 import verifier_manager as verifier_mgr
-import redlog_manager as rl_mgr
+import verifier_basic_manager as v_basic_mgr
 import design_analysis
 import proof_analysis
 
-def initialize(design_path):
-  """
-  # Set Initial Configuration
-  cil_mgr.setExePath("../cil/tran.native")
-  cil_mgr.setDesignPath(design_path)
-  cil_mgr.setOutputPath("../transformed/")
-  verifier_mgr.setExePath("../verifier/scripts/cpa.sh")
-  verifier_mgr.setConfigPath("../config/myCPA-PredAbstract-LIA.properties")
-  verifier_mgr.setOutputPath("../proofs/")
-  rl_mgr.setExePath("../redlog/reduce")
-  rl_mgr.setScriptPath("cmd.in")
-  rl_mgr.setOutputPath("summary")
-  """
-  out_name = cil_mgr.create_under_approx_file(0)
-  design_analysis.setRecursiveFuncList(out_name)
+_options_g = {}
 
-def main(argv):
+def setOptions(key, value):
+  _options_g[key] = value
+
+def main(design_path):
   tStart = time.time()
 
-  design_path = argv[1]
   printProcessStatus("Parsing Design " + design_path)
-  initialize( design_path )
+  out_name = cil_mgr.createUnderApproxFile(0)
+  design_analysis.setRecursiveFuncList(out_name)
   print design_analysis.getRecursiveFuncList()
 
   uw_count = 0
@@ -59,39 +45,82 @@ def main(argv):
 
 def oneIteration(unwind_times):
   printProcessStatus("Create Under-approximation of main()")
-  out_file_name = cil_mgr.create_under_approx_file(unwind_times)
+  under_design_name = cil_mgr.createUnderApproxFile(unwind_times)
 
   printProcessStatus("Verify Under-approximation of main()")
-  proof_info = verifier_mgr.verify(out_file_name)
-
-  result = proof_info.getResult()
-  if not result == "SAFE":
-    return result
+  proof_info = verifier_mgr.verify(under_design_name)
+  under_result = proof_info.getResult()
+  if not under_result == "SAFE":
+    return under_result
 
   printProcessStatus("Guess Summaries")
-  design_info = design_analysis.TransformedDesignInfo(out_file_name)
-  sum_list = proof_analysis.guessSummaries(design_info, proof_info)
-  for func_name, summary in sum_list:
-    print "Function Name: " + func_name
-    print "  Guess: "+ summary
+  sum_list = guessSummaries(under_design_name, proof_info)
 
-  printProcessStatus("Verify Summaries")
-  for func_name, summary in sum_list:
-    out_file_name = cil_mgr.create_verify_summary_file(func_name, summary, unwind_times-1)
-    proof = verifier_mgr.verify(out_file_name, func_name)
-    result = proof.getResult()
-    if result != "SAFE": break
+  check_result = "UNKNOWN"
+  can_refine = True
+  while check_result != "SAFE" and can_refine:
+    printProcessStatus("Check Summaries")
+    check_result = "UNKNOWN"
+    for func_call, summary in sum_list:
+      func_name = func_call.name
+      check_summary_name = cil_mgr.createCheckSummaryFile(func_name, summary, unwind_times-1)
+      proof = v_basic_mgr.verify(check_summary_name, func_name)
+      check_result = proof.getResult()
+      if check_result != "SAFE": break
+    can_refine = False
+    if check_result == "UNSAFE" and _options_g["refine_summary"]:
+      printProcessStatus("Refine Summaries")
+      can_refine, sum_list=refineSummaries(under_design_name, func_call, proof)
 
-  if result == "SAFE":
+  if check_result == "SAFE":
     return "SAFE"
   # Finished one iteration, continue on next
   return "CONTINUE"
+
+def refineSummaries(under_name, func_call, unsafe_proof):
+  # TODO Refine pre-condition with the CEX of invalid summary
+  cex_reader = unsafe_proof.getCEXReader()
+  var_value_map = cex_reader.getFormalParaValues(func_call)
+  cexpr = "("
+  for var, value in var_value_map.items():
+    cexpr += func_call.getActualPara(var) + "==" + value + "&&"
+  cexpr = cexpr[:-len("&&")] + ")"
+  print cexpr
+
+  c_stmt = " __VERIFIER_assert(!%s);\n" % cexpr
+  # Insert assertion
+  # FIXME Not robust
+  old_file =fileinput.input(under_name) 
+  new_name = under_name[:-len("under.c")] + "refine.c"
+  with open(new_name, "w") as new_file:
+    for line in old_file:
+      new_file.write(line)
+      if old_file.filelineno() == func_call.begin_loc:
+        line = next(old_file)
+        new_file.write( line.strip('\n') + c_stmt )
+  new_file.close()
+  old_file.close()
+
+  proof_info = verifier_mgr.verify(new_name)
+  new_result = proof_info.getResult()
+  if not new_result == "SAFE":
+    # Cannot refine, return False
+    return False, []
+
+  printProcessStatus("Refined Summaries")
+  sum_list = guessSummaries(new_name, proof_info)
+  return True , sum_list
+
+def guessSummaries(design_name, proof_info):
+  design_info = design_analysis.TransformedDesignInfo(design_name)
+  sum_list = proof_analysis.guessSummaries(design_info, proof_info)
+  for func_call, summary in sum_list:
+    print "Function Name: " + func_call.name
+    print "  Guess Summary: "+ summary
+  return sum_list
 
 def printProcessStatus(string):
   print 
   print (' '+string+' ').center(70, '=')
   print
-
-if  __name__ == '__main__':
-  main(sys.argv)
 

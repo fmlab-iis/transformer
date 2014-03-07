@@ -24,21 +24,31 @@ class FuncCall:
     self.name = func_call[0]
     self.para_map = {}
     for pair_str in [func_call[1]] + func_call[2].split(','):
-      formal, actual = pair_str.split('=')
-      self.para_map[actual] = formal
+      if pair_str != "":
+        formal, actual = pair_str.split('=')
+        self.para_map[actual] = formal
     self.depth = int((func_call[3].split('='))[1])
     # FIXME Need a robust way to acquire location of unwinded function call
     self.begin_loc = int(func_call[4]) - 2
     self.end_loc = int(func_call[5]) + 2
-  def getFormalPara(self, var_name):
+  def getFormalPara(self, actual_name):
     # TODO Find back up of initial value
-    if var_name in self.para_map:
-      return self.para_map[var_name]
+    if actual_name in self.para_map:
+      return self.para_map[actual_name]
     return None
+  def getActualPara(self, formal_name):
+    # TODO Consider using another map
+    for actual, formal in self.para_map.items():
+      if formal_name == formal:
+        return actual
+    return None
+  def getFormalParaSet(self):
+    return set(self.para_map.values())
 
 class TransformedDesignInfo:
   def __init__(self, design_name):
     self._design_name = design_name
+    self._uw_call_list = []
     self._parseUnwindedCalls()
 
   def _parseUnwindedCalls(self):

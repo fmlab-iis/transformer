@@ -15,6 +15,7 @@ _out_path_g = ""
 def _getDefaultArgs():
   global _exe_path_g, _conf_path_g, _out_path_g
   assert os.path.exists(_out_path_g)
+  # Clear output directory
   for f in os.listdir(_out_path_g):
     os.remove(_out_path_g+'/'+f)
 
@@ -32,12 +33,11 @@ def setConfigPath(conf_path):
 def setOutputPath(out_path):
   global _out_path_g
   _out_path_g = out_path
-  # Clear output directory
-  if os.path.exists(_out_path_g):
+  if not os.path.exists(_out_path_g):
+    os.makedirs(_out_path_g)
+  else:
     for f in os.listdir(_out_path_g):
       os.remove(_out_path_g+'/'+f)
-  else:
-    os.makedirs(_out_path_g)
 
 def verify(in_file, entry_func="main"):
   # Copy default arguments
@@ -50,15 +50,15 @@ def verify(in_file, entry_func="main"):
     # Call Verifier
     subprocess.call(args, universal_newlines=True, stdout=None, stderr=null_file)
   null_file.close()
-  return ProofInfo(_out_path_g)
+  return ProofInfo(_out_path_g) 
 
+# TODO Seperate ProofInfo to a standalone file 
 class ProofInfo:
   def __init__(self, proof_dir):
-    self._proof_dir = proof_dir;
-    self._abs_reader = None
+    self._proof_dir = proof_dir + '/'
   def getResult(self):
     # FIXME This way is inefficient.
-    with open(self._proof_dir+"/Statistics.txt", "r") as stats:
+    with open(self._proof_dir+"Statistics.txt", "r") as stats:
       for line in stats:
         pattern = "Verification result: "
         if line.startswith(pattern):
@@ -67,21 +67,45 @@ class ProofInfo:
     stats.close()
     return result
   def getARGHandler(self):
-    file_name = self._proof_dir+"/ARG.dot"
+    file_name = self._proof_dir+"ARG.dot"
     return arg_utils.ARGHandler(file_name)
-  def setAbstractionReader(self, abs_id_list):
-    file_name = self._proof_dir+"/abstractions.txt"
-    self._abs_reader = AbstractionReader(file_name, abs_id_list)
-  def getAbstractionReader(self):
+  def getAbstractionReader(self, abs_id_list):
     # FIXME Raise Exception
-    assert self._abs_reader != None
-    return self._abs_reader
+    file_name = self._proof_dir+"abstractions.txt"
+    return AbstractionReader(file_name, abs_id_list)
+  def getCEXReader(self):
+    file_name = self._proof_dir+"ErrorPath.0.assignment.txt"
+    return CEXReader(file_name)
+
+class CEXReader:
+  def __init__(self, file_name):
+    self._assign_file_name = file_name
+  def getFormalParaValues(self, func_call):
+    var_value_map = {}
+    formal_set = func_call.getFormalParaSet()
+    with open(self._assign_file_name, "r") as assignment_file:
+      for line in assignment_file:
+        match_obj = re.match("^(?P<var>\w+::\w+)@\d+ : (?P<type>\w+): (?P<value>[+-]?\d+(?:\.\d+)?)", line)
+        if not match_obj:
+          continue
+        var_str = (match_obj.group("var")).split("::")
+        var_scope = var_str[0]
+        if var_scope != func_call.name:
+          continue
+        var_name = var_str[1]
+        if var_name in formal_set and var_name not in var_value_map:
+          value_str = match_obj.group("value")
+          var_value_map[var_name] = value_str
+          if len(formal_set) == len(var_value_map): break;
+    assignment_file.close()
+    return var_value_map
 
 class AbstractionReader:
   def __init__(self, file_name, abs_id_list):
     self._abs_file_name = file_name
     self._def_line_map = {}
-    self._def_rlexpr_map = {"true":"true", "false":"false"} #Initial Definitions
+    #Initial Definitions
+    self._def_rlexpr_map = {"true":"true", "false":"false"}
     self._id_def_map = dict.fromkeys(set(abs_id_list))
     # Check if the file is modified
     linecache.checkcache(self._abs_file_name)

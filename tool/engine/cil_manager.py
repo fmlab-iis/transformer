@@ -40,7 +40,7 @@ def setOutputPath(out_path):
   else:
     os.makedirs(_output_path_g)
 
-def create_under_approx_file(uw_times):
+def createUnderApproxFile(uw_times):
   global _count_g, _in_name_g
   # Copy default arguments
   args = _getDefaultArgs()
@@ -49,6 +49,8 @@ def create_under_approx_file(uw_times):
   # Set Under-approximation for replacing function call
   # args.extend(["-m", func_name, "1", "0"])
   args.extend(["-u"])
+  # Insert definition of assert function
+  args.append("-i")
   # Set Output File
   file_name = "main" + str(_count_g).zfill(2) + ".under.c"
   output_file_name = _output_path_g + '/' + file_name
@@ -60,7 +62,7 @@ def create_under_approx_file(uw_times):
   _count_g = _count_g + 1
   return output_file_name
 
-def create_verify_summary_file(func_name, summary, uw_times):
+def createCheckSummaryFile(func_name, summary, uw_times):
   global _count_g, _in_name_g
   # Copy default arguments
   args = _getDefaultArgs()

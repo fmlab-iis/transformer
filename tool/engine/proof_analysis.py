@@ -22,7 +22,7 @@ def guessSummaries(design_info, proof_info):
 
   sum_list = []
   for uw_call in design_info._uw_call_list:
-    sum_list.append((uw_call.name, analyzer.getSummary(uw_call)))
+    sum_list.append((uw_call, analyzer.getSummary(uw_call)))
   return sum_list
   
 
@@ -30,6 +30,7 @@ class ProofAnalyzer:
   def __init__(self, proof_info):
     self._proof_info = proof_info;
     self._func_sum_dict = {}
+    self._needed_abs_id_list = None
 
   def parsePrePostPair(self, func_list):
     begin_loc_set = set([x.begin_loc for x in func_list])
@@ -56,12 +57,10 @@ class ProofAnalyzer:
         abs_id = arg_handler.getNodeABSId(care_node)
         abs_id_list.append(abs_id)
         self._func_sum_dict[begin_loc].setPreCond(abs_id)
-
-    # Initialize abstraction reader
-    self._proof_info.setAbstractionReader(abs_id_list)
+    self._needed_abs_id_list = abs_id_list
 
   def getSummary(self, func_call):
-    abs_reader = self._proof_info.getAbstractionReader()
+    abs_reader = self._proof_info.getAbstractionReader(self._needed_abs_id_list)
 
     sum_list = (self._func_sum_dict[func_call.begin_loc]).getSummaryList()
     ret_sum = ""
