@@ -149,9 +149,11 @@ graph $\overline{G}_{\mathtt{f}}$ with additional assertions for each
 function $\mathtt{f}$, and verifying $\overline{G}_{\mathtt{f}}$ with
 \textsc{BasicChecker}. The control flow graph
 $\overline{G}_{\mathtt{f}}$ is obtained by substituting function
-summaries for function calls. More precisely, we transform
-$G_{\mathtt{f}}$ into $\overline{G}_{\mathtt{f}}$ by the following
-three steps:
+summaries for function calls. In Algorithm~\ref{algorithm:overview},
+$S[\mathtt{g}]$ contains the function summary for the function
+$\mathtt{g}$.  
+We transform $G_{\mathtt{f}}$ into $\overline{G}_{\mathtt{f}}$ by the
+following three steps:
 \begin{enumerate}
 \item Replace every function call $\mathtt{x_1}, \mathtt{x_2}, \ldots,
   \mathtt{x_q} := \mathtt{g} (E_0, E_1, \ldots, E_p)$ in $G_{\mathtt{f}}$ by 
@@ -160,9 +162,9 @@ three steps:
       \mathtt{x_1}, \ldots, \mathtt{x_q} :=
       \mathtt{nondet}, \ldots, \mathtt{nondet};\\
       \mathtt{assume}\ 
-      S_{\mathtt{g}}[\mathtt{u_0} \mapsto E_0, \ldots, 
+      S[{\mathtt{g}}]\{\mathtt{u_0} \mapsto E_0, \ldots, 
       \mathtt{u_p} \mapsto E_p, \mathtt{ret^g_1} \mapsto \mathtt{x_1},
-      \ldots, \mathtt{ret^g_q} \mapsto \mathtt{x_q}]
+      \ldots, \mathtt{ret^g_q} \mapsto \mathtt{x_q}\}
     \end{array}
   \end{equation*}
   where $\mathtt{u_0}, \mathtt{u_1}, \ldots, \mathtt{u_p}$
@@ -171,12 +173,12 @@ three steps:
   \begin{equation*}
     \mathtt{ret^f_1}, \ldots, \mathtt{ret^f_h} := F_1, \ldots, F_h
   \end{equation*}
-\item Add the command $\mathtt{assert\ }S_{\mathtt{f}}$ the end of
+\item Add the command $\mathtt{assert\ }S[{\mathtt{f}}]$ at the end of
   $G_{\mathtt{f}}$. 
 \end{enumerate}
 Figure~\ref{figure:check-summary-mccarthy91} shows the control flow
 graph $\overline{G}_{\mathtt{mc91}}$ with the function summary
-$S_{\mathtt{mc91}} = \mathtt{not (m \geq 0)}$. Observe that
+$S[{\mathtt{mc91}}] = \mathtt{not (m \geq 0)}$. Observe that
 $\overline{G}_{\mathtt{mc91}}$ is
 recursion-free. \textsc{BasicChecker} is able to check the
 over-approximation $\overline{G}_{\mathtt{mc91}}$. 
@@ -246,9 +248,8 @@ is obtained by unwinding every function calls in $G_k$.
 Figure~\ref{figure:unwind-mccarthy91} shows the control flow graph
 $\mathtt{mc91_1(m)}$ by unwinding $\mathtt{mc91(m)}$. Note that the
 unwinding graph $G_{k+1}$ still has recursive function calls. Its
-approximations $\underline{G}_{k+1}$ and $\overline{G}_{k+1}$ however
-are more informative than $\underline{G}_k$ and $\overline{G}_k$
-respectively. 
+under approximation $\underline{G}_{k+1}$ however is more informative
+than $\underline{G}_k$.
 
 \begin{figure}
   \centering
