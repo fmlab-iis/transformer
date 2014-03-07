@@ -1,6 +1,19 @@
 Program verification is a grand challenge in computer science with significant practical impact. 
 The difficulty of this problem due in great part to several complex common constructs of conventional programming languages~\cite{ClarkeJS05}, e.g., concurrent execution of threads, pointers with unbounded heap size, function call with recursions, and unbounded/large basic data types. It is unlikely to develop a verification algorithm that handles all of these constructs. Very commonly, researches on program verification focus on only a few of these constructs and have simplified assumptions on the rest. Moreover, the verification tools become more and more unmanageable with the increased number of constructs they support. Updating the existing verification tools to include new solutions dealing with more program constructs is normally a nightmare for the developers.
 
-In the paper, we propose a loosely-coupled approach to enable existing intraprocedure analyzers the capability of handling recursive functions. 
+In the paper, we propose an algorithm to enable existing intraprocedure (recursive-free) program analyzers the capability of handling recursive functions. 
+Such analyzer supplies an \emph{inductive invariant} when a program is verified to be correct and supports program constructs such as assumptions, assertions, and nondeterministic values. Our algorithm interact with intraprocedure program analyzers in a loosely-coupled and iterative manner. 
+In each iterations, it transforms the source program into a program without recursion that \emph{under-approximates} the behaviors of the original one and feeds it to the analyzer.
+If the analyzer verified the transformed program, our algorithm extracts candidates of \emph{function summaries} of recursive functions involved and checks if they are indeed function summaries again by feeding some transformed programs to the analyzer. 
+
+The advantages of the proposed algorithm is clear: it requires only very few and standard functions provided by the underlying verifiers and is compatible with most existing intraprocedure analyzers. We implemented a prototype system using \textsc{CPAChecker}~\cite{BeyerK11} as the underlying program analyzer and compare
+with other program analyzers that are specialized for recursive program verification on the benchmarks in the 2014 Competition on Software Verification~\cite{svcomp14}.
+The comparison result is very promising: the prototype is comparable with those specialized analyzers. Notice that in order to simplify the implementation effort, we turned off important optimizations such as adjust block encoding provided in \textsc{CPAChecker}, the performance of the prototype can be even better with those optimizations turned on. 
+
+\subsection*{Related Works}
+Whale~\cite{AlbarghouthiGC12},
+
+
+
 
 
