@@ -16,7 +16,7 @@ We consider a variant of the WHILE language~\cite{}:
     \mathtt{f}(E, E, \ldots, E) &
     \textmd{function invocation}\\
     & & \mid &
-    E \odot E  & \odot \in \{ +, -, =, >, \mathtt{and} \}\\
+    E \odot E  & \odot \in \{ +, -, =, >, \mathtt{and}, \mathtt{or} \}\\
     & & \mid & \mathtt{not}\ E\\
     \mathtt{Command} & \ni C & ::= &
     \mathtt{x}, \mathtt{x}, \ldots, \mathtt{x} := 
@@ -88,7 +88,12 @@ figure. Loops can be modeled similarly.
         (1) edge 
             node [left] {$\mathtt{r := mc91(n)}$} (2)
         (2) edge 
-            node [left] {$\mathtt{assert\ r >= 91}$} (3)
+            node [left] {$
+              \begin{array}{l}
+                \mathtt{assert\ {[}r = 91\ or}\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ (n > 101\ and\ \ }\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ \ r = n - 10){]}}
+              \end{array}$} (3) 
         (3) edge 
             node [left] {$\mathtt{return\ 0}$} (4);
     \end{tikzpicture}
