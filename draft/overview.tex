@@ -149,11 +149,21 @@ graph $\overline{G}_{\mathtt{f}}$ with additional assertions for each
 function $\mathtt{f}$, and verifying $\overline{G}_{\mathtt{f}}$ with
 \textsc{BasicChecker}. The control flow graph
 $\overline{G}_{\mathtt{f}}$ is obtained by substituting function
-summaries for function calls. In Algorithm~\ref{algorithm:overview},
+summaries for function calls.
+\hide{
+ In Algorithm~\ref{algorithm:overview},
 $S[\mathtt{g}]$ contains the function summary for the function
 $\mathtt{g}$.  
+}
 We transform $G_{\mathtt{f}}$ into $\overline{G}_{\mathtt{f}}$ by the
 following three steps:
+\begin{enumerate}
+\item Replace every function call by instantiating the summary for the
+  callee;
+\item Replace every return command by assignments to return variables;
+\item Add an assertion to validate the summary at the end.
+\end{enumerate}
+\hide{
 \begin{enumerate}
 \item Replace every function call $\mathtt{x_1}, \mathtt{x_2}, \ldots,
   \mathtt{x_q} := \mathtt{g} (E_0, E_1, \ldots, E_p)$ in $G_{\mathtt{f}}$ by 
@@ -176,9 +186,10 @@ following three steps:
 \item Add the command $\mathtt{assert\ }S[{\mathtt{f}}]$ at the end of
   $G_{\mathtt{f}}$. 
 \end{enumerate}
+}
 Figure~\ref{figure:check-summary-mccarthy91} shows the control flow
 graph $\overline{G}_{\mathtt{mc91}}$ with the function summary
-$S[{\mathtt{mc91}}] = \mathtt{not (m \geq 0)}$. Observe that
+$S_{\mathtt{mc91}} = \mathtt{not (m \geq 0)}$. Observe that
 $\overline{G}_{\mathtt{mc91}}$ is
 recursion-free. \textsc{BasicChecker} is able to check the
 over-approximation $\overline{G}_{\mathtt{mc91}}$. 
