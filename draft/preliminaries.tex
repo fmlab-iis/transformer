@@ -147,9 +147,28 @@ $\textmd{cmd} (e)$. An inductive invariant $\Pi (G, I_0)$ is an
 over-approximation to the computation of $G$ from $I_0$. More
 precisely, assume that the function $G$ starts from a state satisfying
 $I_0$. For every program location $\ell$, $G$ must arrive in a state
-satisfying $I_{\ell}$ when the computation reaches $\ell$. Observe
-that an inductive invariant $\Pi (G, I_0)$ establishes the weak
-correctness for the Hoare triple $\{ I_0 \} G \{ I_{\ell_e} \}$.
+satisfying $I_{\ell}$ when the computation reaches $\ell$. 
+
+Let $G = \langle V, E \rangle$ be a control flow graph, and $P$, $Q$
+are logic formulae. A \emph{Hoare triple} $\assert{P} G \assert{Q}$
+specifies that the program $G$ will reach a program state satisfying
+$Q$ provided that $G$ starts with a program state satisfying $P$ and
+terminates. We use the standard proof rules for weak correctness with
+two additional rules for the assumption and assertion commands:
+\begin{center}
+  \AxiomC{$P \wedge E \implies Q$}
+  \LeftLabel{Assume}
+  \UnaryInfC{$\assert{P} \mathtt{assume\ } E \assert{Q}$}
+  \DisplayProof
+  ~
+  \AxiomC{$P \implies E$}
+  \LeftLabel{Assert}
+  \UnaryInfC{$\assert{P} \mathtt{assert\ } E \assert{Q}$}
+  \DisplayProof
+\end{center}
+Observe
+that an inductive invariant $\Pi (G, I_0)$ establishes 
+$\assert{I_0} G \assert{I_{\ell_e}}$.
 
 A \emph{program analyzer} accepts programs as inputs and
 checks if all assertions (specified by the $\mathtt{assert}$ command)
