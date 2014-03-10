@@ -1,1 +1,5 @@
+Let $G^- = \langle V^-, E^-, \textmd{cmd}^- \rangle$ be a CFG obtained from Section~\ref{subsection:under-approximation} and $L_f=\{({\ell_s^i}^{(f)},{\ell_e^i}^{(f)}):\mbox{ the pair of locations }{\ell_s^i}^{(f)}\mbox{ and }{\ell_e^i}^{(f)}\mbox{ in }E\mbox{ for some }i\}$ the set of entry and exit locations of the call to the function $f$.
 
+We give $G^-$ to a program checker. A error trace returned from the checker indicates that some assertion in the program to be verified can be violated, because $G^-$ under-approximates the behavior of $G$. Otherwise, the checker returns an inductive invariant $\Pi (G^-, \mathtt{true})= \{ I_\ell : \ell \in V^-
+\}$ for $G^-$. Let $P_f$ be the set of all variables appearing in $G^-$ except the set of formal parameter and return variables of $f$.
+Then for all functions $f$ with $L_f\neq \emptyset$, we update the summary of $f$ to $\bigwedge_{(\ell,\ell')\in L_f} \exists P_f. I_\ell \implies \exists P_f.I_{\ell'}$.
