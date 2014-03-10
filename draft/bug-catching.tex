@@ -1,10 +1,10 @@
 
 Let $G = \langle V, E, \textmd{cmd} \rangle$ be a control flow
-graph. The control flow graph $\underline{G} = \langle V, E,
-\underline{\textmd{cmd}} \rangle$ is obtained by replacing every
+graph. The control flow graph $G^- = \langle V, E,
+\textmd{cmd}^- \rangle$ is obtained by replacing every
 function calls in $G$ with $\mathtt{assume\ false}$. That is,
 \begin{equation*}
-  \underline{\textmd{cmd}} (\ell, \ell') =
+  \textmd{cmd}^- (\ell, \ell') =
   \left\{
     \begin{array}{ll}
       \textmd{cmd} (\ell, \ell') & 
@@ -15,3 +15,10 @@ function calls in $G$ with $\mathtt{assume\ false}$. That is,
     \end{array}
   \right.
 \end{equation*}
+
+\begin{proposition}
+  Let $G$ be a control flow graph, $P$ and $Q$ logic formulae with
+  free variables over program variables of $G$. If $\assert{P}
+  G^- \assert{Q}$, then 
+  $\assert{P} G \assert{Q}$.
+\end{proposition}

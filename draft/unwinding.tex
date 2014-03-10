@@ -43,3 +43,8 @@ Formally, $\textsc{unwind}(G) = \langle V', E' \rangle$ such that (1) $V' = V\cu
 \end{algorithm}
 }
 
+\begin{proposition}
+  Let $G$ be a control flow graph, $P$ and $Q$ logic formulae with
+  free variables over program variables of $G$. $\assert{P}\ G\ 
+  \assert{Q}$ if and only if $\assert{P}\ \textsc{unwind} (G)\ \assert{Q}$.
+\end{proposition}

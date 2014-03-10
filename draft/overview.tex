@@ -8,15 +8,15 @@ recursive functions, \textsc{BasicChecker} is able to check $G$ by
 computing inductive invariants.
 
 When $G$ contains recursive functions, we transform $G$ into a
-recursion-free program $\underline{G}$. The program $\underline{G}$
+recursion-free program $G^-$. The program $G^-$
 under-approximates the computation of $G$. That is, every computation
-of $\underline{G}$ is also a computation of $G$. If
-\textsc{BasicChecker} finds an error trace in $\underline{G}$, our
+of $G^-$ is also a computation of $G$. If
+\textsc{BasicChecker} finds an error trace in $G^-$, our
 algorithm terminates and reports the error trace. Otherwise,
 \textsc{BasicChecker} has computed an inductive invariant for the
-recursive-free under-approximation $\underline{G}$. Our algorithm
+recursive-free under-approximation $G^-$. Our algorithm
 updates function summaries of $G$ from the inductive invariant of
-$\underline{G}$. It then checks if every function summary
+$G^-$. It then checks if every function summary
 over-approximations the computation of the corresponding function. If
 so, the algorithm terminates and reports that all assertions in $G$
 are satisified. If a function summary does not over-approximate the
@@ -33,11 +33,11 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
   }
   \Repeat{$\textmd{complete?}$}
   {
-    \Switch{\textsc{BasicChecker} ($\underline{G}_k$)}
+    \Switch{\textsc{BasicChecker} ($G^-_k$)}
     {
-      \lCase{$\mathit{Pass(\Pi (\underline{G}_k, I_0))}$:}
+      \lCase{$\mathit{Pass(\Pi (G^-_k, I_0))}$:}
       {    
-        UpdateSummary ($G$, $S$, $\Pi (\underline{G}_k, I_0)$)\;
+        UpdateSummary ($G$, $S$, $\Pi (G^-_k, I_0)$)\;
       }
       \lCase{$\mathit{ErrorTrace} (\tau)$:}
       {
@@ -47,7 +47,7 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
     $\textmd{complete?} \leftarrow \top$\;
     \ForEach{function $\mathtt{f}$ in $G$}
     {
-      \lIf {\textsc{BasicChecker} ($\overline{G}_{\mathtt{f}}$) =
+      \lIf {\textsc{BasicChecker} ($\tilde{G}_{\mathtt{f}}$) =
         $\mathit{ErrorTrace}\ \_$}
       {
         $\textmd{complete?} \leftarrow \bot$\;
@@ -62,14 +62,14 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
 
 To see how to under approximate computation, consider a control flow
 graph $G_k$ with recursive functions $f_0 (\ox_0), f_1 (\ox_1),
-\ldots, f_m (\ox_m)$. The under-approximation $\underline{G}_k$ is
+\ldots, f_m (\ox_m)$. The under-approximation $G^-_k$ is
 obtained by substituting the command $\mathtt{assume\ false}$ for
 every command with recursive function calls
 (Figure~\ref{figure:under-mccarthy91}). The substitution
 effectively blocks all recursive invocations. Any computation of
-$\underline{G}_k$ hence is also a computation of $G_k$. Note that
-$\underline{G}_k$ is recursion-free. \textsc{BasicChecker} is able to
-check the under-approximation $\underline{G}_k$.
+$G^-_k$ hence is also a computation of $G_k$. Note that
+$G^-_k$ is recursion-free. \textsc{BasicChecker} is able to
+check the under-approximation $G^-_k$.
 
 \begin{figure}
   \centering
@@ -97,7 +97,7 @@ check the under-approximation $\underline{G}_k$.
         (3) edge 
             node [left] {$\mathtt{return\ 0}$} (4);
     \end{tikzpicture}
-    \caption{$\mathtt{\underline{main}()}$}
+    \caption{$\mathtt{main^-()}$}
   \end{subfigure}
   ~
   \begin{subfigure}[b]{.6\textwidth}
@@ -124,38 +124,38 @@ check the under-approximation $\underline{G}_k$.
         (4) edge [bend left=30]
             node [right] {$\mathtt{return\ t}$} (5);
     \end{tikzpicture}
-    \caption{$\mathtt{\underline{mc91}(m)}$}
+    \caption{$\mathtt{mc91^-(m)}$}
   \end{subfigure}
   \caption{Under Approximation of McCarthy 91}
   \label{figure:under-mccarthy91}
 \end{figure}
 
 When $\textsc{BasicChecker}$ does not find any error trace in the
-under-approximation $\underline{G}_k$, it computes an inductive
-invariant $\Pi (\underline{G}_k, I_0)$. Our algorithm then updates
+under-approximation $G^-_k$, it computes an inductive
+invariant $\Pi (G^-_k, I_0)$. Our algorithm then updates
 summaries of functions in $G$. For each function $\mathtt{f}$ with
 formal parameters $\mathtt{u_0}, \mathtt{u_1}, \ldots, \mathtt{u_l}$
 and $h$ return values, a \emph{function summary} for $\mathtt{f}$ is a
 first-order conjunctive formula which specifies the relation between
 its formal parameters and return variables. The algorithm
 $\textmd{UpdateSummary}$ updates function summaries $S$ by inspecting
-the inductive invariant $\Pi (\underline{G}_k, I_0)$
+the inductive invariant $\Pi (G^-_k, I_0)$
 (Section~\ref{subsection:updating-summary}). 
 
 After function summaries are updated, Algorithm~\ref{algorithm:overview} 
 verifies whether function summaries correctly specify computation of
 functions. The algorithm checks this by constructing a control flow
-graph $\overline{G}_{\mathtt{f}}$ with additional assertions for each
-function $\mathtt{f}$, and verifying $\overline{G}_{\mathtt{f}}$ with
+graph $\tilde{G}_{\mathtt{f}}$ with additional assertions for each
+function $\mathtt{f}$, and verifying $\tilde{G}_{\mathtt{f}}$ with
 \textsc{BasicChecker}. The control flow graph
-$\overline{G}_{\mathtt{f}}$ is obtained by substituting function
+$\tilde{G}_{\mathtt{f}}$ is obtained by substituting function
 summaries for function calls.
 \hide{
  In Algorithm~\ref{algorithm:overview},
 $S[\mathtt{g}]$ contains the function summary for the function
 $\mathtt{g}$.  
 }
-We transform $G_{\mathtt{f}}$ into $\overline{G}_{\mathtt{f}}$ by the
+We transform $G_{\mathtt{f}}$ into $\tilde{G}_{\mathtt{f}}$ by the
 following three steps:
 \begin{enumerate}
 \item Replace every function call by instantiating the summary for the
@@ -188,11 +188,11 @@ following three steps:
 \end{enumerate}
 }
 Figure~\ref{figure:check-summary-mccarthy91} shows the control flow
-graph $\overline{G}_{\mathtt{mc91}}$ with the function summary
+graph $\tilde{G}_{\mathtt{mc91}}$ with the function summary
 $S_{\mathtt{mc91}} = \mathtt{not (m \geq 0)}$. Observe that
-$\overline{G}_{\mathtt{mc91}}$ is
+$\tilde{G}_{\mathtt{mc91}}$ is
 recursion-free. \textsc{BasicChecker} is able to check the
-over-approximation $\overline{G}_{\mathtt{mc91}}$. 
+$\tilde{G}_{\mathtt{mc91}}$. 
 
 \begin{figure}
   \centering
@@ -259,8 +259,8 @@ is obtained by unwinding every function calls in $G_k$.
 Figure~\ref{figure:unwind-mccarthy91} shows the control flow graph
 $\mathtt{mc91_1(m)}$ by unwinding $\mathtt{mc91(m)}$. Note that the
 unwinding graph $G_{k+1}$ still has recursive function calls. Its
-under approximation $\underline{G}_{k+1}$ however is more informative
-than $\underline{G}_k$.
+under approximation $G^-_{k+1}$ however is more informative
+than $G^-_k$.
 
 \begin{figure}
   \centering
