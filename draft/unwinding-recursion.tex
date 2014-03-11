@@ -1,6 +1,19 @@
 
+We give details of the constructions and establish the soundness of
+Algorithm~\ref{algorithm:overview}. Throughout this section, we fix an
+input control flow graph $G = \langle V, E, \textmd{cmd} \rangle$. For
+each function $\mathtt{f}$ in $G$, $G_{\mathtt{f}}$ denotes the
+control flow graph of $\mathtt{f}$. Our goal is to establish the
+following theorem:
 
+\begin{theorem}
+  Let $G = \langle V, E, \textmd{cmd} \rangle$ be a control flow
+  graph. If Algorithm~\ref{algorithm:overview} returns
+  $\mathit{Pass}$, there is an inductive invariant $\Pi (G, \top)$
+  such that $I_{\ell} \implies B_{\ell}$ for every $(\ell, \ell') \in
+  E$ with $\textmd{cmd} (\ell, \ell') = \mathtt{assert\ } B_{\ell}$.
+  \label{theorem:soundness}
+\end{theorem}
 
-
-
-
+By Proposition~\ref{proposition:inductive-invariant}, it follows that
+all assertions in $G$ are satisfied.
