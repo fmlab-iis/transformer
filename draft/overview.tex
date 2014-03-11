@@ -1,9 +1,9 @@
 
 Let \textsc{BasicChecker} denote a recursion-free inductive program
-checker and $G = \langle V, E \rangle$ a control flow graph. Since
+checker and $G = \langle V, E,\textmd{cmd},\bar{u}, \bar{r},  \ell_s,  \ell_e \rangle$ a control flow graph. Since
 non-recursive functions can be replaced by their control flow graphs
 after proper variable renaming, we assume that $G$ only contains the
-$\mathtt{main()}$ and recursive functions. If $G$ does not contain
+$\mathtt{main}$ and recursive functions. If $G$ does not contain
 recursive functions, \textsc{BasicChecker} is able to check $G$ by
 computing inductive invariants.
 
@@ -24,7 +24,7 @@ computation, our algorithm unwind the recursive function and
 reiterates~(Algorithm~\ref{algorithm:overview}).
 
 \begin{algorithm}
-  \KwIn{$G = \langle V, E \rangle$ : a control flow graph}
+  \KwIn{$G = \langle V, E,\textmd{cmd},\bar{u}, \bar{r},  \ell_s,  \ell_e \rangle$ : a control flow graph}
   $k \leftarrow 1$\;
   $G_0 \leftarrow G$\;
   \lForEach{function $\mathtt{f}$ in $G$}
@@ -37,9 +37,9 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
     $G_{k} \leftarrow $ unwind $G_{k-1}$\;
     \Switch{\textsc{BasicChecker} ($G^-_k$)}
     {
-      \lCase{$\mathit{Pass(\Pi (G^-_k, \mathtt{true}))}$:}
+      \lCase{$\mathit{Pass(\Pi (G^-_k, \TT))}$:}
       {    
-        UpdateSummary ($G$, $S$, $\Pi (G^-_k, \mathtt{true})$)\;
+        UpdateSummary ($G$, $S$, $\Pi (G^-_k, \TT)$)\;
       }
       \lCase{$\mathit{ErrorTrace} (\tau)$:}
       {
@@ -48,21 +48,21 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
     }
     $\textmd{complete?} \leftarrow \textmd{CheckSummary} (G, S)$\;
   }
-  \Return $\mathit{Pass} (\Pi (G^-_k, \mathtt{true}))$, $S$\;
+  \Return $\mathit{Pass} (\Pi (G^-_k, \TT))$, $S$\;
   \caption{Overview}
   \label{algorithm:overview}
 \end{algorithm}
 
 To see how to under approximate computation, consider a control flow
-graph $G_k$ with recursive functions $f_0 (\ox_0), f_1 (\ox_1),
-\ldots, f_m (\ox_m)$. The under-approximation $G^-_k$ is
+graph $G_k$ with recursive functions $\fun{f_0}, \fun{f_1},
+\ldots, \fun{f_m}$. The under-approximation $G^-_k$ is
 obtained by substituting the command $\mathtt{assume\ false}$ for
-every command with recursive function calls
+every recursive function call command
 (Figure~\ref{figure:under-mccarthy91}). The substitution
 effectively blocks all recursive invocations. Any computation of
 $G^-_k$ hence is also a computation of $G_k$. Note that
 $G^-_k$ is recursion-free. \textsc{BasicChecker} is able to
-check the under-approximation $G^-_k$.
+check the under-approximation~$G^-_k$.
 
 \begin{figure}
   \centering
@@ -122,18 +122,18 @@ check the under-approximation $G^-_k$.
 
 When $\textsc{BasicChecker}$ does not find any error trace in the
 under-approximation $G^-_k$, it computes an inductive
-invariant $\Pi (G^-_k, I_0)$. Our algorithm then updates
+invariant $\Pi (G^-_k, \TT)$. Our algorithm then updates
 summaries of functions in $G$. For each function $\mathtt{f}$ with
 formal parameters $\mathtt{u_0}, \mathtt{u_1}, \ldots, \mathtt{u_l}$
-and $h$ return values, a \emph{function summary} for $\mathtt{f}$ is a
+and return variables $\mathtt{r_0}, \mathtt{r_1}, \ldots, \mathtt{r_h}$, a \emph{function summary} for $\mathtt{f}$ is a
 first-order conjunctive formula which specifies the relation between
 its formal parameters and return variables. The algorithm
 $\textmd{UpdateSummary}$ updates function summaries $S$ by inspecting
-the inductive invariant $\Pi (G^-_k, I_0)$
+the inductive invariant $\Pi (G^-_k, \TT)$
 (Section~\ref{subsection:updating-summary}). 
 
 After function summaries are updated, Algorithm~\ref{algorithm:overview} 
-verifies whether function summaries correctly specify computation of
+verifies whether function summaries correctly specify computations of
 functions by invoking $\mathit{CheckSummary} (G, S)$. The algorithm
 $\mathit{CheckSummary} (G, S)$ checks this by constructing a control flow 
 graph $\tilde{G}_{\mathtt{f}}$ with additional assertions for each
@@ -248,7 +248,7 @@ assigns fresh copies of return variables to
 $\overline{\mathtt{x}}$. The control flow graph $G_{k+1}$ 
 is obtained by unwinding every function calls in $G_k$. 
 Figure~\ref{figure:unwind-mccarthy91} shows the control flow graph
-obtained by unwinding $\mathtt{mc91(m)}$. Note that the
+obtained by unwinding $\mathtt{mc91(m)}$ twice. Note that the
 unwinding graph $G_{k+1}$ still has recursive function calls. Its
 under approximation $G^-_{k+1}$ is more accurate than $G^-_k$.
 
