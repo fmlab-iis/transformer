@@ -167,8 +167,9 @@ two additional rules for the assumption and assertion commands:
   \DisplayProof
   ~
   \AxiomC{$P \implies E$}
+  \AxiomC{$E \implies Q$}
   \LeftLabel{Assert}
-  \UnaryInfC{$\assert{P} \mathtt{assert\ } E \assert{Q}$}
+  \BinaryInfC{$\assert{P} \mathtt{assert\ } E \assert{Q}$}
   \DisplayProof
 \end{center}
 Observe
