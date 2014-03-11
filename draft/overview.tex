@@ -26,13 +26,15 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
 \begin{algorithm}
   \KwIn{$G = \langle V, E \rangle$ : a control flow graph}
   $k \leftarrow 1$\;
-  $G_1 \leftarrow \textmd{unwind}\ G$\;
+  $G_0 \leftarrow G$\;
   \lForEach{function $\mathtt{f}$ in $G$}
   {
     $S[\mathtt{f}] \leftarrow \mathtt{true}$\;
   }
   \Repeat{$\textmd{complete?}$}
   {
+    $k \leftarrow k + 1$\;
+    $G_{k} \leftarrow $ unwind $G_{k-1}$\;
     \Switch{\textsc{BasicChecker} ($G^-_k$)}
     {
       \lCase{$\mathit{Pass(\Pi (G^-_k, \mathtt{true}))}$:}
@@ -45,9 +47,8 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
       }
     }
     $\textmd{complete?} \leftarrow \textmd{CheckSummary} (G, S)$\;
-    $G_{k+1} \leftarrow $ unwind $G_k$\;
-    $k \leftarrow k + 1$\;
   }
+  \Return $\mathit{Pass} (\Pi (G^-_k, \mathtt{true}))$, $S$\;
   \caption{Overview}
   \label{algorithm:overview}
 \end{algorithm}
