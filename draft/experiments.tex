@@ -6,9 +6,11 @@
 \newcommand{\unknownmark}{\ensuremath{^?}}
 \newcommand{\wrongmark}{\ensuremath{^!}}
 
-A prototype of our approach has been implemented with
-\textsc{CPAChecker} as the backend intra-procedural analyzer.
-We compared our approach based on experiments with four participants,
+\todo{parameters passed to these tools}
+
+A prototype tool of our approach has been implemented with
+\textsc{CPAChecker} as the underlying intraprocedure analyzer.
+We compared our tool based on experiments with four participants,
 namely Blast~\cite{BeyerHJM07}, CBMC~\cite{}, Ultimate
 Automizer~\cite{HeizmannCDEHLNSP13}, and Ultimate Kojak~\cite{Kojak},
 of the 2014 Competition on Software Verification (SV-COMP
@@ -25,15 +27,37 @@ CPU and 8 GB of memory running 64-bit Windows 7.
 The timeout of a verification task is 900 seconds.
 
 The experimental results are summarized in
-Table~\ref{table:experiments} where Iter. is \todo{?}, Time is in
-seconds, the superscript $!$ or $?$ indicates that the returned result is
-respectively incorrect or unknown, E indicates exceptions, and
-T.O. indicates timeouts.
-\todo{Summarize the results. (The table is still incomplete.)}
+Table~\ref{table:experiments} where Iter. is \todo{?}, Time is
+measured in seconds, the superscript $!$ or $?$ indicates that the
+returned result is respectively incorrect or unknown, E indicates
+exceptions, and T.O. indicates timeouts.
+We use the score schema (shown in Table~\ref{table:score-schema}) in
+SV-COMP 2014 to evaluate these tools.
+Table~\ref{table:experiments} shows that our tool outperforms Ultimate
+Automizer, Ultimate Kojak, and Blast in terms of scores.
+Although CBMC got the highest score, several results returned by CBMC
+may be doubtful because CBMC always reports safe if no bug is found
+within a given set of bounds~\footnote{This was confirmed in a private
+  communication with the developers of CBMC.}.
+According to Table~\ref{table:experiments}, the bounds mighty be 850
+seconds.
+If we ignore results returned by CBMC exactly in 850 seconds, the gap
+between the scores of CBMC and our tool becomes much smaller.
 
-CBMC reports safe if no bug is found within a given set of
-bounds~\footnote{This was confirmed in a private communication with
-  the developers of CBMC.}.
+\begin{table}
+\caption{Score schema.\label{table:score-schema}}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Points & Program Correctness & Reported Result \\\hline
+0      & TRUE or FALSE & UNKNOWN \\
++1     & FALSE         & FALSE \\
+-4     & TRUE          & FALSE \\
++2     & TRUE          & TRUE \\
+-8     & FALSE         & TRUE \\\hline
+\end{tabular}
+\end{center}
+\end{table}
 
 % ^*: the result is incorrect
 % ^?: the result is unknown
@@ -49,29 +73,34 @@ bounds~\footnote{This was confirmed in a private communication with
 \multirow{2}{*}{Program} & \multicolumn{2}{c|}{Our Tool} &
 Ultimate Automizer & Ultimate Kojak & CMBC-4.5 & Blast 2.7.2 \\ \cline{2-7}
 & Iter. & Time  & Time  & Time  & Time  & Time \\ \hline
-Ackermann01\_true.c      & 1 & 5.85                  & \timeout         &                    & 850.016               & \exception \\
+Ackermann01\_true.c      & 1 & 5.85                  & \timeout         & \timeout           & 850                   & \exception \\
 Ackermann02\_false.c     & 4 & 54.625                & 4.151            & \timeout           & 1.036                 & \exception \\
-Ackermann03\_true.c      &   & \timeout              & \timeout         &                    & 850.022               & \exception \\
-Ackermann04\_true.c      &   & \timeout              & \timeout         &                    & 850.03                & \exception \\
-Addition01\_true.c       & 2 & 13.71                 & \timeout         &                    & 850.033               & \exception \\
+Ackermann03\_true.c      &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
+Ackermann04\_true.c      &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
+Addition01\_true.c       & 2 & 13.71                 & \timeout         & \timeout           & 850                   & \exception \\
 Addition02\_false.c      & 2 & 9.341                 & 3.745            & 3.523              & 0.26                  & 3.97 \\
-Addition03\_false.c      &   & \timeout              & \timeout         &                    & 850.018\wrongmark     & \exception \\
-EvenOdd01\_true.c        &   & 2.763\wrongmark       & \timeout         &                    & 1.293                 & 0.08\wrongmark \\
+Addition03\_false.c      &   & \timeout              & \timeout         & \timeout           & 850\wrongmark         & \exception \\
+EvenOdd01\_true.c        &   & 2.763\wrongmark       & \timeout         & \timeout           & 1.293                 & 0.08\wrongmark \\
 EvenOdd03\_false.c       &   & 2.757                 & 3.163            & 3.196              & 0.116                 & 0.08 \\
-Fibonacci01\_true.c      & 6 & 300.045               & \timeout         &                    & 850.018               & \exception \\
+Fibonacci01\_true.c      & 6 & 300.045               & \timeout         & \timeout           & 850                   & \exception \\
 Fibonacci02\_true.c      &   & \timeout              & 60.713           & 72.138\unknownmark & 0.834                 & \exception \\
-Fibonacci03\_true.c      &   & \timeout              & \timeout         &                    & 850.021               & \exception \\
+Fibonacci03\_true.c      &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
 Fibonacci04\_false.c     & 5 & 103.496               & 7.438            & 8.155              & 0.409                 & \exception \\
 Fibonacci05\_false.c     &   & \timeout              & 128.911          & 23.174             & 557.18                & \exception \\
-gcd01\_true.c            & 1 & 5.843                 & 5.369            & 7.26               & 850.016               & 16.074\wrongmark \\
-gcd02\_true.c            &   & \exception            & \timeout         &                    & 850.034               & \exception \\
+gcd01\_true.c            & 1 & 5.843                 & 5.369            & 7.26               & 850                   & 16.074\wrongmark \\
+gcd02\_true.c            &   & \exception            & \timeout         & \timeout           & 850                   & \exception \\
 McCarthy91\_false.c      & 1 & 7.255                 & 3.152            & 3.09               & 0.258                 & 0.086 \\
-McCarthy91\_true.c       & 2 & 11.982                & 81.32            & 6.783              & 850.018               & 16.237\wrongmark \\
-MultCommutative\_true.c  &   & \exception            & \timeout         &                    & 850.036               & \exception \\
-Primes\_true.c           &   & \exception            & \timeout         &                    & 850.035               & \exception \\
-recHanoi01\_true.c       &   & \timeout              & \timeout         &                    & 850.035               & \exception \\
-recHanoi02\_true.c       & 1 & 5.172                 & \timeout         &                    & 0.749                 & 1.897\wrongmark \\
-recHanoi03\_true.c*      &   & \exception            & \timeout         &                    & 0.713                 & \exception \\
+McCarthy91\_true.c       & 2 & 11.982                & 81.32            & 6.783              & 850                   & 16.237\wrongmark \\
+MultCommutative\_true.c  &   & \exception            & \timeout         & \timeout           & 850                   & \exception \\
+Primes\_true.c           &   & \exception            & \timeout         & \timeout           & 850                   & \exception \\
+recHanoi01\_true.c       &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
+recHanoi02\_true.c       & 1 & 5.172                 & \timeout         & \timeout           & 0.749                 & 1.897\wrongmark \\
+recHanoi03\_true.c*      &   & \exception            & \timeout         & \timeout           & 0.713                 & \exception \\
+\hline\hline
+correct results          & \multicolumn{2}{c|}{11}   & 9                & 7                  & 22 (10)               & 3 \\ 
+false negative           & \multicolumn{2}{c|}{0}    & 0                & 0                  & 1 (0)                 & 0 \\
+false positive           & \multicolumn{2}{c|}{1}    & 0                & 0                  & 0 (0)                 & 4 \\
+score                    & \multicolumn{2}{c|}{13}   & 12               & 9                  & 30 (14)               & -13 \\
 \hline
 \end{tabular}
 \end{table}
