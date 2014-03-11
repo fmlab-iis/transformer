@@ -1,5 +1,15 @@
-Let $G^- = \langle V^-, E^-, \textmd{cmd}^- \rangle$ be a CFG obtained from Section~\ref{subsection:under-approximation} and $L_f=\{({\ell_s^i}^{(f)},{\ell_e^i}^{(f)}):\mbox{ the pair of locations }{\ell_s^i}^{(f)}\mbox{ and }{\ell_e^i}^{(f)}\mbox{ in }E\mbox{ for some }i\}$ the set of entry and exit locations of the call to the function $f$.
+Let $G^- = \langle V^-, E^-, \textmd{cmd}^- \rangle$ be a CFG obtained from Section~\ref{subsection:under-approximation} and $L_\mathtt{f}=\{({\ell_s^i}^{(\mathtt{f})},{\ell_e^i}^{(\mathtt{f})}):\mbox{ the pair of locations }{\ell_s^i}^{(\mathtt{f})}\mbox{ and }{\ell_e^i}^{(\mathtt{f})}\mbox{ in }E\mbox{ for some }i\}$ the set of entry and exit locations of the call to the function $\mathtt{f}$.
 
 We give $G^-$ to a program checker. A error trace returned from the checker indicates that some assertion in the program to be verified can be violated, because $G^-$ under-approximates the behavior of $G$. Otherwise, the checker returns an inductive invariant $\Pi (G^-, \mathtt{true})= \{ I_\ell : \ell \in V^-
-\}$ for $G^-$. Let $P_f$ be the set of all variables appearing in $G^-$ except the set of formal parameter and return variables of $f$.
-Then for all functions $f$ with $L_f\neq \emptyset$, we update the summary of $f$ to $\bigwedge_{(\ell,\ell')\in L_f} \exists P_f. I_\ell \implies \exists P_f.I_{\ell'}$.
+\}$ for $G^-$. Let $P_\mathtt{f}$ be the set of all variables appearing in $G^-$ except the set of formal parameter and return variables of $\mathtt{f}$.
+Then for all functions $\mathtt{f}$ with $L_\mathtt{f}\neq \emptyset$, we update $S[\mathtt{f}]$, the summary of $\mathtt{f}$, to $\bigwedge_{(\ell,\ell')\in L_\mathtt{f}} \forall P_\mathtt{f}. (I_\ell \implies I_{\ell'})$. 
+For functions $\mathtt{f}$ with $L_\mathtt{f}= \emptyset$, we let $S[\mathtt{f}]=\top$.
+
+\begin{proposition}
+  Let $G_{\mathtt{f}}$ be the control flow graph for the function
+  $\mathtt{f}$, $S[\bullet]$ be the summary computed using the procedure in this subsection.
+  If $\assert{\top}\ \mathtt{\overline{ret}^f} :=
+    \mathtt{f} (\overline{\mathtt{u}})\ \assert{S[\mathtt{f}]}$ for every
+  function $\mathtt{f}$, then $\assert{\top}\ \mathtt{\overline{ret}^f} :=
+  \mathtt{f} (\overline{\mathtt{u}})\ \assert{I_\ell \implies I_{\ell'}}$ for all $(\ell,\ell')$ in $L_\mathtt{f}$.
+\end{proposition}
