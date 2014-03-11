@@ -76,3 +76,28 @@ above. Consider another control flow graph $\tilde{G}^S_{\mathtt{f}} =
   $\mathtt{g}$, then $\assert{\top}\ \mathtt{\overline{ret}^f} :=
   \mathtt{f} (\overline{\mathtt{u}})\ \assert{S[\mathtt{f}]}$.
 \end{corollary}
+
+\begin{algorithm}
+  \KwIn{$G = \langle V, E, \textmd{cmd} \rangle$ : a control flow
+    graph; $S[\bullet]$ : an array of function summaries}
+  \KwOut{$\top$ if all function summaries are valid; $\bot$ otherwise}
+  \ForEach{function $\mathtt{g}$}
+  {
+    \tcp{$S[\mathtt{g}]$ is of the form $\bigwedge I_j \implies I_{j'}$}
+    \lIf{$I_j$ contains any of the return variables
+      $\mathtt{\overline{ret}^g}$}
+    {
+      \Return $\bot$\;
+    }
+    \lElse{
+      \lIf{$\textsc{BasicChecker} (\tilde{G}^S_{\mathtt{g}}) \neq
+        \mathit{Pass}$}
+      {
+        \Return $\bot$\;
+      }
+    }
+  }
+  \Return $\top$\;
+  \caption{$\textmd{CheckSummary} (G, S)$}
+  \label{algorithm:check-summary}
+\end{algorithm}
