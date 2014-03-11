@@ -34,3 +34,63 @@ all assertions in $G$ are satisfied.
 \label{subsection:checking-summary}
 \input{property-proving}
 
+We are ready to sketch the proof of Theorem~\ref{theorem:soundness}. 
+Assume Algorithm~\ref{algorithm:overview} returns $\mathit{Pass} (\Pi
+(G^-_k, \mathtt{true}))$ and $S$ on the input control flow graph $G =
+\langle V, E, \textmd{cmd} \rangle$. Let $G^-_k = \langle V_k, E_k,
+\textmd{cmd}_k \rangle$ and $\Pi (G^-_k, \mathtt{true}) = \{ I_{\ell}
+: \ell \in V_k \}$. By the definition of inductive invariants, we have
+$\assert{I_{\ell}}\ \textmd{cmd}_k (\ell, \ell')\ \assert{I_{\ell'}}$
+for every $(\ell, \ell') \in E_k$. Moreover, $V \subseteq V_k$ since
+$G^-_k$ is obtained by unwinding $G$. Define 
+$\Gamma (G, \mathtt{true}) = \{ I_{\ell} \in \Pi (G^-_k,
+\mathtt{true}) : \ell \in V \}$. We claim $\Gamma (G, \mathtt{true})$
+is in fact an inductive invariant for $G$. 
+
+Let $\hat{E} = \{ (\ell, \ell') \in E : \textmd{cmd} (\ell, \ell') =
+\overline{\mathtt{x}} := \mathtt{f} (\overline{E}) \}$. We have
+$\textmd{cmd} (\ell, \ell') = \textmd{cmd}_k (\ell, \ell')$ for every
+$(\ell, \ell') \in E \setminus \hat{E}$. Thus $\assert{I_{\ell}}\
+\textmd{cmd} (\ell, \ell')\ \assert{I_{\ell'}}$ for every $(\ell,
+\ell') \in E \setminus \hat{E}$ by the definition of $\Gamma (G,
+\mathtt{true})$ and the inductiveness of $\Pi (G^-_k,
+\mathtt{true})$. It suffices to show that
+\begin{equation*}
+  \assert{I_{\ell}}\
+  \overline{\mathtt{x}} := \mathtt{f} (\overline{E})
+  \ \assert{I_{\ell'}}
+\end{equation*}
+for every $\textmd{cmd} (\ell, \ell') = \overline{\mathtt{x}} :=
+\mathtt{f} (\overline{E})$. Recall that $\assert{\top}\
+\mathtt{\overline{ret}^f} := \mathtt{f} (\overline{\mathtt{u}})\
+\assert{S[f]}$ by Corollary~\ref{corollary:check-summary}. We morevoer
+have $\assert{\top}\ \overline{\mathtt{x}} := \mathtt{f}
+(\overline{E})\ \assert{S[f][\overline{\mathtt{u}} \mapsto \overline{E},
+\mathtt{\overline{ret}^f} \mapsto \overline{\mathtt{x}}]}$, 
+$S[f][\overline{\mathtt{u}} \mapsto \overline{E},
+\mathtt{\overline{ret}^f} \mapsto \overline{\mathtt{x}}] \implies
+(I_{\ell} \implies I_{\ell'})$, and $\assert{I_{\ell}}\
+\overline{\mathtt{x}} := \mathtt{f} (\overline{E})\
+\assert{I_{\ell}}$ (Proposition~\todo{numbers}). Hence
+\begin{prooftree}
+  \AxiomC{$\assert{I_{\ell}}\
+    \overline{\mathtt{x}} := \mathtt{f} (\overline{E})\
+    \assert{I_{\ell}}$}
+
+    \AxiomC{$I_{\ell} \implies \top$}
+    \noLine
+    \UnaryInfC{$\assert{\top}\ \overline{\mathtt{x}} := \mathtt{f}
+      (\overline{E})\ \assert{S[f][\overline{\mathtt{u}} \mapsto \overline{E},
+        \mathtt{\overline{ret}^f} \mapsto \overline{\mathtt{x}}]}$}
+    \noLine
+    \UnaryInfC{$S[f][\overline{\mathtt{u}} \mapsto \overline{E},
+      \mathtt{\overline{ret}^f} \mapsto \overline{\mathtt{x}}] \implies
+      (I_{\ell} \implies I_{\ell'})$}
+    
+  \UnaryInfC{$\assert{I_{\ell}}\
+    \overline{\mathtt{x}} := \mathtt{f} (\overline{E})\
+    \assert{I_{\ell} \implies I_{\ell'}}$}
+  \BinaryInfC{$\assert{I_{\ell}}\
+    \overline{\mathtt{x}} := \mathtt{f} (\overline{E})\
+    \assert{I_{\ell'}}$}
+\end{prooftree}
