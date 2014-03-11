@@ -1,4 +1,83 @@
-For the evaluation of our work, we used all 23 benchmarks, 16 bug-free and 7 buggy C programs, from the \textbf{recursive} category of the 2014 Competition on Software Verification~\cite{svcomp14}.
-We compared our work with four participants of \cite{svcomp14}, including Blast~\cite{BeyerHJM07}, CBMC~\cite{}, Ultimate Automizer~\cite{HeizmannCDEHLNSP13}, and Ultimate Kojak~\cite{Kojak}. The latter three tools are the top three winners of the category this year.
-Each tool was executed and evaluated under the same configuration and time limits(900 sec.) used in \cite{svcomp14}.
-All experiments were conducted on a virtual machine with one 2.93GHz CPU and 4GB memory running 64-bit Ubuntu 12.04 LTS. The VM runs on a host machine with an Intel Core i7-870 Quad-Core CPU, 8GB memory, and 64-bit Win 7.
+\newcommand{\safe}{S}
+\newcommand{\unsafe}{U}
+\newcommand{\unknown}{?}
+\newcommand{\exception}{E}
+\newcommand{\timeout}{T.O.}
+\newcommand{\unknownmark}{\ensuremath{^?}}
+\newcommand{\wrongmark}{\ensuremath{^!}}
+
+A prototype of our approach has been implemented with
+\textsc{CPAChecker} as the backend intra-procedural analyzer.
+We compared our approach based on experiments with four participants,
+namely Blast~\cite{BeyerHJM07}, CBMC~\cite{}, Ultimate
+Automizer~\cite{HeizmannCDEHLNSP13}, and Ultimate Kojak~\cite{Kojak},
+of the 2014 Competition on Software Verification (SV-COMP
+2014)~\cite{svcomp14}.
+The latter three tools are the top three winners of the
+\textbf{recursive} category in the 2014 competition.
+In our experiments, the programs under verification, including 16
+bug-free and 7 buggy C programs, were selected from the
+\textbf{recursive} category of SV-COMP 2014.
+The experiments were performed on a virtual machine with one 2.93-GHz 
+CPU and 4 GB of memory running 64-bit Ubuntu 12.04 LTS.
+The virtual machine ran on a host with an Intel Core i7-870 Quad-Core
+CPU and 8 GB of memory running 64-bit Windows 7.
+The timeout of a verification task is 900 seconds.
+
+The experimental results are summarized in
+Table~\ref{table:experiments} where Iter. is \todo{?}, Time is in
+seconds, the superscript $!$ or $?$ indicates that the returned result is
+respectively incorrect or unknown, E indicates exceptions, and
+T.O. indicates timeouts.
+\todo{Summarize the results. (The table is still incomplete.)}
+
+CBMC reports safe if no bug is found within a given set of
+bounds~\footnote{This was confirmed in a private communication with
+  the developers of CBMC.}.
+
+% ^*: the result is incorrect
+% ^?: the result is unknown
+\begin{table}
+\caption{Experimental results of verifying programs in the
+  \textbf{recursive} category of the 2014 Competition on Software
+  Verification. The superscript $!$ or $?$ indicates that the
+  returned result is respectively incorrect or unknown. E
+  indicates exceptions while T.O. indicates
+  timeouts.\label{table:experiments}}
+\begin{tabular}{|c|cc|c|c|c|c|}
+\hline
+\multirow{2}{*}{Program} & \multicolumn{2}{c|}{Our Tool} &
+Ultimate Automizer & Ultimate Kojak & CMBC-4.5 & Blast 2.7.2 \\ \cline{2-7}
+& Iter. & Time  & Time  & Time  & Time  & Time \\ \hline
+Ackermann01\_true.c      & 1 & 5.85                  & \timeout         &                    & 850.016               & \exception \\
+Ackermann02\_false.c     & 4 & 54.625                & 4.151            & \timeout           & 1.036                 & \exception \\
+Ackermann03\_true.c      &   & \timeout              & \timeout         &                    & 850.022               & \exception \\
+Ackermann04\_true.c      &   & \timeout              & \timeout         &                    & 850.03                & \exception \\
+Addition01\_true.c       & 2 & 13.71                 & \timeout         &                    & 850.033               & \exception \\
+Addition02\_false.c      & 2 & 9.341                 & 3.745            & 3.523              & 0.26                  & 3.97 \\
+Addition03\_false.c      &   & \timeout              & \timeout         &                    & 850.018\wrongmark     & \exception \\
+EvenOdd01\_true.c        &   & 2.763\wrongmark       & \timeout         &                    & 1.293                 & 0.08\wrongmark \\
+EvenOdd03\_false.c       &   & 2.757                 & 3.163            & 3.196              & 0.116                 & 0.08 \\
+Fibonacci01\_true.c      & 6 & 300.045               & \timeout         &                    & 850.018               & \exception \\
+Fibonacci02\_true.c      &   & \timeout              & 60.713           & 72.138\unknownmark & 0.834                 & \exception \\
+Fibonacci03\_true.c      &   & \timeout              & \timeout         &                    & 850.021               & \exception \\
+Fibonacci04\_false.c     & 5 & 103.496               & 7.438            & 8.155              & 0.409                 & \exception \\
+Fibonacci05\_false.c     &   & \timeout              & 128.911          & 23.174             & 557.18                & \exception \\
+gcd01\_true.c            & 1 & 5.843                 & 5.369            & 7.26               & 850.016               & 16.074\wrongmark \\
+gcd02\_true.c            &   & \exception            & \timeout         &                    & 850.034               & \exception \\
+McCarthy91\_false.c      & 1 & 7.255                 & 3.152            & 3.09               & 0.258                 & 0.086 \\
+McCarthy91\_true.c       & 2 & 11.982                & 81.32            & 6.783              & 850.018               & 16.237\wrongmark \\
+MultCommutative\_true.c  &   & \exception            & \timeout         &                    & 850.036               & \exception \\
+Primes\_true.c           &   & \exception            & \timeout         &                    & 850.035               & \exception \\
+recHanoi01\_true.c       &   & \timeout              & \timeout         &                    & 850.035               & \exception \\
+recHanoi02\_true.c       & 1 & 5.172                 & \timeout         &                    & 0.749                 & 1.897\wrongmark \\
+recHanoi03\_true.c*      &   & \exception            & \timeout         &                    & 0.713                 & \exception \\
+\hline
+\end{tabular}
+\end{table}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "draft"
+%%% LaTeX-command: "latex -shell-escape"
+%%% End: 
