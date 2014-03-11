@@ -133,7 +133,8 @@ the inductive invariant $\Pi (G^-_k, I_0)$
 
 After function summaries are updated, Algorithm~\ref{algorithm:overview} 
 verifies whether function summaries correctly specify computation of
-functions. The algorithm checks this by constructing a control flow
+functions by invoking $\mathit{CheckSummary} (G, S)$. The algorithm
+$\mathit{CheckSummary} (G, S)$ checks this by constructing a control flow 
 graph $\tilde{G}_{\mathtt{f}}$ with additional assertions for each
 function $\mathtt{f}$, and verifying $\tilde{G}_{\mathtt{f}}$ with
 \textsc{BasicChecker}. The control flow graph
