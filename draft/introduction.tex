@@ -18,6 +18,21 @@ Ultimiate Kojak~\cite{Kojak}
 RHS~\cite{RepsHS95} (say we can achieve the same by ...)
 SLAM~\cite{BallR01}
 
+Difference compared with Whale
+
+In general, Whale tries to extend Lazy Abstraction to verify interprocedual program.
+It mainly constructs an iARG with path conditions that can encode function calls and check for reachability of bug.
+Also it introduces an extended covering relation over summaries of function calls to deal with recursion.
+Our work, however, uses bounded times of unwinding to construct paths across functions,
+and we find reasonable summaries for recursive functions when proving safety of program.
+
+For guessing summaries, both Whale and our work use under-approximation of function calls.
+In Whale, the under-approximation of a function call is constructed through exploring paths without function call in the called function.
+In our work, the function call is unwinded and transformed, and the exploration is achieved by the program analyzer we used.
+With our method, we can create more precise under-approximation by unwinding more times before tranforming.
+
+For proving summaries, Whale and our work apply the Hoare rule of recursion. Whale defines the covering relation between summaries upon Hoare rule of consequence for proving. Our work, in other way, directly proves by the used program analyzer.
+
 Intra-procedure analyzers
 UFO~\cite{AlbarghouthiLGC12}
 Blast~\cite{BeyerHJM07}
