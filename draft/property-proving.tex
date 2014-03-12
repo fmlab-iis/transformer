@@ -23,7 +23,7 @@ $\hat{G}_{\mathtt{f}}^S = \langle V, E \hat{\textmd{cmd}}
         \mathtt{\overline{ret}^f} := \overline{F}
         &
         \textmd{ if } \textmd{cmd} (\ell, \ell') = \mathtt{return\ }
-        \hat{F}
+        \overline{F}
       \end{array}
     \right.
   \end{array}
@@ -35,10 +35,8 @@ summary. Using the proof rule for recursive functions, we have the
 following proposition:
 \begin{proposition}
   Let $G_{\mathtt{f}}$ be the control flow graph for the function
-  $\mathtt{f}$, $S[\bullet]$ an array of logic formulae over the formal
-  parameters and return variables of each function, and 
-  $P, Q$ logic formula with free variables over program variables of
-  $G_{\mathtt{f}}$. If $\assert{\top}\
+  $\mathtt{f}$, and $S[\bullet]$ an array of logic formulae over the formal
+  parameters and return variables of each function. If $\assert{\top}\
   \hat{G}_{\mathtt{g}}^S\ \assert{S[\mathtt{g}]}$ for every
   function $\mathtt{g}$, then $\assert{\top}\ \mathtt{\overline{ret}^f} :=
   \mathtt{f} (\overline{\mathtt{u}})\ \assert{S[\mathtt{f}]}$.
@@ -68,10 +66,8 @@ above. Consider another control flow graph $\tilde{G}^S_{\mathtt{f}} =
 
 \begin{corollary}
   Let $G_{\mathtt{f}}$ be the control flow graph for the function
-  $\mathtt{f}$, $S[\bullet]$ an array of logic formulae over the formal
-  parameters and return variables of each function, and 
-  $P, Q$ logic formula with free variables over program variables of
-  $G_{\mathtt{f}}$. If $\textsc{BasicChecker}
+  $\mathtt{f}$, and $S[\bullet]$ an array of logic formulae over the formal
+  parameters and return variables of each function. If $\textsc{BasicChecker}
   (\tilde{G}^S_{\mathtt{g}})$ returns $\mathit{Pass}$ for every function
   $\mathtt{g}$, then $\assert{\top}\ \mathtt{\overline{ret}^f} :=
   \mathtt{f} (\overline{\mathtt{u}})\ \assert{S[\mathtt{f}]}$.
@@ -84,18 +80,10 @@ above. Consider another control flow graph $\tilde{G}^S_{\mathtt{f}} =
   \KwOut{$\top$ if all function summaries are valid; $\bot$ otherwise}
   \ForEach{function $\mathtt{g}$}
   {
-    \tcp{$S[\mathtt{g}]$ is of the form $\bigwedge I_j \implies I_{j'}$}
-    \lIf{$I_j$ contains any of the return variables
-      $\mathtt{\overline{ret}^g}$}
+    \lIf{$\textsc{BasicChecker} (\tilde{G}^S_{\mathtt{g}}) \neq
+      \mathit{Pass}$}
     {
       \Return $\bot$\;
-    }
-    \lElse{
-      \lIf{$\textsc{BasicChecker} (\tilde{G}^S_{\mathtt{g}}) \neq
-        \mathit{Pass}$}
-      {
-        \Return $\bot$\;
-      }
     }
   }
   \Return $\top$\;
