@@ -45,6 +45,12 @@ can verify more programs and obtain a higher score.
 The scores of our tool and Ultimate Automizer are very close mainly
 because of a false positive produced by our tool.
 \todo{Could we explain the false positive?}
+The only false positive came from the spurious error trace reported
+by CPAChecker because modulo operation is approximated under our 
+configuration for CPAChecker. If results of the two tasks with modulo
+operation, EvenOdd\_true.c and EvenOdd03\_false.c, are excluded, we
+can obtain a score of 16.
+
 \todo{Could we explain the exceptions that we have?}
 Although CBMC got the highest score, several results returned by CBMC
 may be doubtful because CBMC always reports safe if no bug is found
@@ -111,7 +117,7 @@ MultCommutative\_true.c  &   & \exception            & \timeout         & \timeo
 Primes\_true.c           &   & \exception            & \timeout         & \timeout           & 850                   & \exception \\
 recHanoi01\_true.c       &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
 recHanoi02\_true.c       & 1 & 5.172                 & \timeout         & \timeout           & 0.749                 & 1.897\wrongmark \\
-recHanoi03\_true.c*      &   & \exception            & \timeout         & \timeout           & 0.713                 & \exception \\
+recHanoi03\_true.c       &   & \exception            & \timeout         & \timeout           & 0.713                 & \exception \\
 \hline\hline
 correct results          & \multicolumn{2}{c|}{11}   & 9                & 7                  & 22 (10)               & 3 \\ 
 false negative           & \multicolumn{2}{c|}{0}    & 0                & 0                  & 1 (0)                 & 0 \\
