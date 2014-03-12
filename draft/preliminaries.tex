@@ -40,26 +40,13 @@ side are first evaluated and then assign to respective variables.
 The $\mathtt{return}$ command accepts several expressions as arguments.
 Together with simultaneous assignments, functions can have several
 return values. 
-The assumption command excludes all computation not satisfying the given
-expression. The assert command terminates computation
-abnormally if the given expression is not satisfied. For
-instance, the following command always terminates normally:
-\begin{equation*}
-  \mathtt{assume\ false};\ \ \mathtt{assert\ false}
-\end{equation*}
-If a computation does not terminate with a $\mathtt{return}$ command, its semantics is the same to a infinite computation without returning any value.
-\todo{no computation means terminate normally?}
-
-
-
 
 A function $\fun{f}$ is represented as a \emph{control flow graph (CFG)} $G_\fun{f} = \langle
-V, E,\textmd{cmd},\bar{u}, \bar{r},  \ell_s,  \ell_e\rangle$ where the nodes in $V$ are \emph{program locations},
+V, E,\textmd{cmd},\overline{u}, \overline{r},  \ell_s,  \ell_e\rangle$ where the nodes in $V$ are \emph{program locations},
 each edge $(\ell, \ell')$ in $E \subseteq V \times V$ is labeled by a
-command denoted by $\textmd{cmd} (\ell, \ell')$, $\bar{u}$ and $\bar{r}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $\ell_s,  \ell_e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The subscripted name in $G_\fun{f}$ denotes the CFG corresponds to the function $\fun{f}$.
-A $\mathtt{return}\ E_1, \ldots E_n$ command assigns the evaluations of $E_i$ to the $i$-th return variables of the corresponding CFG.
-The special $\mathtt{main()}$ function specifies where a program starts.
-For a sequence of variables $\bar{x}$, we use $x_i$ to denote its $i$-th element. To simplify presentation, we assume the functions in the programs uses different sets of local variables and the values of formal parameters never change in a function. Notice that this will not affect the expressive of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume there is no global variables because this can be simulated by allowing simultaneous assignment to return variables. 
+command denoted by $\textmd{cmd} (\ell, \ell')$, $\overline{u}$ and $\overline{r}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $\ell_s,  \ell_e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The subscripted name in $G_\fun{f}$ denotes the CFG corresponds to the function $\fun{f}$.
+The special $\mathtt{main}$ function specifies where a program starts.
+For a sequence of variables $\overline{x}$, we use $x_i$ to denote its $i$-th element. To simplify presentation, we assume the functions in the programs uses different sets variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there exists no global variables because this can be simulated by allowing simultaneous assignment to return variables. 
 
 Figure~\ref{figure:mccarthy91} shows control flow graphs for the
 McCarthy 91 program. The $\mathtt{main}$ function assumes the
@@ -67,10 +54,10 @@ variable $\mathtt{n}$ is non-negative. It then checks if the return
 value of $\mathtt{mc91(n)}$ is no less than 90
 (Figure~\ref{figure:mccarthy91:main}). The $\mathtt{mc91}$ function
 branches on whether the variable $\mathtt{m}$ is greater than 100. If
-so, the return variable $r^\fun{mc91}$ is set to $\mathtt{m} -
+so, the it returns the value $\mathtt{m} -
 10$. Otherwise, 
 $\mathtt{mc91(m)}$ assigns the return value of $\mathtt{mc91(m + 11)}$
-to $\mathtt{s}$, and updates $r^\fun{mc91}$ by calling
+to $\mathtt{s}$, and updates its own return value by calling
 $\mathtt{mc91(s)}$ recursively
 (Figure~\ref{figure:mccarthy91:mc91}). Observe that the 
 $\mathtt{assume}$ command models a conditional branch in the
@@ -109,12 +96,12 @@ figure. Loops can be modeled similarly.
   \begin{subfigure}[b]{.6\textwidth}
     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (0) at ( 0,  0) {$\ell_s$}; %[label=above:$\mathtt{mc91(n)}$]
-      \node[node] (1) at (-1, -2) {$\ell_1$};
-      \node[node] (2) at ( 1, -0.8) {$\ell_2$};
-      \node[node] (3) at ( 1, -2) {$\ell_3$};
-      \node[node] (4) at ( 1, -3.2) {$\ell_4$};
-      \node[node] (5) at ( 0, -4) {$\ell_e$};
+      \node[node] (0) at ( 0,  0) {$\ell'_s$}; %[label=above:$\mathtt{mc91(n)}$]
+      \node[node] (1) at (-1, -2) {$\ell'_1$};
+      \node[node] (2) at ( 1, -0.8) {$\ell'_2$};
+      \node[node] (3) at ( 1, -2) {$\ell'_3$};
+      \node[node] (4) at ( 1, -3.2) {$\ell'_4$};
+      \node[node] (5) at ( 0, -4) {$\ell'_e$};
 
       \path
         (0) edge [bend right=30]
@@ -133,12 +120,12 @@ figure. Loops can be modeled similarly.
     \caption{$\mathtt{mc91}$}
     \label{figure:mccarthy91:mc91}
   \end{subfigure}
-  \caption{McCarthy 91. The function $\mathtt{mc91}$ has formal parameter $m$ and return variable $r^\mathtt{mc91}$}
+  \caption{McCarthy 91}
   \label{figure:mccarthy91}
 \end{figure}
 
 %\todo{definitions of accessible variables, program states}
-Let $G = \langle V, E ,\textmd{cmd},\bar{u}, \bar{r},  \ell_s,  \ell_e\rangle$ be a CFG.
+Let $G = \langle V, E ,\textmd{cmd},\overline{u}, \overline{r},  \ell_s,  \ell_e\rangle$ be a CFG.
 An \emph{inductive invariant} $\Pi (G, I_0) = \{ I_\ell : \ell \in V
 \}$ for $G$ from $I_0$ is a set of first-order logic formulae such
 that $I_{\ell_s} = I_0$, and for every $(\ell, \ell') \in E$
@@ -158,7 +145,7 @@ Let $T$ be a program fragment (it can be either a function represented as a CFG 
 are logic formulae. A \emph{Hoare triple} $\assert{P} T \assert{Q}$
 specifies that the program fragment $T$ will reach a program state satisfying
 $Q$ provided that $T$ starts with a program state satisfying $P$ and
-terminates. We use the standard proof rules for weak correctness with
+terminates. The formula $P$ is called the \emph{precondition} and $Q$ is the \emph{postcondition} of the Hoare triple. We use the standard proof rules for weak correctness with
 two additional rules for the assumption and assertion commands:
 \begin{center}
   \AxiomC{$P \wedge E \implies Q$}
@@ -167,11 +154,17 @@ two additional rules for the assumption and assertion commands:
   \DisplayProof
   ~
   \AxiomC{$P \implies E$}
-  \AxiomC{$E \implies Q$}
   \LeftLabel{Assert}
-  \BinaryInfC{$\assert{P} \mathtt{assert\ } E \assert{Q}$}
+  \UnaryInfC{$\assert{P} \mathtt{assert\ } E \assert{P}$}
   \DisplayProof
 \end{center}
+The assumption command excludes all computation not satisfying the given
+expression. The assert command terminates computation
+abnormally if the given expression is not implied by the precondition. No postcondition can be guaranteed in such a case.
+%For instance, the following command always terminates normally:
+%\begin{equation*}
+% \mathtt{assume\ false};\ \ \mathtt{assert\ false}
+%\end{equation*}
 Observe
 that an inductive invariant $\Pi (G, I_0)$ establishes 
 $\assert{I_0} G \assert{I_{\ell_e}}$.
@@ -181,7 +174,7 @@ checks if all assertions (specified by the $\mathtt{assert}$ command)
 are satisfied. One way to implement program analyzers is to compute
 inductive invariants. 
 \begin{proposition}
-Let $G = \langle V, E,\textmd{cmd},\bar{u}, \bar{r},  \ell_s,  \ell_e \rangle$ be a control flow
+Let $G = \langle V, E,\textmd{cmd},\overline{u}, \overline{r},  \ell_s,  \ell_e \rangle$ be a control flow
 graph and $\Pi (G, \mathtt{true})$ an inductive invariant for $G$ from
 $\mathtt{true}$. If $\models I_{\ell} \implies B_{\ell}$ for every
 edge $(\ell, \ell') \in E$ with $\textmd{cmd} (\ell, \ell') =
@@ -205,5 +198,5 @@ recursion-free programs by computing inductive invariants, and reports
 an error trace when an assertion fails. Several recursion-free
 inductive program checkers are available such as \textsc{CPAChecker},
 \textsc{Blast}, \textsc{UFO}. Our goal is to check
-recursive programs by using a recursion-free inductive program checker
+recursive programs by using a recursion-free inductive program analyzer
 as a black box. 

@@ -1,21 +1,21 @@
 
-Let \textsc{BasicChecker} denote a recursion-free inductive program
-checker and $G = \langle V, E,\textmd{cmd},\bar{u}, \bar{r},  \ell_s,  \ell_e \rangle$ a control flow graph. Since
-non-recursive functions can be replaced by their control flow graphs
-after proper variable renaming, we assume that $G$ only contains the
-$\mathtt{main}$ and recursive functions. If $G$ does not contain
-recursive functions, \textsc{BasicChecker} is able to check $G$ by
+Let \textsc{BasicAnalyzer} denote a recursion-free inductive program
+analyzer and a program $P=\{\mbox{CFG }G_\fun{main}\}\cup\{\mbox{CFG } G_\fun{f} : \fun{f}\mbox{ is a function}\}$ consists of the CFGs of the $\fun{main}$ function and functions that may invoked (transitively) from $\fun{main}$.
+Since non-recursive functions can be replaced by their control flow graphs
+after proper variable renaming, we assume that $P$ only contains the
+$\mathtt{main}$ and recursive functions. If $P$ does not contain
+recursive functions, \textsc{BasicAnalyzer} is able to check $P$ by
 computing inductive invariants.
 
-When $G$ contains recursive functions, we transform $G$ into a
+When $P$ contains recursive functions, we transform $G_\fun{main}$ into a
 recursion-free program $G^-$. The program $G^-$
-under-approximates the computation of $G$. That is, every computation
-of $G^-$ is also a computation of $G$. If
-\textsc{BasicChecker} finds an error trace in $G^-$, our
+under-approximates the computation of $G_\fun{main}$. That is, every computation
+of $G^-$ is also a computation of $G_\fun{main}$. If
+\textsc{BasicAnalyzer} finds an error trace in $G^-$, our
 algorithm terminates and reports the error trace. Otherwise,
-\textsc{BasicChecker} has computed an inductive invariant for the
+\textsc{BasicAnalyzer} has computed an inductive invariant for the
 recursive-free under-approximation $G^-$. Our algorithm
-updates function summaries of $G$ from the inductive invariant of
+updates function summaries of functions in $P$ from the inductive invariant of
 $G^-$. It then checks if every function summary
 over-approximations the computation of the corresponding function. If
 so, the algorithm terminates and reports that all assertions in $G$
@@ -24,29 +24,30 @@ computation, our algorithm unwind the recursive function and
 reiterates~(Algorithm~\ref{algorithm:overview}).
 
 \begin{algorithm}
-  \KwIn{$G = \langle V, E,\textmd{cmd},\bar{u}, \bar{r},  \ell_s,  \ell_e \rangle$ : a control flow graph}
+  \KwIn{A program $P=\{\mbox{CFG }G_\fun{main}\}\cup\{\mbox{CFG } G_\fun{f} : \fun{f}\mbox{ is a function}\}$}
+
   $k \leftarrow 1$\;
-  $G_0 \leftarrow G$\;
-  \lForEach{function $\mathtt{f}$ in $G$}
-  {
-    $S[\mathtt{f}] \leftarrow \mathtt{true}$\;
-  }
+  $G_0 \leftarrow G_\fun{main}$\;
+  %\lForEach{function $\fun{f}$ such that  $G_\fun{f} \in P$}
+  %{
+  %  $S[\mathtt{f}] \leftarrow \mathtt{true}$\;
+  %}
   \Repeat{$\textmd{complete?}$}
   {
     $k \leftarrow k + 1$\;
     $G_{k} \leftarrow $ unwind $G_{k-1}$\;
-    \Switch{\textsc{BasicChecker} ($G^-_k$)}
+    \Switch{\textsc{BasicAnalyzer} ($G^-_k$)}
     {
       \lCase{$\mathit{Pass(\Pi (G^-_k, \TT))}$:}
       {    
-        UpdateSummary ($G$, $S$, $\Pi (G^-_k, \TT)$)\;
+        S := UpdateSummary ($P$, $\Pi (G^-_k, \TT)$)\;
       }
-      \lCase{$\mathit{ErrorTrace} (\tau)$:}
+      \lCase{$\mathit{Error}$:}
       {
-        \Return $\mathit{ErrorTrace} (\tau)$\;
+        \Return $\mathit{Error}$\;
       }
     }
-    $\textmd{complete?} \leftarrow \textmd{CheckSummary} (G, S)$\;
+    $\textmd{complete?} \leftarrow \textmd{CheckSummary} (P, S)$\;
   }
   \Return $\mathit{Pass} (\Pi (G^-_k, \TT))$, $S$\;
   \caption{Overview}
@@ -61,7 +62,7 @@ every recursive function call command
 (Figure~\ref{figure:under-mccarthy91}). The substitution
 effectively blocks all recursive invocations. Any computation of
 $G^-_k$ hence is also a computation of $G_k$. Note that
-$G^-_k$ is recursion-free. \textsc{BasicChecker} is able to
+$G^-_k$ is recursion-free. \textsc{BasicAnalyzer} is able to
 check the under-approximation~$G^-_k$.
 
 \begin{figure}
@@ -102,7 +103,7 @@ check the under-approximation~$G^-_k$.
         (01) edge [bend right=30]
             node [left] {$
               \begin{array}{c}
-                \mathtt{ret^{mc91}_0 :=}\\
+                \mathtt{r^{mc91} :=}\\
                 \mathtt{m - 10}
               \end{array}$} (05)
         (02) edge 
@@ -110,22 +111,22 @@ check the under-approximation~$G^-_k$.
         (03) edge 
             node [right] {$\mathtt{assume\ false}$} (04)
         (04) edge [bend left=30]
-            node [right] {$\mathtt{ret^{mc91}_0 := t}$} (05)
+            node [right] {$\mathtt{r^{mc91} := t}$} (05)
 
         (05) edge [bend left=30]
-             node [below=8] {$\mathtt{r := ret^{mc91}_0}$} (2);
+             node [below=8] {$\mathtt{r := r^{mc91}}$} (2);
 
     \end{tikzpicture}
   \caption{Under Approximation of McCarthy 91}
   \label{figure:under-mccarthy91}
 \end{figure}
 
-When $\textsc{BasicChecker}$ does not find any error trace in the
+When $\textsc{BasicAnalyzer}$ does not find any error in the
 under-approximation $G^-_k$, it computes an inductive
 invariant $\Pi (G^-_k, \TT)$. Our algorithm then updates
-summaries of functions in $G$. For each function $\mathtt{f}$ with
+summaries of functions in $P$. For each function $\fun{f}$ with
 formal parameters $\mathtt{u_0}, \mathtt{u_1}, \ldots, \mathtt{u_l}$
-and return variables $\mathtt{r_0}, \mathtt{r_1}, \ldots, \mathtt{r_h}$, a \emph{function summary} for $\mathtt{f}$ is a
+and return variables $\mathtt{r_0}, \mathtt{r_1}, \ldots, \mathtt{r_h}$, a \emph{function summary} for $\fun{f}$ is a
 first-order conjunctive formula which specifies the relation between
 its formal parameters and return variables. The algorithm
 $\textmd{UpdateSummary}$ updates function summaries $S$ by inspecting
@@ -134,11 +135,11 @@ the inductive invariant $\Pi (G^-_k, \TT)$
 
 After function summaries are updated, Algorithm~\ref{algorithm:overview} 
 verifies whether function summaries correctly specify computations of
-functions by invoking $\mathit{CheckSummary} (G, S)$. The algorithm
-$\mathit{CheckSummary} (G, S)$ checks this by constructing a control flow 
+functions by invoking $\mathit{CheckSummary} (P, S)$. The algorithm
+$\mathit{CheckSummary} (P, S)$ checks this by constructing a control flow 
 graph $\tilde{G}_{\mathtt{f}}$ with additional assertions for each
 function $\mathtt{f}$, and verifying $\tilde{G}_{\mathtt{f}}$ with
-\textsc{BasicChecker}. The control flow graph
+\textsc{BasicAnalyzer}. The control flow graph
 $\tilde{G}_{\mathtt{f}}$ is obtained by substituting function
 summaries for function calls.
 \hide{
@@ -182,7 +183,7 @@ Figure~\ref{figure:check-summary-mccarthy91} shows the control flow
 graph $\tilde{G}_{\mathtt{mc91}}$ with the function summary
 $S_{\mathtt{mc91}} = \mathtt{not (m \geq 0)}$. Observe that
 $\tilde{G}_{\mathtt{mc91}}$ is
-recursion-free. \textsc{BasicChecker} is able to check the
+recursion-free. \textsc{BasicAnalyzer} is able to check
 $\tilde{G}_{\mathtt{mc91}}$. 
 
 \begin{figure}
@@ -203,7 +204,7 @@ $\tilde{G}_{\mathtt{mc91}}$.
             edge [bend left=30]
             node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
         (1) edge [bend right=30]
-            node [left] {$\mathtt{ret^{mc91}_0 := m - 10}$} (5)
+            node [left] {$\mathtt{r^{mc91} := m - 10}$} (5)
         (2) edge 
             node [right] {$
               \begin{array}{l}
@@ -218,7 +219,7 @@ $\tilde{G}_{\mathtt{mc91}}$.
               \mathtt{assume\ not(s \geq 0)}
               \end{array}$} (4)
         (4) edge [bend left=30]
-            node [right] {$\mathtt{ret^{mc91}_0 := t}$} (5)
+            node [right] {$\mathtt{r^{mc91} := t}$} (5)
         (5) edge 
             node [right] {$\mathtt{assert\ not(m \geq 0)}$} (e)
         ;
@@ -229,13 +230,13 @@ $\tilde{G}_{\mathtt{mc91}}$.
 
 In order to refine approximations, our algorithm unwinds recursive
 functions as usual. More precisely, consider a recursive function
-$\mathtt{f}$ with formal parameters $\overline{\mathtt{u}}$. Let
+$\mathtt{f}$ with formal parameters $\overline{\mathtt{u}}$ and return variables $\overline{\mathtt{r}}$. Let
 $G_{\mathtt{f}}$ be  
 the control flow graph of $\mathtt{f}$ and $G_k$ a control flow graph
 that invokes $\mathtt{f}$. To unwind $\mathtt{f}$ in $G_k$, 
 we first construct a control flow graph $H_{\mathtt{f}}$ by 
 replacing every $\mathtt{return}\ \overline{F}$ command in
-$\mathtt{f}$ with the assignment $\mathtt{\overline{ret}^f_1} :=
+$\mathtt{f}$ with the assignment $\mathtt{\overline{r}} :=
 \overline{F}$. For each edge $(\ell,  
 \ell')$ labeled with the command $\overline{\mathtt{x}} :=
 \mathtt{f}(\overline{E})$ in $G_k$, we remove 
@@ -248,7 +249,7 @@ assigns fresh copies of return variables to
 $\overline{\mathtt{x}}$. The control flow graph $G_{k+1}$ 
 is obtained by unwinding every function calls in $G_k$. 
 Figure~\ref{figure:unwind-mccarthy91} shows the control flow graph
-obtained by unwinding $\mathtt{mc91(m)}$ twice. Note that the
+obtained by unwinding $\mathtt{mc91}$ twice. Note that the
 unwinding graph $G_{k+1}$ still has recursive function calls. Its
 under approximation $G^-_{k+1}$ is more accurate than $G^-_k$.
 
@@ -315,7 +316,7 @@ under approximation $G^-_{k+1}$ is more accurate than $G^-_k$.
         (1) edge [bend right=30]
             node [above right] {$
               \begin{array}{c}
-                \mathtt{ret^{mc91}_0 :=}\\
+                \mathtt{r^{mc91} :=}\\
                 \mathtt{m - 10}
               \end{array}$} (e)
         (2) edge [bend left=50]
@@ -323,9 +324,9 @@ under approximation $G^-_{k+1}$ is more accurate than $G^-_k$.
         (3) edge 
             node [below] {$\mathtt{m'' := s}$} (s'')
         (4) edge [bend left=30]
-            node [below] {$\mathtt{ret^{mc91}_0 := t}$} (e)
+            node [below] {$\mathtt{r^{mc91} := t}$} (e)
         (e) edge [bend left=15]
-            node [below=9] {$\mathtt{r := ret^{mc91}_0}$} (02)
+            node [below=9] {$\mathtt{r := r^{mc91}}$} (02)
 
         (s') edge [bend right=30]
              node [left] {$
@@ -336,15 +337,15 @@ under approximation $G^-_{k+1}$ is more accurate than $G^-_k$.
              edge [bend left=30]
              node [right] {$\mathtt{assume\ not(m' > 100)}$} (2')
         (1') edge [bend right=30]
-             node [left] {$\mathtt{ret^{mc91'}_0 := m' - 10}$} (e')
+             node [left] {$\mathtt{r^{mc91'} := m' - 10}$} (e')
         (2') edge 
              node [right] {$\mathtt{s' := mc91(m'+11)}$} (3')
         (3') edge 
              node [right] {$\mathtt{t' := mc91(s')}$} (4')
         (4') edge [bend left=30]
-            node [right] {$\mathtt{ret^{mc91'}_0 := t'}$} (e')
+            node [right] {$\mathtt{r^{mc91'} := t'}$} (e')
         (e') edge 
-             node [above] {$\mathtt{s := ret^{mc91'}_0}$} (3)
+             node [above] {$\mathtt{s := r^{mc91'}}$} (3)
 
         (s'') edge [bend right=30]
               node [left] {$\mathtt{assume\ m'' > 100}$} (1'')
@@ -353,7 +354,7 @@ under approximation $G^-_{k+1}$ is more accurate than $G^-_k$.
         (1'') edge [bend right=30]
               node [left] {$
                 \begin{array}{c}
-                \mathtt{ret^{mc91''}_0 :=}\\
+                \mathtt{r^{mc91''} :=}\\
                 \mathtt{m'' - 10}  
                 \end{array}
                 $} (e'')
@@ -362,9 +363,9 @@ under approximation $G^-_{k+1}$ is more accurate than $G^-_k$.
         (3'') edge 
               node [right] {$\mathtt{t'' := mc91(s'')}$} (4'')
         (4'') edge [bend left=30]
-              node [right] {$\mathtt{ret^{mc91''}_0 := t''}$} (e'')
+              node [right] {$\mathtt{r^{mc91''} := t''}$} (e'')
         (e'') edge [bend left=50]
-              node [below left] {$\mathtt{t := ret^{mc91''}_0}$} (4)
+              node [below left] {$\mathtt{t := r^{mc91''}}$} (4)
         ;
     \end{tikzpicture}
     }
