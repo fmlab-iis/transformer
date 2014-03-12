@@ -1,15 +1,50 @@
-Let $G^- = \langle V^-, E^-, \textmd{cmd}^- \rangle$ be a CFG obtained from Section~\ref{subsection:under-approximation} and $L_\mathtt{f}=\{({\ell_s^i}^{(\mathtt{f})},{\ell_e^i}^{(\mathtt{f})}):\mbox{ the pair of locations }{\ell_s^i}^{(\mathtt{f})}\mbox{ and }{\ell_e^i}^{(\mathtt{f})}\mbox{ in }E\mbox{ for some }i\}$ the set of entry and exit locations of the call to the function $\mathtt{f}$.
+Let $G^- = \langle V^-, E^-, \textmd{cmd}^-, \overline{u}, \overline{r},\ell_s,\ell_e \rangle$ be a CFG obtained from Section~\ref{subsection:under-approximation} and $L_\fun{f}=\{(\ell_s^{i,\fun{f}},\ell_e^{i,\fun{f}}):\ell_s^{i,\fun{f}}\in E^- \wedge \ell_e^{i,\fun{f}}\in E^-\mbox{ for some }i\}$
+the set of entry and exit locations of the call to the function $\mathtt{f}$.
+%\mbox{ the pair of locations }\ell_s^{i,\fun{f}}\mbox{ and }\ell_e^{i,\fun{f}}\mbox{ in }E\mbox{ for some }i\}$ 
+When the function UpdateSummary ($P$, $G^-$,$\Pi (G^-, \TT)$) is triggered, it extracts summaries from the inductive invariant $\Pi (G^-, \TT)= \{ I_\ell : \ell \in V^-
+\}$ (Algorithm~\ref{algorithm:update-summary}). 
 
-We give $G^-$ to a program checker. A error trace returned from the checker indicates that some assertion in the program to be verified can be violated, because $G^-$ under-approximates the behavior of $G$. Otherwise, the checker returns an inductive invariant $\Pi (G^-, \mathtt{true})= \{ I_\ell : \ell \in V^-
-\}$ for $G^-$. Let $P_\mathtt{f}$ be the set of all variables appearing in $G^-$ except the set of formal parameter and return variables of $\mathtt{f}$.
-Then for all functions $\mathtt{f}$ with $L_\mathtt{f}\neq \emptyset$, we update $S[\mathtt{f}]$, the summary of $\mathtt{f}$, to $\bigwedge_{(\ell,\ell')\in L_\mathtt{f}} \forall P_\mathtt{f}. (I_\ell \implies I_{\ell'})$. 
-For functions $\mathtt{f}$ with $L_\mathtt{f}= \emptyset$, we let $S[\mathtt{f}]=\top$.
+\begin{algorithm}
+  \KwIn{$P=\{\mbox{CFG }G_\fun{main}\}\cup\{\mbox{CFG } G_\fun{f} : \fun{f}\mbox{ is a function}\}$: a program; $G^-$: a CFG after unwinding;$\Pi (G^-, \TT)= \{ I_\ell : \ell \in V^-
+  \}$ : an inductive invariant of $G^-$}
+  \KwOut{$S$:function summaries}
+
+  \ForEach{function $\fun{f}$ with $G_\fun{f}\in P$}
+  {	
+  	Compute the set $L_\fun{f}$\;
+  	$S[\fun{f}]:=\TT$\;
+ 	\ForEach{pair of locations $(\ell,\ell')\in L_\mathtt{f}$}
+   	{
+   		\lIf{$I_\ell$ does not contain any return variable of $\mathtt{f}$}
+       	{
+         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall P_\mathtt{f}. (I_\ell \implies I_{\ell'})$\;
+       	}	
+   	}
+    
+  }
+ 
+  \Return $S$\;
+  \caption{$\textmd{UpdateSummary} (P, G^-,\Pi (G^-, \TT))$}
+  \label{algorithm:update-summary}
+\end{algorithm}
+
+For each function $\fun{f}$ in the program $P$, we first compute the set $L_\fun{f}$  and initialize its summary $S[\fun{f}$ to $\TT$.
+Let $V_\fun{f}$ be the set of all variables appearing in $G^-$ except the set of formal parameter and return variables of $\fun{f}$.
+For each pairs of locations $(\ell,\ell')$ in the set $L_\fun{f}$, if the invariant of location $i$ does not contains any return variables of $\mathtt{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall P_\mathtt{f}. (I_\ell \implies I_{\ell'})$.
+
 
 \begin{proposition}
-  Let $G_{\mathtt{f}}$ be the control flow graph for the function
-  $\mathtt{f}$, $S[\bullet]$ be the summary computed using the procedure in this subsection.
-  If $\assert{\top}\ \mathtt{\overline{ret}^f} :=
+  \label{propposition:strengthen_postcondition}
+  Let $G^- = \langle V^-, E^-, \textmd{cmd}^-, \overline{u}, \overline{r},\ell_s,\ell_e \rangle$ be a control flow graph obtained by unwinding $\fun{f}$ and $S=\textmd{UpdateSummary} (P, G^-,\Pi (G^-, \TT))$ be the summary computed by Algorithm~\ref{algorithm:update-summary}.
+  If $\assert{\top}\ \mathtt{\overline{r}} :=
     \mathtt{f} (\overline{\mathtt{u}})\ \assert{S[\mathtt{f}]}$ for every
   function $\mathtt{f}$, then $\assert{\top}\ \mathtt{\overline{ret}^f} :=
   \mathtt{f} (\overline{\mathtt{u}})\ \assert{I_\ell \implies I_{\ell'}}$ for all $(\ell,\ell')$ in $L_\mathtt{f}$.
+\end{proposition}
+The above proposition hold because $S[\mathtt{f}]$ implies $\forall P_\mathtt{f}. (I_\ell \implies I_{\ell'})$, which implies $I_\ell \implies I_{\ell'}$.
+
+\begin{proposition}
+\label{propposition:invariant}
+$\assert{I_\ell}\ \mathtt{\overline{r}} :=
+    \mathtt{f} (\overline{\mathtt{u}})\ \assert{I_\ell}$
 \end{proposition}
