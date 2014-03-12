@@ -45,13 +45,14 @@ def tokenize(line_str):
 def toCOperator(operator):
   if type(operator)==list:
     return "{"+str(operator)+"}"
-  assert operator in set(["not", "and", "or", "=", ">=", "<=", ">", "<", "+", "-", "*", "div", "mod"])
+  assert operator in set(["not", "and", "or", "=", ">=", "<=", ">", "<", "+", "-", "*", "div", "mod", "to_real"])
   op_dict = {"not":"not",
              "and":"and", 
              "or" :"or",
              "="  :"=",
              "mod":"%",
-             "div":"/"}
+             "div":"/",
+             "to_real":""}
   # FIXME 
   assert operator != "mod"
   if(operator in op_dict):
