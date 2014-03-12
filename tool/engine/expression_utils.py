@@ -43,6 +43,10 @@ def useFormalPara(expr, func_call):
   return '(' + redlogToCExpr(expr) + ')'
 
 def redlogToCExpr(rl_expr):
+  if rl_expr == "true":
+    return "1"
+  elif rl_expr == "false":
+    return "0"
   return re.sub(_rl_rex_g, lambda x: _rl_op_dict_g[x.group("op")], rl_expr)
 
 # TODO Seperate AbstractionReader and smt_parser
