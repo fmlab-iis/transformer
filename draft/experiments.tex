@@ -6,12 +6,15 @@
 \newcommand{\unknownmark}{\ensuremath{^?}}
 \newcommand{\wrongmark}{\ensuremath{^!}}
 
-\todo{parameters passed to these tools}
-
 A prototype tool of our approach has been implemented with
 \textsc{CPAChecker} as the underlying intraprocedure analyzer.
 We compared our tool based on experiments with four participants,
-namely Blast~\cite{BeyerHJM07}, CBMC~\cite{}, Ultimate
+namely Blast 2.7.2~\cite{BeyerHJM07}~\footnote{We use the arguments
+  \textbf{-alias empty -enable-recursion -noprofile -cref -sv-comp
+    -lattice -include-lattice symb -nosserr} with Blast.},
+CBMC 4.5~\cite{ClarkeKL04} with a wrapper
+cbmc-wrapper.sh~\footnote{The wrapper cbmc-wrapper.sh is provided by a
+  special version of CBMC 4.5 for SV-COMP 2014.}, Ultimate
 Automizer~\cite{HeizmannCDEHLNSP13}, and Ultimate Kojak~\cite{Kojak},
 of the 2014 Competition on Software Verification (SV-COMP
 2014)~\cite{svcomp14}.
@@ -39,14 +42,15 @@ can verify more programs and obtain a higher score.
 The scores of our tool and Ultimate Automizer are very close mainly
 because of a false positive produced by our tool.
 \todo{Could we explain the false positive?}
+\todo{Could we explain the exceptions that we have?}
 Although CBMC got the highest score, several results returned by CBMC
 may be doubtful because CBMC always reports safe if no bug is found
 within a given set of bounds~\footnote{This was confirmed in a private
-  communication with the developers of CBMC.}.
-According to Table~\ref{table:experiments}, the bounds mighty be 850
-seconds.
-If we ignore results returned by CBMC exactly in 850 seconds, the gap
-between the scores of CBMC and our tool becomes much smaller.
+  communication with the developers of CBMC.}, which are set to 850
+seconds in cbmc-wrapper.sh.
+If we ignore the results returned by CBMC exactly in 850 seconds, CBMC 
+will obtain a score of 14 and the gap between the scores of CBMC and
+our tool becomes much smaller.
 Note that in order to simplify the implementation of our prototype
 tool, we turned off important optimizations such as adjust block
 encoding provided in \textsc{CPAChecker}.
@@ -54,12 +58,12 @@ The performance of the prototype tool can be even better with those
 optimizations turned on.
 
 \begin{table}
-\caption{Score schema.\label{table:score-schema}}
+\caption{Score schema in SV-COMP 2014.\label{table:score-schema}}
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline
 Points & Program Correctness & Reported Result \\\hline
-0      & TRUE or FALSE & UNKNOWN \\
+0      & TRUE or FALSE & UNKNOWN (due to timeout or exceptions) \\
 +1     & FALSE         & FALSE \\
 -4     & TRUE          & FALSE \\
 +2     & TRUE          & TRUE \\
