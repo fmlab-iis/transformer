@@ -27,14 +27,18 @@ CPU and 8 GB of memory running 64-bit Windows 7.
 The timeout of a verification task is 900 seconds.
 
 The experimental results are summarized in
-Table~\ref{table:experiments} where Iter. is \todo{?}, Time is
+Table~\ref{table:experiments} where $k$ is the number of unwindings of
+recursive functions in Algorithm~\ref{algorithm:overview}, Time is
 measured in seconds, the superscript $!$ or $?$ indicates that the
 returned result is respectively incorrect or unknown, E indicates
 exceptions, and T.O. indicates timeouts.
 We use the score schema (shown in Table~\ref{table:score-schema}) in
 SV-COMP 2014 to evaluate these tools.
-Table~\ref{table:experiments} shows that our tool outperforms Ultimate
-Automizer, Ultimate Kojak, and Blast in terms of scores.
+Compared to Ultimate Automizer, Ultimate Kojak, and Blast, our tool
+can verify more programs and obtain a higher score.
+The scores of our tool and Ultimate Automizer are very close mainly
+because of a false positive produced by our tool.
+\todo{Could we explain the false positive?}
 Although CBMC got the highest score, several results returned by CBMC
 may be doubtful because CBMC always reports safe if no bug is found
 within a given set of bounds~\footnote{This was confirmed in a private
@@ -43,6 +47,11 @@ According to Table~\ref{table:experiments}, the bounds mighty be 850
 seconds.
 If we ignore results returned by CBMC exactly in 850 seconds, the gap
 between the scores of CBMC and our tool becomes much smaller.
+Note that in order to simplify the implementation of our prototype
+tool, we turned off important optimizations such as adjust block
+encoding provided in \textsc{CPAChecker}.
+The performance of the prototype tool can be even better with those
+optimizations turned on.
 
 \begin{table}
 \caption{Score schema.\label{table:score-schema}}
@@ -72,7 +81,7 @@ Points & Program Correctness & Reported Result \\\hline
 \hline
 \multirow{2}{*}{Program} & \multicolumn{2}{c|}{Our Tool} &
 Ultimate Automizer & Ultimate Kojak & CMBC-4.5 & Blast 2.7.2 \\ \cline{2-7}
-& Iter. & Time  & Time  & Time  & Time  & Time \\ \hline
+& $k$ & Time  & Time  & Time  & Time  & Time \\ \hline
 Ackermann01\_true.c      & 1 & 5.85                  & \timeout         & \timeout           & 850                   & \exception \\
 Ackermann02\_false.c     & 4 & 54.625                & 4.151            & \timeout           & 1.036                 & \exception \\
 Ackermann03\_true.c      &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
