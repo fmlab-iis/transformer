@@ -11,6 +11,7 @@
 \usetikzlibrary{arrows,calc}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{varwidth}
 \captionsetup{compatibility=false}
 \usepackage{listings}
 \lstset{
@@ -22,7 +23,7 @@
 }
 \usepackage{bussproofs}
 
-
+\newcommand{\smallnode}[1]{\begin{varwidth}{0.4cm}\scalebox{0.9}{\hspace{-0.2cm}#1}\end{varwidth}}
 \newcommand{\todo}[1]{\textcolor{red}{{#1}}}
 \newcommand{\hide}[1]{}
 \newcommand{\fun}[1]{\mathtt{{#1}}}

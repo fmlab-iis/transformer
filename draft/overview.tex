@@ -74,19 +74,19 @@ check the under-approximation~$G^-_k$.
       \node[node] (2) at (-4, -2) {$\ell_2$};
       \node[node] (3) at (-4, -3) {$\ell_3$};
       \node[node] (4) at (-4, -4) {$\ell_e$};
-      \node[node] (00) at ( 0,  0) {$\ell'_s$};
-      \node[node] (01) at (-1, -2) {$\ell'_1$};
-      \node[node] (02) at ( 1, -0.8) {$\ell'_2$};
-      \node[node] (03) at ( 1, -2) {$\ell'_3$};
-      \node[node] (04) at ( 1, -3.2) {$\ell'_4$};
-      \node[node] (05) at ( 0, -4) {$\ell'_e$};
+      \node[node] (00) at ( 0,  0) {\smallnode{$\ell_{s'}^{1,\fun{mc91}}$}};
+      \node[node] (01) at (-1, -2) {$\ell_{1'}^1$};
+      \node[node] (02) at ( 1, -0.8) {$\ell_{2'}^1$};
+      \node[node] (03) at ( 1, -2) {$\ell_{3'}^1$};
+      \node[node] (04) at ( 1, -3.2) {$\ell_{4'}^1$};
+      \node[node] (05) at ( 0, -4) {\smallnode{$\ell_{e'}^{1,\fun{mc91}}$}};
 
       \path
         (0) edge 
             node [left] {$\mathtt{assume\ n >= 0}$} (1)
         (1) edge [bend left=15]
-            node [above=2] {$\mathtt{m := n}$} (00)
-        (2) edge 
+            node [above=2] {$\mathtt{m^1 := n}$} (00)
+        (2) edge
             node [left] {$
               \begin{array}{l}
                 \mathtt{assert\ {[}r = 91\ or}\\
@@ -97,24 +97,24 @@ check the under-approximation~$G^-_k$.
             node [left] {$\mathtt{return\ 0}$} (4)
 
         (00) edge [bend right=30]
-            node [left] {$\mathtt{assume\ m > 100}$} (01)
+            node [left] {$\mathtt{assume\ m^1 > 100}$} (01)
             edge [bend left=30]
-            node [right] {$\mathtt{assume\ not(m > 100)}$} (02)
+            node [right] {$\mathtt{assume\ not(m^1 > 100)}$} (02)
         (01) edge [bend right=30]
             node [left] {$
               \begin{array}{c}
-                \mathtt{r^{mc91} :=}\\
-                \mathtt{m - 10}
+                \mathtt{r_{mc91} :=}\\
+                \mathtt{m^1 - 10}
               \end{array}$} (05)
         (02) edge 
             node [right] {$\mathtt{assume\ false}$} (03)
         (03) edge 
             node [right] {$\mathtt{assume\ false}$} (04)
         (04) edge [bend left=30]
-            node [right] {$\mathtt{r^{mc91} := t}$} (05)
+            node [right] {$\mathtt{r_{mc91}^1 := t^1}$} (05)
 
         (05) edge [bend left=30]
-             node [below=8] {$\mathtt{r := r^{mc91}}$} (2);
+             node [below=8] {$\mathtt{r := r_{mc91}^1}$} (2);
 
     \end{tikzpicture}
   \caption{Under Approximation of McCarthy 91}
@@ -190,13 +190,13 @@ $\tilde{G}_{\mathtt{mc91}}$.
   \centering
     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (s) at ( 0,  0) {$\ell_s$}; %[label=above:$\mathtt{mc91(n)}$]
-      \node[node] (1) at (-1, -2) {$\ell_1$};
-      \node[node] (2) at ( 1, -0.8) {$\ell_2$};
-      \node[node] (3) at ( 1, -2) {$\ell_3$};
-      \node[node] (4) at ( 1, -3.2) {$\ell_4$};
-      \node[node] (5) at ( 0, -4) {$\ell_5$};
-      \node[node] (e) at ( 0, -5) {$\ell_e$};
+      \node[node] (s) at ( 0,  0) {$\ell_{s'}$}; %[label=above:$\mathtt{mc91(n)}$]
+      \node[node] (1) at (-1, -2) {$\ell_{1'}$};
+      \node[node] (2) at ( 1, -0.8) {$\ell_{2'}$};
+      \node[node] (3) at ( 1, -2) {$\ell_{3'}$};
+      \node[node] (4) at ( 1, -3.2) {$\ell_{4'}$};
+      \node[node] (5) at ( 0, -4) {$\ell_{5'}$};
+      \node[node] (e) at ( 0, -5) {$\ell_{e'}$};
 
       \path
         (s) edge [bend right=30]
@@ -204,7 +204,7 @@ $\tilde{G}_{\mathtt{mc91}}$.
             edge [bend left=30]
             node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
         (1) edge [bend right=30]
-            node [left] {$\mathtt{r^{mc91} := m - 10}$} (5)
+            node [left] {$\mathtt{r_{mc91} := m - 10}$} (5)
         (2) edge 
             node [right] {$
               \begin{array}{l}
@@ -219,7 +219,7 @@ $\tilde{G}_{\mathtt{mc91}}$.
               \mathtt{assume\ not(s \geq 0)}
               \end{array}$} (4)
         (4) edge [bend left=30]
-            node [right] {$\mathtt{r^{mc91} := t}$} (5)
+            node [right] {$\mathtt{r_{mc91} := t}$} (5)
         (5) edge 
             node [right] {$\mathtt{assert\ not(m \geq 0)}$} (e)
         ;
@@ -264,32 +264,32 @@ under approximation $G^-_{k+1}$ is more accurate than $G^-_k$.
       \node[node] (03) at (-4, -3) {$\ell_3$};
       \node[node] (0e) at (-4, -4) {$\ell_e$};
 
-      \node[node] (s) at (-1,  0) {$\ell_{s'}$};
-      \node[node] (1) at (-2, -2) {$\ell_{1'}$};
-      \node[node] (2) at ( 1, -0.8) {$\ell_{2'}$};
-      \node[node] (3) at ( 1, -2) {$\ell_{3'}$};
-      \node[node] (4) at ( 1, -3.2) {$\ell_{4'}$};
-      \node[node] (e) at (-1, -4) {$\ell_{e'}$};
+      \node[node] (s) at (-1,  0) {\smallnode{$\ell_{s'}^{1,\fun{mc91}}$}};
+      \node[node] (1) at (-2, -2) {$\ell_{1'}^1$};
+      \node[node] (2) at ( 1, -0.8) {$\ell_{2'}^1$};
+      \node[node] (3) at ( 1, -2) {$\ell_{3'}^1$};
+      \node[node] (4) at ( 1, -3.2) {$\ell_{4'}^1$};
+      \node[node] (e) at (-1, -4) {\smallnode{$\ell_{e'}^{1,\fun{mc91}}$}};
 
-      \node[node] (s') at ( 5,  2.6) {$\ell_{s''}$};
-      \node[node] (1') at ( 4,  0.6) {$\ell_{1''}$};
-      \node[node] (2') at ( 6,  1.8) {$\ell_{2''}$};
-      \node[node] (3') at ( 6,  0.6) {$\ell_{3''}$};
-      \node[node] (4') at ( 6, -0.6) {$\ell_{4''}$};
-      \node[node] (e') at ( 5, -1.4) {$\ell_{e''}$};
+      \node[node] (s') at ( 5,  2.6) {$\ell_{s'}^2$};
+      \node[node] (1') at ( 4,  0.6) {$\ell_{1'}^2$};
+      \node[node] (2') at ( 6,  1.8) {$\ell_{2'}^2$};
+      \node[node] (3') at ( 6,  0.6) {$\ell_{3'}^2$};
+      \node[node] (4') at ( 6, -0.6) {$\ell_{4'}^2$};
+      \node[node] (e') at ( 5, -1.4) {$\ell_{e'}^2$};
 
-      \node[node] (s'') at ( 5, -2.6) {$\ell_{s'''}$};
-      \node[node] (1'') at ( 4, -4.6) {$\ell_{1'''}$};
-      \node[node] (2'') at ( 6, -3.4) {$\ell_{2'''}$};
-      \node[node] (3'') at ( 6, -4.6) {$\ell_{3'''}$};
-      \node[node] (4'') at ( 6, -5.8) {$\ell_{4'''}$};
-      \node[node] (e'') at ( 5, -6.6) {$\ell_{e'''}$};
+      \node[node] (s'') at ( 5, -2.6) {$\ell_{s'}^3$};
+      \node[node] (1'') at ( 4, -4.6) {$\ell_{1'}^3$};
+      \node[node] (2'') at ( 6, -3.4) {$\ell_{2'}^3$};
+      \node[node] (3'') at ( 6, -4.6) {$\ell_{3'}^3$};
+      \node[node] (4'') at ( 6, -5.8) {$\ell_{4'}^3$};
+      \node[node] (e'') at ( 5, -6.6) {$\ell_{e'}^3$};
 
       \path
         (0s) edge 
             node [left] {$\mathtt{assume\ n >= 0}$} (01)
         (01) edge [bend left=15]
-            node [above=2] {$\mathtt{m := n}$} (s)
+            node [above=2] {$\mathtt{m^1 := n}$} (s)
         (02) edge 
             node [left] {$
               \begin{array}{l}
@@ -305,67 +305,67 @@ under approximation $G^-_{k+1}$ is more accurate than $G^-_k$.
             node [right] {$
               \begin{array}{c}
                 \mathtt{assume}\\ 
-                \mathtt{m > 100}                
+                \mathtt{m^1 > 100}                
               \end{array}$} (1)
-            edge [bend left=20]
+            edge [bend left=60]
             node [above] {$
-              \begin{array}{c}
+              \begin{array}{l}
                 \mathtt{assume}\\
-                \mathtt{not(m > 100)}
+                \mathtt{not(m^1 > 100)\ }
               \end{array}$} (2)
         (1) edge [bend right=30]
             node [above right] {$
               \begin{array}{c}
-                \mathtt{r^{mc91} :=}\\
-                \mathtt{m - 10}
+                \mathtt{r_{mc91}^1 :=}\\
+                \mathtt{m^1 - 10}
               \end{array}$} (e)
         (2) edge [bend left=50]
-            node [above left] {$\mathtt{m' := m + 11}$} (s')
+            node [above left] {$\mathtt{m^2 := m^1 + 11}$} (s')
         (3) edge 
-            node [below] {$\mathtt{m'' := s}$} (s'')
+            node [below] {$\mathtt{m^3 := s^1}$} (s'')
         (4) edge [bend left=30]
-            node [below] {$\mathtt{r^{mc91} := t}$} (e)
+            node [below] {$\mathtt{r_{mc91}^1 := t^1}$} (e)
         (e) edge [bend left=15]
-            node [below=9] {$\mathtt{r := r^{mc91}}$} (02)
+            node [below=9] {$\mathtt{r := r_{mc91}^1}$} (02)
 
         (s') edge [bend right=30]
              node [left] {$
                \begin{array}{c}
                  \mathtt{assume}\\
-                 \mathtt{m' > 100}
+                 \mathtt{m^2 > 100}
                \end{array}$} (1')
              edge [bend left=30]
-             node [right] {$\mathtt{assume\ not(m' > 100)}$} (2')
+             node [right] {$\mathtt{assume\ not(m^2 > 100)}$} (2')
         (1') edge [bend right=30]
-             node [left] {$\mathtt{r^{mc91'} := m' - 10}$} (e')
+             node [left] {$\mathtt{r_{mc91}^2 := m^2 - 10}$} (e')
         (2') edge 
-             node [right] {$\mathtt{s' := mc91(m'+11)}$} (3')
+             node [right] {$\mathtt{s^2 := mc91(m^2+11)}$} (3')
         (3') edge 
-             node [right] {$\mathtt{t' := mc91(s')}$} (4')
+             node [right] {$\mathtt{t^2 := mc91(s^2)}$} (4')
         (4') edge [bend left=30]
-            node [right] {$\mathtt{r^{mc91'} := t'}$} (e')
+            node [right] {$\mathtt{r_{mc91}^2 := t^2}$} (e')
         (e') edge 
-             node [above] {$\mathtt{s := r^{mc91'}}$} (3)
+             node [above] {$\mathtt{s^1 := r_{mc91}^2}$} (3)
 
         (s'') edge [bend right=30]
-              node [left] {$\mathtt{assume\ m'' > 100}$} (1'')
+              node [left] {$\mathtt{assume\ m^3 > 100}$} (1'')
               edge [bend left=30]
-              node [right] {$\mathtt{assume\ not(m'' > 100)}$} (2'')
+              node [right] {$\mathtt{assume\ not(m^3 > 100)}$} (2'')
         (1'') edge [bend right=30]
               node [left] {$
                 \begin{array}{c}
-                \mathtt{r^{mc91''} :=}\\
-                \mathtt{m'' - 10}  
+                \mathtt{r_{mc91}^3 :=}\\
+                \mathtt{m^3 - 10}  
                 \end{array}
                 $} (e'')
         (2'') edge 
-              node [right] {$\mathtt{s'' := mc91(m''+11)}$} (3'')
+              node [right] {$\mathtt{s^3 := mc91(m^3+11)}$} (3'')
         (3'') edge 
-              node [right] {$\mathtt{t'' := mc91(s'')}$} (4'')
-        (4'') edge [bend left=30]
-              node [right] {$\mathtt{r^{mc91''} := t''}$} (e'')
+              node [right] {$\mathtt{t^3 := mc91(s^3)}$} (4'')
+        (4'') edge [bend left=50]
+              node [right] {$\mathtt{r_{mc91}^3 := t^3}$} (e'')
         (e'') edge [bend left=50]
-              node [below left] {$\mathtt{t := r^{mc91''}}$} (4)
+              node [below left] {$\mathtt{t^1 := r_{mc91}^3}$} (4)
         ;
     \end{tikzpicture}
     }
