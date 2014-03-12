@@ -45,6 +45,12 @@ can verify more programs and obtain a higher score.
 The scores of our tool and Ultimate Automizer are very close mainly
 because of a false positive produced by our tool.
 \todo{Could we explain the false positive?}
+The only false positive came from the spurious error trace reported
+by CPAChecker because modulo operation is approximated under our 
+configuration for CPAChecker. If results of the two tasks with modulo
+operation, EvenOdd\_true.c and EvenOdd03\_false.c, are excluded, we
+can obtain a score of 16.
+
 \todo{Could we explain the exceptions that we have?}
 Although CBMC got the highest score, several results returned by CBMC
 may be doubtful because CBMC always reports safe if no bug is found
@@ -104,14 +110,14 @@ Fibonacci03\_true.c      &   & \timeout              & \timeout         & \timeo
 Fibonacci04\_false.c     & 5 & 103.496               & 7.438            & 8.155              & 0.409                 & \exception \\
 Fibonacci05\_false.c     &   & \timeout              & 128.911          & 23.174             & 557.18                & \exception \\
 gcd01\_true.c            & 1 & 5.843                 & 5.369            & 7.26               & 850                   & 16.074\wrongmark \\
-gcd02\_true.c            &   & \exception            & \timeout         & \timeout           & 850                   & \exception \\
+gcd02\_true.c            &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
 McCarthy91\_false.c      & 1 & 7.255                 & 3.152            & 3.09               & 0.258                 & 0.086 \\
 McCarthy91\_true.c       & 2 & 11.982                & 81.32            & 6.783              & 850                   & 16.237\wrongmark \\
-MultCommutative\_true.c  &   & \exception            & \timeout         & \timeout           & 850                   & \exception \\
-Primes\_true.c           &   & \exception            & \timeout         & \timeout           & 850                   & \exception \\
+MultCommutative\_true.c  &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
+Primes\_true.c           &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
 recHanoi01\_true.c       &   & \timeout              & \timeout         & \timeout           & 850                   & \exception \\
 recHanoi02\_true.c       & 1 & 5.172                 & \timeout         & \timeout           & 0.749                 & 1.897\wrongmark \\
-recHanoi03\_true.c*      &   & \exception            & \timeout         & \timeout           & 0.713                 & \exception \\
+recHanoi03\_true.c       &   & \timeout              & \timeout         & \timeout           & 0.713                 & \exception \\
 \hline\hline
 correct results          & \multicolumn{2}{c|}{11}   & 9                & 7                  & 22 (10)               & 3 \\ 
 false negative           & \multicolumn{2}{c|}{0}    & 0                & 0                  & 1 (0)                 & 0 \\
