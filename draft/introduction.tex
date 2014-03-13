@@ -6,9 +6,10 @@ In this paper, we propose an algorithm to extend intraprocedure (recursive-free)
 
 Our algorithm proceeds by iterations. In each iteration, it transforms the recursive program into a non-recursive program that \emph{under-approximates} the behaviors of the original and sends the under-approximation to an intraprocedure program analyzer. If the analyzer verifies the under-approximation, purported \emph{function summaries} for recursive functions are computed. Our algorithm transforms the original recursive program into more non-recursive programs with purported function summaries. It then checks if purported function summaries are correct by sending these non-recursive programs to the analyzer.
 
-The advantages of the proposed algorithm is clear: it requires only very few and standard functions provided by the underlying verifiers and is compatible with most existing intraprocedure analyzers. We implemented a prototype system using \textsc{CPAChecker}~\cite{BeyerK11} as the underlying program analyzer and compare
-with other program analyzers that are specialized for recursive program verification on the benchmarks in the 2014 Competition on Software Verification~\cite{svcomp14}.
-The comparison result is very promising: the prototype is comparable with those specialized analyzers. Notice that in order to simplify the implementation effort, we turned off important optimizations such as adjust block encoding provided in \textsc{CPAChecker}, the performance of the prototype can be even better with those optimizations turned on. 
+Compared with other analysis algorithms for recursive programs, ours is very lightweight. It only performs syntactic transformation and requires standard functionalities from underlying intraprocedure program analyzers. To test our algorithm, we implement a prototype system using \textsc{CPAChecker} as the underlying program analyzer~\cite{BeyerK11}, and compare with program analyzers specialized for recursion. Although \textsc{CPAChecker} does not support recursion, our prototype scores slightly better than the second-place tool Ultimate Automizer on the benchmarks in the 2014 Competition on Software Verification~\cite{svcomp14}. 
+\hide{
+Notice that in order to simplify the implementation effort, we turned off important optimizations such as adjust block encoding provided in \textsc{CPAChecker}, the performance of the prototype can be even better with those optimizations turned on.
+}
 
 \subsection*{Related Works}
 Inter-Procedure analyzers
