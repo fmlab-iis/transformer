@@ -16,6 +16,33 @@ function calls in $G$ with $\mathtt{assume\ false}$. That is,
   \right.
 \end{equation*}
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+
+      \node[node] (0) at (-4, 0)  {$\ell$}; %[label=above:$\mathtt{main()}$]
+      \node[node] (1) at (-4, -2) {$\ell'$};
+
+      \node[node] (00) at (0, 0)  {$\ell$};
+      \node[node] (01) at (0, -2) {$\ell'$};
+      \node (arrow_s) at (-2.5, -1) {};
+      \node (arrow_e) at (-0.5, -1) {};
+
+      \path
+        (arrow_s) edge [dotted]
+                  node {} (arrow_e)
+        (0) edge 
+            node {$\overline{\mathtt{x}} := \mathtt{f} (\overline{a})$} (1)
+
+        (00) edge 
+             node {$\mathtt{assume\ false}$} (01);
+    \end{tikzpicture}
+
+  \caption{Under Approximation}
+  \label{figure:under-approximation}
+\end{figure}
+
 \begin{proposition}
   Let $G$ be a control flow graph, $P$ and $Q$ logic formulae with
   free variables over program variables of $G$. If $\assert{P}

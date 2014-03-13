@@ -32,6 +32,39 @@ For each function $\fun{f}$ in the program $P$, we first compute the set $L_\fun
 Let $V_\fun{f}$ be the set of all variables appearing in $G^-$ except the set of formal parameter and return variables of $\fun{f}$.
 For each pairs of locations $(\ell,\ell')$ in the set $L_\fun{f}$, if the invariant of location $i$ does not contains any return variables of $\mathtt{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall P_\mathtt{f}. (I_\ell \implies I_{\ell'})$.
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+
+      \draw [fill=gray!10] (3, -1) ellipse (1 and 1.5);
+      \node (text) at (3, -1) {$\textsc{rename}(G_\fun{f})$};
+      \node[node] (00) at (0, 0)  {$\ell$};
+      \node[node] (01) at (0, -2) {$\ell'$};
+      \node[node] (10) at (3, 0)  {\smallnode{$\ell^{i, \fun{f}}_s$}};
+      \node[node] (11) at (3, -2) {\smallnode{$\ell^{i, \fun{f}}_e$}};
+
+      \node (arrow_s) at (4.5, -1) {};
+      \node (arrow_e) at (6.5, -1) {};
+      
+      \node[rectangle,text centered,draw] (text) at (9, -1)
+      { add $\forall P_{\mathtt{f}}.
+        (I_{\ell^{i, \mathtt{f}}_s} \implies I_{\ell^{i, \mathtt{f}}_e})$
+        to $S[\mathtt{f}]$}; 
+      
+      \path
+        (arrow_s) edge [dotted]
+                  node {} (arrow_e)
+        (00) edge 
+             node {$\overline{\mathtt{u}} := \overline{a}$} (10)
+
+        (11) edge 
+             node {$\overline{\mathtt{x}} := \mathtt{\overline{ret}^f}$} (01) ;
+    \end{tikzpicture}
+
+  \caption{Updating Summary}
+  \label{figure:updating-summary}
+\end{figure}
 
 \begin{proposition}
   \label{propposition:strengthen_postcondition}

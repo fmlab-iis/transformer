@@ -11,7 +11,39 @@ Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{u}, \ove
 %V', E' \rangle$ such that 
 %(1) For all edges $(\ell, \ell')\in E$ with $\textmd{cmd} (\ell, \ell')=$
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
 
+      \node[node] (0) at (-4, 0)  {$\ell$}; %[label=above:$\mathtt{main()}$]
+      \node[node] (1) at (-4, -2) {$\ell'$};
+
+      \draw [fill=gray!10] (3, -1) ellipse (1 and 1.5);
+      \node (text) at (3, -1) {$\textsc{rename}(G_\fun{g})$};
+      \node[node] (00) at (0, 0)  {$\ell$};
+      \node[node] (01) at (0, -2) {$\ell'$};
+      \node[node] (10) at (3, 0)  {\smallnode{$\ell^{i, \fun{g}}_s$}};
+      \node[node] (11) at (3, -2) {\smallnode{$\ell^{i, \fun{g}}_e$}};
+      \node (arrow_s) at (-2.5, -1) {};
+      \node (arrow_e) at (-0.5, -1) {};
+
+      \path
+        (arrow_s) edge [dotted]
+                  node {} (arrow_e)
+        (0) edge 
+            node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{a})$} (1)
+
+        (00) edge 
+             node {$\overline{\mathtt{u}} := \overline{a}$} (10)
+
+        (11) edge 
+             node {$\overline{\mathtt{x}} := \mathtt{\overline{ret}^g}$} (01) ;
+    \end{tikzpicture}
+
+  \caption{Unwinding Function Calls}
+  \label{figure:unwinding}
+\end{figure}
 
 \hide{
 \begin{algorithm}
