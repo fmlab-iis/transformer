@@ -1,10 +1,10 @@
-We first define the rename function $\textsc{rename}(G)$. It returns a CFG $(V^i, E^i,\textmd{cmd}^i, \overline{u}^i, \overline{r}^i,\ell_s^i,\ell_e^i)$ obtained by first replacing every return command $\mathtt{return}\ \overline{E}$ by assignments to return variables $\overline{r} := \overline{E}$ and then renaming all variables and locations in $G$ with a fresh index value $i$. The function $\textsc{unwind}(G)$ returns a CFG $G'$ obtained by replacing all function call edges in $G$ with the CFG of the called function after renaming. In order to help exacting summaries from the $G'$, $\textsc{unwind}(G)$ annotates in $G'$ the entry and exit locations ${\ell_s^i}$ and ${\ell_e^i}$ of the unwounded functions $\fun{f}$ with an additional superscript $\fun{f}$, i.e., $\ell_s^{i,\fun{f}}$ and $\ell_e^{i,\fun{f}}$. The formal definition is given below.
+We first define the rename function $\textsc{rename}(G)$. It returns a CFG $(V_i, E_i,\textmd{cmd}_i, \overline{\texttt{u}}_i, \overline{\texttt{r}}_i,s_i,e_i)$ obtained by first replacing every return command $\mathtt{return}\ \overline{\texttt{e}}$ by assignments to return variables $\overline{\texttt{r}} := \overline{\texttt{e}}$ and then renaming all variables and locations in $G$ with a fresh index value $i$. The function $\textsc{unwind}(G)$ returns a CFG $G'$ obtained by replacing all function call edges in $G$ with the CFG of the called function after renaming. In order to help exacting summaries from the $G'$, $\textsc{unwind}(G)$ annotates in $G'$ the entry and exit locations ${s_i}$ and ${e_i}$ of the unwounded functions $\fun{f}$ with an additional superscript $\fun{f}$, i.e., $s_i^\fun{f}$ and $e_i^\fun{f}$. The formal definition is given below.
 
 Given a CFG $G=\langle
-V, E,\textmd{cmd}, \overline{u}, \overline{r},{\ell_s},{\ell_e} \rangle$.
-We use $\hat{E} =\{e\in E: \textmd{cmd} (e)= (\overline{x}:=\mathtt{g}(\overline{a}))\}$ to denote the set of function call edges in $E$ and define a function $\textsc{toCFG}(e)$ that maps a call edge $e$ of function $\fun{g}$ to a CFG returned from $\textsc{rename}(G_\fun{g})$. Notice that two different call edges of the same function are mapped to two different renamed CFGs. If no location with superscript $\fun{g}$ appears in $V$, $\textsc{toCFG}(e)$ returns a CFG with entry and exit locations annotated with superscript $\fun{g}$.
+V, E,\textmd{cmd}, \overline{\texttt{u}}, \overline{\texttt{r}},s,e \rangle$.
+We use $\hat{E} =\{e\in E: \textmd{cmd} (e)= (\overline{\texttt{x}}:=\mathtt{g}(\overline{\texttt{a}}))\}$ to denote the set of function call edges in $E$ and define a function $\textsc{toCFG}(e)$ that maps a call edge $e$ of function $\fun{g}$ to a CFG returned from $\textsc{rename}(G_\fun{g})$. Notice that two different call edges of the same function are mapped to two different renamed CFGs. If no location with superscript $\fun{g}$ appears in $V$, $\textsc{toCFG}(e)$ returns a CFG with entry and exit locations annotated with superscript $\fun{g}$.
 
-Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{u}, \overline{r},{\ell_s},{\ell_e} \rangle$ such that (1) $V' = V\cup \bigcup\{V^i:(\ell, \ell')\in \hat{E} \wedge \textsc{toCFG}(\ell, \ell')= \langle V^i, E^i,\textmd{cmd}^i, \overline{u}^i, \overline{r}^i,s,e\rangle \}$ (2) $E'= E \setminus \hat{E} \cup \bigcup\{E^i\cup\{(\ell, s),(e, \ell')\}: (\ell, \ell')\in \hat{E} \wedge \textsc{toCFG}(\ell, \ell')= \langle V^i, E^i,\textmd{cmd}^i, \overline{u}^i, \overline{r}^i,s,e\rangle \}$ with $s\in \{\ell_s^i,\ell_s^{i,\fun{f}}\}$, $e\in \{\ell_e^i,\ell_e^{i,\fun{f}}\}$, $\textmd{cmd}' (\ell, s) = (\overline{u}:=\overline{a})$, and $\textmd{cmd}' (e, \ell') = (\overline{x}:=\overline{r})$.
+Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{\texttt{u}}, \overline{\texttt{r}},s,e \rangle$ such that (1) $V' = V\cup \bigcup\{V_i:(\ell, \ell')\in \hat{E} \wedge \textsc{toCFG}(\ell, \ell')= \langle V_i, E_i,\textmd{cmd}_i, \overline{\texttt{u}}_i, \overline{\texttt{r}}_i,s',e'\rangle \}$ (2) $E'= E \setminus \hat{E} \cup \bigcup\{E_i\cup\{(\ell, s'),(e', \ell')\}: (\ell, \ell')\in \hat{E} \wedge \textsc{toCFG}(\ell, \ell')= \langle V_i, E_i,\textmd{cmd}_i, \overline{\texttt{u}}_i, \overline{\texttt{r}}_i,s',e'\rangle \}$ with $\textmd{cmd}' (\ell, s') = (\overline{\texttt{u}}:=\overline{\texttt{a}})$ and $\textmd{cmd}' (e', \ell') = (\overline{\texttt{x}}:=\overline{\texttt{r}})$.
 
 
 %$\textsc{unwind}(G) = \langle
@@ -23,8 +23,8 @@ Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{u}, \ove
       \node (text) at (3, -1) {$\textsc{rename}(G_\fun{g})$};
       \node[node] (00) at (0, 0)  {$\ell$};
       \node[node] (01) at (0, -2) {$\ell'$};
-      \node[node] (10) at (3, 0)  {\smallnode{$\ell^{i, \fun{g}}_s$}};
-      \node[node] (11) at (3, -2) {\smallnode{$\ell^{i, \fun{g}}_e$}};
+      \node[node] (10) at (3, 0)  {\smallnode{$s_i^\fun{g}$}};
+      \node[node] (11) at (3, -2) {\smallnode{$e_i^\fun{g}$}};
       \node (arrow_s) at (-2.5, -1) {};
       \node (arrow_e) at (-0.5, -1) {};
 
@@ -32,13 +32,13 @@ Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{u}, \ove
         (arrow_s) edge [dotted]
                   node {} (arrow_e)
         (0) edge 
-            node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{a})$} (1)
+            node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{\mathtt{a}})$} (1)
 
         (00) edge 
-             node {$\overline{\mathtt{u}} := \overline{a}$} (10)
+             node {$\overline{\mathtt{u}_i} := \overline{\mathtt{a}}$} (10)
 
         (11) edge 
-             node {$\overline{\mathtt{x}} := \mathtt{\overline{ret}^g}$} (01) ;
+             node {$\overline{\mathtt{x}} := \mathtt{\overline{r}^g_i}$} (01) ;
     \end{tikzpicture}
 
   \caption{Unwinding Function Calls}
@@ -81,3 +81,4 @@ Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{u}, \ove
   free variables over program variables of $G$. $\assert{P}\ G\ 
   \assert{Q}$ if and only if $\assert{P}\ \textsc{unwind} (G)\ \assert{Q}$.
 \end{proposition}
+Essentially, $G$ and $\textsc{unwind} (G)$ represent the same function. The only difference is that the latter has more program variables after unwinding, but this does not affect the states over program variables of $G$ before and after the function.
