@@ -59,13 +59,20 @@ The false positive came from the spurious error trace reported by
 configuration for \textsc{CPAChecker}. If results of tasks with modulo
 operation are excluded, we can obtain a score of 16.
 
-Although CBMC got the highest score, several results returned by CBMC
-may be \todo{doubtful} because CBMC always reports safe if no bug is found
-within a given set of bounds\footnote{This was confirmed in a private
-  communication with the developers of CBMC.}, which are set to 850
-seconds in cbmc-wrapper.sh.
-If we ignore the results returned by CBMC exactly in 850 seconds, CBMC 
-will obtain a score of 14 and the gap between the scores of CBMC and
+% Although CBMC got the highest score, several results returned by CBMC
+% may be \todo{doubtful} because CBMC always reports safe if no bug is found
+% within a given set of bounds\footnote{This was confirmed in a private
+% communication with the developers of CBMC.}, which are set to 850
+% seconds in cbmc-wrapper.sh.
+% If we ignore the results returned by CBMC exactly in 850 seconds, CBMC
+
+Although CBMC got the highest score, it was confirmed that there were
+heuristics used in their implementaion for the competition, and the
+results provided by this version of CBMC might not be proper proofs 
+for several tasks. \footnote{This was confirmed in a private
+communication with the developers of CBMC.}
+If we ignore the results of those tasks, CBMC 
+will obtain a score of 14, and the gap between the scores of CBMC and
 our tool becomes much smaller.
 Note that in order to simplify the implementation of our prototype
 tool, we turned off important optimizations such as adjust block
