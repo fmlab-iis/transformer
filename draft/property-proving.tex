@@ -29,6 +29,62 @@ $\hat{G}_{\mathtt{f}}^S = \langle V, E \hat{\textmd{cmd}}
   \end{array}
 \end{equation*}
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+
+      \node[node] (00) at (0, 0)  {$\ell$};
+      \node[node] (01) at (0, -2) {$\ell'$};
+
+      \node (arrow_s0) at ( .3, -1) {};
+      \node (arrow_e0) at (1.3, -1) {};
+
+      \node[node] (10) at (1.6, 0)  {$\ell$};
+      \node[node] (11) at (1.6, -2) {$\ell'$};
+
+      \node[node] (20) at (7.4, 0)  {$\ell$};
+      \node[node] (21) at (7.4, -2) {$\ell'$};
+
+      \node (arrow_s1) at (7.8, -1) {};
+      \node (arrow_e1) at (8.7, -1) {};
+
+      \node[node] (30) at (9, 0)  {$\ell$};
+      \node[node] (31) at (9, -2) {$\ell'$};
+
+      
+      \path
+        (00) edge [left]
+             node {$\overline{\mathtt{x}} := \mathtt{g}(\overline{a})$} (01)
+
+        (arrow_s0) edge [dotted]
+                  node {} (arrow_e0)
+
+        (10) edge
+             node {$
+               \begin{array}{l}
+                 \overline{\mathtt{x}} := \overline{\mathtt{nondet}};\\
+                 \mathtt{assume\ }S[\mathtt{g}]
+                 [\overline{\mathtt{u}} \mapsto \overline{a},
+                  \mathtt{\overline{ret}^g} \mapsto \overline{\mathtt{x}}]
+               \end{array}
+             $} (11)
+
+        (20) edge [left]
+             node {$\mathtt{return\ } \overline{b}$} (21) 
+
+        (arrow_s1) edge [dotted]
+                  node {} (arrow_e1)
+
+        (30) edge 
+             node {$\mathtt{\overline{ret}^f} := \overline{b}$} (31) 
+             ;
+    \end{tikzpicture}
+
+  \caption{Checking Summary}
+  \label{figure:checking-summary}
+\end{figure}
+
 The control flow graph $\hat{G}_{\mathtt{f}}^S$ replaces every
 function call in $G_{\mathtt{f}}$ by instantiating a function
 summary. Using the proof rule for recursive functions, we have the
