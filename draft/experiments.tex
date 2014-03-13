@@ -11,6 +11,17 @@ A prototype tool of our approach has been implemented with
   invoke \textsc{CPAChecker} and use the configuration file
   verifier-conf/myCPA-PredAbstract-LIA.properties.} as the underlying
 intraprocedure analyzer.
+In addition, we used Redlog~\cite{} package, which is integrated in REDUCE
+algebra system~\cite{}, for universal quantification on logic formulae.
+
+To evaluate our tool, we used the \textbf{recursive} category of verification 
+tasks in the 2014 Competition on Software Verification(SV-COMP 2014)~\cite
+{svcomp14} and followed the rules and the score schema of the competition.
+The experiment results show that our tool is quite competitive even compared 
+with the winners of the competition. It is a solid evidence that our approach 
+not merely extend program analyzer to handle recursion but also provide 
+comparable effectiveness.
+
 We compared our tool based on experiments with four participants,
 namely Blast 2.7.2\footnote{We use the arguments \textbf{-alias empty
     -enable-recursion -noprofile -cref -sv-comp -lattice
@@ -19,17 +30,16 @@ CBMC 4.5-sv-comp-2014~\cite{ClarkeKL04} with a wrapper
 cbmc-wrapper.sh\footnote{The wrapper cbmc-wrapper.sh is provided by
   CBMC 4.5-sv-comp-2014, which is a special version for SV-COMP
   2014.}, Ultimate Automizer~\cite{HeizmannCDEHLNSP13}, and Ultimate
-Kojak~\cite{Kojak}, of the 2014 Competition on Software Verification
-(SV-COMP 2014)~\cite{svcomp14}.
+Kojak~\cite{Kojak}, of SV-COMP 2014.
 The latter three tools are the top three winners of the
 \textbf{recursive} category in the 2014 competition.
-In our experiments, the programs under verification, including 16
-bug-free and 7 buggy C programs, were selected from the
-\textbf{recursive} category of SV-COMP 2014.
-The experiments were performed on a virtual machine with one 2.93-GHz 
-CPU and 4 GB of memory running 64-bit Ubuntu 12.04 LTS.
+In our experiments, the programs under verification, 16 bug-free and 
+7 buggy C programs in total, were the entire tasks in \textbf{recursive}
+category of SV-COMP 2014.
+The experiments were performed on a virtual machine with 4 GB of memory
+running 64-bit Ubuntu 12.04 LTS. 
 The virtual machine ran on a host with an Intel Core i7-870 Quad-Core
-CPU and 8 GB of memory running 64-bit Windows 7.
+CPU running 64-bit Windows 7.
 The timeout of a verification task is 900 seconds.
 
 The experimental results are summarized in
@@ -44,16 +54,13 @@ Compared to Ultimate Automizer, Ultimate Kojak, and Blast, our tool
 can verify more programs and obtain a higher score.
 The scores of our tool and Ultimate Automizer are very close mainly
 because of a false positive produced by our tool.
-\todo{Could we explain the false positive?}
-The only false positive came from the spurious error trace reported
-by CPAChecker because modulo operation is approximated under our 
-configuration for CPAChecker. If results of the two tasks with modulo
-operation, EvenOdd\_true.c and EvenOdd03\_false.c, are excluded, we
-can obtain a score of 16.
+The false positive came from the spurious error trace reported by
+\textsc{CPAChecker} because modulo operation is approximated under our 
+configuration for \textsc{CPAChecker}. If results of tasks with modulo
+operation are excluded, we can obtain a score of 16.
 
-\todo{Could we explain the exceptions that we have?}
 Although CBMC got the highest score, several results returned by CBMC
-may be doubtful because CBMC always reports safe if no bug is found
+may be \todo{doubtful} because CBMC always reports safe if no bug is found
 within a given set of bounds\footnote{This was confirmed in a private
   communication with the developers of CBMC.}, which are set to 850
 seconds in cbmc-wrapper.sh.
