@@ -69,8 +69,8 @@ We use $\mathtt{\overline{u}^g}$ and $\mathtt{\overline{r}^g}$ to denote the for
                \begin{array}{l}
                  \overline{\mathtt{x}} := \overline{\mathtt{nondet}};\\
                  \mathtt{assume\ }S[\mathtt{g}]
-                 [\overline{\mathtt{u}} \mapsto \overline{a},
-                  \mathtt{\overline{ret}^g} \mapsto \overline{\mathtt{x}}]
+                 [\mathtt{\overline{u}^g} \mapsto \overline{a},
+                  \mathtt{\overline{r}^g} \mapsto \overline{\mathtt{x}}]
                \end{array}
              $} (11)
 
@@ -81,7 +81,7 @@ We use $\mathtt{\overline{u}^g}$ and $\mathtt{\overline{r}^g}$ to denote the for
                   node {} (arrow_e1)
 
         (30) edge 
-             node {$\mathtt{\overline{ret}^f} := \overline{b}$} (31) 
+             node {$\mathtt{\overline{r}} := \overline{b}$} (31) 
              ;
     \end{tikzpicture}
 
@@ -94,6 +94,7 @@ function call in $G_{\mathtt{f}}$ by instantiating a function
 summary. Using the proof rule for recursive functions, we have the
 following proposition:
 \begin{proposition}
+  \label{proposition:check_summary}
   Let $G_{\fun{f}} = \langle V, E, \textmd{cmd}, \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ be the control flow graph for the function
   $\mathtt{f}$, and $S[\bullet]$ an array of logic formulae over the formal
   parameters and return variables of each function. If $\assert{\top}\

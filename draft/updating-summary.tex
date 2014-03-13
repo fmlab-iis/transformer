@@ -36,14 +36,14 @@ For each pairs of locations $(\ell,\ell')$ in the set $L_\fun{f}$, if the invari
   \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
 
-      \draw [fill=gray!10] (3, -1) ellipse (1.2 and 1.5);
-      \node (text) at (3, -1) {$\textsc{rename}(G_\fun{f},i)$};
+      \draw [fill=gray!10] (3.5, -1) ellipse (1.8 and 1.5);
+      \node (text) at (3.5, -1) {$\textsc{mark}(\textsc{rename}(G_\fun{f},i))$};
       \node[node] (00) at (0, 0)  {$\ell$};
       \node[node] (01) at (0, -2) {$\ell'$};
-      \node[node] (10) at (3, 0)  {$s_i^\fun{f}$};
-      \node[node] (11) at (3, -2) {$e_i^\fun{f}$};
+      \node[node] (10) at (3.5, 0)  {$s_i^\fun{f}$};
+      \node[node] (11) at (3.5, -2) {$e_i^\fun{f}$};
 
-      \node (arrow_s) at (4.5, -1) {};
+      \node (arrow_s) at (5.5, -1) {};
       \node (arrow_e) at (6.5, -1) {};
       
       \node[rectangle,text centered,draw] (text) at (9, -1)

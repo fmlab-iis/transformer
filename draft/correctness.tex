@@ -1,3 +1,4 @@
+\todo{for the case that return variables appear in the invariant of the pre-state, we replace it with true in the summary, we should do the same for the summary generated here}
 We are ready to sketch the proof of Theorem~\ref{theorem:soundness}. 
 Assume Algorithm~\ref{algorithm:overview} returns $\mathit{Pass} (\Pi
 (G^-_k, \mathtt{true}))$ and $S[\bullet]$ on the input control flow graph $G =
@@ -41,10 +42,12 @@ $\assert{I^-_{e_k^\fun{f}}}\ \overline{\mathtt{x}} :=
 Moreover,
 $\assert{I^-_{s_k^\mathtt{f}}}\
 \mathtt{\overline{r}} := \mathtt{f}
-(\overline{\mathtt{u}})\ \assert{I^-_{s_k^\fun{f}}}$ and
+(\overline{\mathtt{u}})\ \assert{I^-_{s_k^\fun{f}}}$ 
+by Proposition~\ref{propposition:invariant}
+and
 $\assert{\mathtt{true}}\ \mathtt{\overline{r}} := \mathtt{f}
 (\overline{\mathtt{u}})\ \assert{(I^-_{s_k^\fun{f}} \implies
-  I^-_{e_k^\fun{f}})}$ by Proposition~\ref{propposition:strengthen_postcondition} and \ref{propposition:invariant}.
+  I^-_{e_k^\fun{f}})}$ by Proposition~\ref{propposition:strengthen_postcondition} and \ref{proposition:check_summary}.
 Since $I^-_{s_k^\fun{f}} \implies \mathtt{true}$, we have
 $\assert{I^-_{s_k^\fun{f}}}\
 \mathtt{\overline{r}} := \mathtt{f}
