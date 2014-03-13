@@ -1,10 +1,17 @@
-We first define the rename function $\textsc{rename}(G)$. It returns a CFG $(V_i, E_i,\textmd{cmd}_i, \overline{\texttt{u}}_i, \overline{\texttt{r}}_i,s_i,e_i)$ obtained by first replacing every return command $\mathtt{return}\ \overline{\texttt{e}}$ by assignments to return variables $\overline{\texttt{r}} := \overline{\texttt{e}}$ and then renaming all variables and locations in $G$ with a fresh index value $i$. The function $\textsc{unwind}(G)$ returns a CFG $G'$ obtained by replacing all function call edges in $G$ with the CFG of the called function after renaming. In order to help exacting summaries from the $G'$, $\textsc{unwind}(G)$ annotates in $G'$ the entry and exit locations ${s_i}$ and ${e_i}$ of the unwounded functions $\fun{f}$ with an additional superscript $\fun{f}$, i.e., $s_i^\fun{f}$ and $e_i^\fun{f}$. The formal definition is given below.
+We first define the rename function $\textsc{rename}(G,i)$. It returns a CFG $(V_i, E_i,\textmd{cmd}_i, \overline{\texttt{u}}_i, \overline{\texttt{r}}_i,s_i,e_i)$ obtained by first replacing every return command $\mathtt{return}\ \overline{\texttt{e}}$ by assignments to return variables $\overline{\texttt{r}} := \overline{\texttt{e}}$ and then renaming all variables and locations in $G$ with the index value $i$. The function $\textsc{unwind}(G)$ returns a CFG $G'$ obtained by replacing all function call edges in $G$ with the CFG of the called function after renaming. In order to help exacting summaries from the $G'$, $\textsc{unwind}(G)$ annotates in $G'$ the entry and exit locations ${s_i}$ and ${e_i}$ of the unwounded functions $\fun{f}$ with an additional superscript $\fun{f}$, i.e., $s_i^\fun{f}$ and $e_i^\fun{f}$. The formal definition is given below.
 
 Given a CFG $G=\langle
 V, E,\textmd{cmd}, \overline{\texttt{u}}, \overline{\texttt{r}},s,e \rangle$.
-We use $\hat{E} =\{e\in E: \textmd{cmd} (e)= (\overline{\texttt{x}}:=\mathtt{g}(\overline{\texttt{a}}))\}$ to denote the set of function call edges in $E$ and define a function $\textsc{toCFG}(e)$ that maps a call edge $e$ of function $\fun{g}$ to a CFG returned from $\textsc{rename}(G_\fun{g})$. Notice that two different call edges of the same function are mapped to two different renamed CFGs. If no location with superscript $\fun{g}$ appears in $V$, $\textsc{toCFG}(e)$ returns a CFG with entry and exit locations annotated with superscript $\fun{g}$.
-
-Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{\texttt{u}}, \overline{\texttt{r}},s,e \rangle$ such that (1) $V' = V\cup \bigcup\{V_i:(\ell, \ell')\in \hat{E} \wedge \textsc{toCFG}(\ell, \ell')= \langle V_i, E_i,\textmd{cmd}_i, \overline{\texttt{u}}_i, \overline{\texttt{r}}_i,s',e'\rangle \}$ (2) $E'= E \setminus \hat{E} \cup \bigcup\{E_i\cup\{(\ell, s'),(e', \ell')\}: (\ell, \ell')\in \hat{E} \wedge \textsc{toCFG}(\ell, \ell')= \langle V_i, E_i,\textmd{cmd}_i, \overline{\texttt{u}}_i, \overline{\texttt{r}}_i,s',e'\rangle \}$ with $\textmd{cmd}' (\ell, s') = (\overline{\texttt{u}}:=\overline{\texttt{a}})$ and $\textmd{cmd}' (e', \ell') = (\overline{\texttt{x}}:=\overline{\texttt{r}})$.
+We use $\hat{E} =\{e\in E: \textmd{cmd} (e)= (\overline{\texttt{x}}:=\mathtt{g}(\overline{\texttt{a}}))\}$ to denote the set of function call edges in $E$ and define a function $\textsc{index}(e)$ that maps a call edge $e$ to a unique index value.
+The function $\textsc{mark}(G,\fun{g})$ returns a CFG that is identical to $G$, except that for the case that no location with superscript $\fun{g}$ appears in $V$, it annotates the entry and exit locations of the returned CFG with superscript $\fun{g}$.
+Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{\texttt{u}}, \overline{\texttt{r}},s,e \rangle$ such that 
+(1) $V' = V\cup \bigcup\{V_i:(\ell, \ell')\in \hat{E} \wedge \textmd{cmd}(\ell, \ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{\texttt{a}}))\wedge \textsc{index}(\ell, \ell')=i \wedge 
+\textsc{mark}(\textsc{rename}(G_\fun{g},i))=
+\langle V_i, E_i,\textmd{cmd}_i, \overline{\texttt{u}}_i, \overline{\texttt{r}}_i,s',e'\rangle \}$ 
+(2) $E'= E \setminus \hat{E} \cup \bigcup\{E_i\cup\{(\ell, s'),(e', \ell')\}: (\ell, \ell')\in \hat{E} \wedge 
+\textmd{cmd}(\ell, \ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{\texttt{a}}))\wedge \textsc{index}(\ell, \ell')=i \wedge 
+\textsc{mark}(\textsc{rename}(G_\fun{g},i))=
+\langle V_i, E_i,\textmd{cmd}_i, \overline{\texttt{u}}_i, \overline{\texttt{r}}_i,s',e'\rangle \}$ with $\textmd{cmd}' (\ell, s') = (\overline{\texttt{u}}_i:=\overline{\texttt{a}})$ and $\textmd{cmd}' (e', \ell') = (\overline{\texttt{x}}:=\overline{\texttt{r}_i})$.
 
 
 %$\textsc{unwind}(G) = \langle
@@ -19,12 +26,12 @@ Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{\texttt{
       \node[node] (0) at (-4, 0)  {$\ell$}; %[label=above:$\mathtt{main()}$]
       \node[node] (1) at (-4, -2) {$\ell'$};
 
-      \draw [fill=gray!10] (3, -1) ellipse (1 and 1.5);
-      \node (text) at (3, -1) {$\textsc{rename}(G_\fun{g})$};
+      \draw [fill=gray!10] (4, -1) ellipse (1.8 and 1.5);
+      \node (text) at (4, -1) {$\textsc{mark}(\textsc{rename}(G_\fun{g},i))$};
       \node[node] (00) at (0, 0)  {$\ell$};
       \node[node] (01) at (0, -2) {$\ell'$};
-      \node[node] (10) at (3, 0)  {\smallnode{$s_i^\fun{g}$}};
-      \node[node] (11) at (3, -2) {\smallnode{$e_i^\fun{g}$}};
+      \node[node] (10) at (4, 0)  {\smallnode{$s_i^\fun{g}$}};
+      \node[node] (11) at (4, -2) {\smallnode{$e_i^\fun{g}$}};
       \node (arrow_s) at (-2.5, -1) {};
       \node (arrow_e) at (-0.5, -1) {};
 
@@ -35,10 +42,10 @@ Formally, $\textsc{unwind}(G) = \langle V', E',\textmd{cmd}', \overline{\texttt{
             node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{\mathtt{a}})$} (1)
 
         (00) edge 
-             node {$\overline{\mathtt{u}_i} := \overline{\mathtt{a}}$} (10)
+             node {$\overline{\mathtt{u}}_i := \overline{\mathtt{a}}$} (10)
 
         (11) edge 
-             node {$\overline{\mathtt{x}} := \mathtt{\overline{r}^g_i}$} (01) ;
+             node {$\overline{\mathtt{x}} := \mathtt{\overline{r}_i}$} (01) ;
     \end{tikzpicture}
 
   \caption{Unwinding Function Calls}

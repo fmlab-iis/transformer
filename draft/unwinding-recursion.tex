@@ -1,15 +1,14 @@
 
 We give details of the constructions and establish the soundness of
-Algorithm~\ref{algorithm:overview}. Throughout this section, we fix an
-input control flow graph $G = \langle V, E, \textmd{cmd} \rangle$. For
-each function $\mathtt{f}$ in $G$, $G_{\mathtt{f}}$ denotes the
+Algorithm~\ref{algorithm:overview}. Throughout this section, we fix an input control flow graph $G = \langle V, E, \textmd{cmd}, \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$. For
+each function $\mathtt{f}$ in $P$, $G_{\mathtt{f}}$ denotes the
 control flow graph of $\mathtt{f}$. Our goal is to establish the
 following theorem:
 
 \begin{theorem}
-  Let $G = \langle V, E, \textmd{cmd} \rangle$ be a control flow
-  graph. If Algorithm~\ref{algorithm:overview} returns
-  $\mathit{Pass}$, there is an inductive invariant $\Pi (G, \top)$
+  Let $G = \langle V, E, \textmd{cmd} , \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ be a control flow
+  graph in $P$. If Algorithm~\ref{algorithm:overview} returns
+  $\mathit{Pass}$, there is an inductive invariant $\Pi (G, \TT)$
   such that $I_{\ell} \implies B_{\ell}$ for every $(\ell, \ell') \in
   E$ with $\textmd{cmd} (\ell, \ell') = \mathtt{assert\ } B_{\ell}$.
   \label{theorem:soundness}
@@ -34,85 +33,6 @@ all assertions in $G$ are satisfied.
 \label{subsection:checking-summary}
 \input{property-proving}
 
-We are ready to sketch the proof of Theorem~\ref{theorem:soundness}. 
-Assume Algorithm~\ref{algorithm:overview} returns $\mathit{Pass} (\Pi
-(G^-_k, \mathtt{true}))$ and $S$ on the input control flow graph $G =
-\langle V, E, \textmd{cmd} \rangle$. Let $G^-_k = \langle V^-_k, E^-_k,
-\textmd{cmd}^-_k \rangle$ and $\Pi (G^-_k, \mathtt{true}) = \{ I^-_{\ell}
-: \ell \in V_k \}$. By the definition of inductive invariants, we have
-$\assert{I^-_{\ell}}\ \textmd{cmd}^-_k (\ell, \ell')\ \assert{I^-_{\ell'}}$
-for every $(\ell, \ell') \in E^-_k$. Moreover, $V \subseteq V^-_k$ since
-$G^-_k$ is obtained by unwinding $G$. Define 
-$\Gamma (G, \mathtt{true}) = \{ I^-_{\ell} \in \Pi (G^-_k,
-\mathtt{true}) : \ell \in V \}$. We claim $\Gamma (G, \mathtt{true})$
-is in fact an inductive invariant for $G$. 
-
-Let $\hat{E} = \{ (\ell, \ell') \in E : \textmd{cmd} (\ell, \ell') =
-\overline{\mathtt{x}} := \mathtt{f} (\overline{E}) \}$. We have
-$\textmd{cmd} (\ell, \ell') = \textmd{cmd}^-_k (\ell, \ell')$ for every
-$(\ell, \ell') \in E \setminus \hat{E}$. Thus $\assert{I^-_{\ell}}\
-\textmd{cmd} (\ell, \ell')\ \assert{I^-_{\ell'}}$ for every $(\ell,
-\ell') \in E \setminus \hat{E}$ by the definition of $\Gamma (G,
-\mathtt{true})$ and the inductiveness of $\Pi (G^-_k,
-\mathtt{true})$. It suffices to show that
-\begin{equation*}
-  \assert{I^-_{\ell}}\
-  \overline{\mathtt{x}} := \mathtt{f} (\overline{E})
-  \ \assert{I^-_{\ell'}}
-  \hspace{2em}
-  \textmd{or, equivalently,}
-  \hspace{2em}
-  \assert{I^-_{\ell}}\ 
-  \overline{\mathtt{u}} := \overline{E};\ 
-  \mathtt{\overline{ret}^{\mathtt{f}}} := \mathtt{f} (\overline{\mathtt{u}});\ 
-  \overline{\mathtt{x}} := \mathtt{\overline{ret}^{\mathtt{f}}}
-  \ \assert{I^-_{\ell'}}
-\end{equation*}
-for every $(\ell, \ell') \in \hat{E}$. 
-By the inductiveness of $\Pi (G^-_k, \mathtt{true})$, we have
-$\assert{I^-_{\ell}}\ \overline{\mathtt{u}} := \overline{E}\
-\assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}}$ and
-$\assert{I^-_{{\ell^k_e}^{\mathtt{(f)}}}}\ \overline{\mathtt{x}} :=
-\mathtt{\overline{ret}^{\mathtt{f}}}\ \assert{I^-_{\ell'}}$. Moreover,
-$\assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}}\
-\mathtt{\overline{ret}^{\mathtt{f}}} := \mathtt{f}
-(\overline{\mathtt{u}})\ \assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}}$ and
-$\assert{\mathtt{true}}\ \mathtt{\overline{ret}^f} := \mathtt{f}
-(\overline{\mathtt{u}})\ \assert{(I^-_{{\ell^k_s}^{(\mathtt{f})}} \implies
-  I^-_{{\ell^k_e}^{(\mathtt{f})}})}$ by Proposition~\todo{what?}.
-Since $I^-_{{\ell^k_s}^{(\mathtt{f})}} \implies \mathtt{true}$, we have
-$\assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}}\
-\mathtt{\overline{ret}^{\mathtt{f}}} := \mathtt{f}
-(\overline{\mathtt{u}})\  \assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}
-  \implies I^-_{{\ell^k_e}^{(\mathtt{f})}}}$. Therefore
-\begin{prooftree}
-  \scriptsize
-  \AxiomC{$\assert{I^-_{\ell}}\
-    \overline{\mathtt{u}} := \overline{E}\ 
-    \assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}}$}
-
-    \AxiomC{$\assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}}\ 
-    \mathtt{\overline{ret}^{\mathtt{f}}} := \mathtt{f} (\overline{\mathtt{u}})\ 
-    \assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}}$}
-    \noLine
-    \UnaryInfC{$\assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}}\ 
-    \mathtt{\overline{ret}^{\mathtt{f}}} := \mathtt{f} (\overline{\mathtt{u}})\ 
-    \assert{I^-_{{\ell^k_s}^{(\mathtt{f})}} \implies I^-_{{\ell^k_e}^{(\mathtt{f})}}}$}
-
-  \UnaryInfC{$\assert{I^-_{{\ell^k_s}^{(\mathtt{f})}}}\ 
-    \mathtt{\overline{ret}^{\mathtt{f}}} := \mathtt{f} (\overline{\mathtt{u}})\ 
-    \assert{I^-_{{\ell^k_e}^{\mathtt{(f)}}}}$}
-
-  \AxiomC{$\assert{I^-_{{\ell^k_e}^{\mathtt{(f)}}}}\ 
-    \overline{\mathtt{x}} := \mathtt{\overline{ret}^{\mathtt{f}}}\ 
-    \assert{I^-_{\ell'}}$}
-
-  \TrinaryInfC{$\assert{I^-_{\ell}}\ 
-    \overline{\mathtt{u}} := \overline{E};\ 
-    \mathtt{\overline{ret}^{\mathtt{f}}} := \mathtt{f} (\overline{\mathtt{u}});\ 
-    \overline{\mathtt{x}} := \mathtt{\overline{ret}^{\mathtt{f}}}\ 
-    \assert{I^-_{\ell'}}$}
-  \UnaryInfC{$\assert{I^-_{\ell}}\ 
-    \overline{\mathtt{x}} := \mathtt{f} (\overline{E})\ 
-    \assert{I^-_{\ell'}}$}
-\end{prooftree}
+\subsection{Correctness}
+\label{subsection:correctness}
+\input{correctness}

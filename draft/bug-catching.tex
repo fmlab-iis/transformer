@@ -1,7 +1,7 @@
 
-Let $G = \langle V, E, \textmd{cmd} \rangle$ be a control flow
+Let $G = \langle V, E, \textmd{cmd}, \overline{\texttt{u}}, \overline{\texttt{r}},s,e) \rangle$ be a control flow
 graph. The control flow graph $G^- = \langle V, E,
-\textmd{cmd}^- \rangle$ is obtained by replacing every
+\textmd{cmd}^-, \overline{\texttt{u}}, \overline{\texttt{r}},s,e \rangle$ is obtained by replacing every
 function calls in $G$ with $\mathtt{assume\ false}$. That is,
 \begin{equation*}
   \textmd{cmd}^- (\ell, \ell') =
@@ -46,6 +46,7 @@ function calls in $G$ with $\mathtt{assume\ false}$. That is,
 \begin{proposition}
   Let $G$ be a control flow graph, $P$ and $Q$ logic formulae with
   free variables over program variables of $G$. If $\assert{P}
-  G^- \assert{Q}$, then 
-  $\assert{P} G \assert{Q}$.
+  G \assert{Q}$, then 
+  $\assert{P} G^- \assert{Q}$.
 \end{proposition}
+The above holds because the computations of $G^-$ under-approximate the computations of $G$. If all computations of $G$ from a state satisfying $P$ always end with a state satisfying $Q$, the same should also hold for the computations of $G^-$.

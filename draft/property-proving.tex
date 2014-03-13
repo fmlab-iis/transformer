@@ -1,13 +1,13 @@
 
-Let $G_{\mathtt{f}} = \langle V, E, \textmd{cmd} \rangle$ be the
-control flow graph for the function $\mathtt{f}$ and $S[\bullet]$ an
+Let $G_{\fun{f}} = \langle V, E, \textmd{cmd}, \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ be the
+control flow graph for the function $\fun{f}$ and $S[\bullet]$ an
 array of function summaries. In order to check whether the function
 summary $S[{\mathtt{f}}]$ for $\mathtt{f}$ specifies the relation 
 between the formal parameters and return values of $\mathtt{f}$, 
 we define another control flow graph
-$\hat{G}_{\mathtt{f}}^S = \langle V, E \hat{\textmd{cmd}}
-\rangle$ where
+$\hat{G}_{\mathtt{f}}^S = \langle V, E, \hat{\textmd{cmd}}, \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ where
 \begin{equation*}
+\hspace{-0.2cm}
   \begin{array}{rcl}
     \hat{\textmd{cmd}} (\ell, \ell') & = &
     \left\{
@@ -15,19 +15,23 @@ $\hat{G}_{\mathtt{f}}^S = \langle V, E \hat{\textmd{cmd}}
         \overline{\mathtt{x}} := 
         \overline{\mathtt{nondet}};
         \mathtt{assume\ S[{\mathtt{g}}]}[
-        \overline{\mathtt{u}} \mapsto \overline{E},
-        \mathtt{\overline{ret}^g} \mapsto \overline{\mathtt{x}}]    
+        \mathtt{\overline{u}^g} \mapsto \overline{\mathtt{a}},
+        \mathtt{\overline{r}^g} \mapsto \overline{\mathtt{x}}]    
         &
         \textmd{ if } \textmd{cmd} (\ell, \ell') = 
-        \overline{\mathtt{x}} := \mathtt{g} (\overline{E})\\
-        \mathtt{\overline{ret}^f} := \overline{F}
+        \overline{\mathtt{x}} := \mathtt{g} (\overline{\mathtt{a}})\\
+		\mathtt{\overline{r}} := \overline{\mathtt{e}}
         &
         \textmd{ if } \textmd{cmd} (\ell, \ell') = \mathtt{return\ }
-        \overline{F}
+        \overline{\mathtt{e}}\\
+        \textmd{cmd} (\ell, \ell')
+        &
+		\textmd{ otherwise}        
       \end{array}
     \right.
   \end{array}
 \end{equation*}
+We use $\mathtt{\overline{u}^g}$ and $\mathtt{\overline{r}^g}$ to denote the formal parameters and return variables of the function $\fun{g}$.
 
 \begin{figure}
   \centering
@@ -90,20 +94,20 @@ function call in $G_{\mathtt{f}}$ by instantiating a function
 summary. Using the proof rule for recursive functions, we have the
 following proposition:
 \begin{proposition}
-  Let $G_{\mathtt{f}}$ be the control flow graph for the function
+  Let $G_{\fun{f}} = \langle V, E, \textmd{cmd}, \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ be the control flow graph for the function
   $\mathtt{f}$, and $S[\bullet]$ an array of logic formulae over the formal
   parameters and return variables of each function. If $\assert{\top}\
   \hat{G}_{\mathtt{g}}^S\ \assert{S[\mathtt{g}]}$ for every
-  function $\mathtt{g}$, then $\assert{\top}\ \mathtt{\overline{ret}^f} :=
+  function $\mathtt{g}$, then $\assert{\top}\ \mathtt{\overline{r}} :=
   \mathtt{f} (\overline{\mathtt{u}})\ \assert{S[\mathtt{f}]}$.
 \end{proposition}
 
 It is easy to check $\assert{\top}\ \hat{G}^S_{\mathtt{g}}\
 \assert{S[\mathtt{g}]}$ by program analysis. Let $G_{\mathtt{f}}$ be
 the control flow graph for the function $\mathtt{f}$ and
-$\hat{G}^S_{\mathtt{f}} = \langle V, E, \hat{\textmd{cmd}} \rangle$ as
+$\hat{G}^S_{\mathtt{f}} = \langle V, E, \hat{\textmd{cmd}}, \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ as
 above. Consider another control flow graph $\tilde{G}^S_{\mathtt{f}} =
-\langle \tilde{V}, \tilde{E}, \tilde{\textmd{cmd}} \rangle$ where
+\langle \tilde{V}, \tilde{E}, \tilde{\textmd{cmd}} , \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ where
 \begin{equation*}
   \begin{array}{rcl}
     \tilde{V} & = & V \cup \{ \tilde{\ell}_e \}\\
@@ -121,11 +125,11 @@ above. Consider another control flow graph $\tilde{G}^S_{\mathtt{f}} =
 \end{equation*}
 
 \begin{corollary}
-  Let $G_{\mathtt{f}}$ be the control flow graph for the function
+  Let $G_{\fun{f}} = \langle V, E, \textmd{cmd}, \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ be the control flow graph for the function
   $\mathtt{f}$, and $S[\bullet]$ an array of logic formulae over the formal
   parameters and return variables of each function. If $\textsc{BasicChecker}
   (\tilde{G}^S_{\mathtt{g}})$ returns $\mathit{Pass}$ for every function
-  $\mathtt{g}$, then $\assert{\top}\ \mathtt{\overline{ret}^f} :=
+  $\mathtt{g}$, then $\assert{\top}\ \mathtt{\overline{r}} :=
   \mathtt{f} (\overline{\mathtt{u}})\ \assert{S[\mathtt{f}]}$.
   \label{corollary:check-summary}
 \end{corollary}

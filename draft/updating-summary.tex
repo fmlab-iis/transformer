@@ -1,65 +1,64 @@
-Let $G^- = \langle V^-, E^-, \textmd{cmd}^-, \overline{u}, \overline{r},\ell_s,\ell_e \rangle$ be a CFG obtained from Section~\ref{subsection:under-approximation} and $L_\fun{f}=\{(\ell_s^{i,\fun{f}},\ell_e^{i,\fun{f}}):\ell_s^{i,\fun{f}}\in E^- \wedge \ell_e^{i,\fun{f}}\in E^-\mbox{ for some }i\}$
-the set of entry and exit locations of the call to the function $\mathtt{f}$.
-%\mbox{ the pair of locations }\ell_s^{i,\fun{f}}\mbox{ and }\ell_e^{i,\fun{f}}\mbox{ in }E\mbox{ for some }i\}$ 
 When the function UpdateSummary ($P$, $G^-$,$\Pi (G^-, \TT)$) is triggered, it extracts summaries from the inductive invariant $\Pi (G^-, \TT)= \{ I_\ell : \ell \in V^-
 \}$ (Algorithm~\ref{algorithm:update-summary}). 
+Let $G^- = \langle V^-, E^-, \textmd{cmd}^-, \overline{\mathtt{u}}, \overline{\mathtt{r}},\ell_s,\ell_e \rangle$ and $L_\fun{f}=\{(s_i^\fun{f},e_i^\fun{f}):s_i^\fun{f}, e_i^\fun{f}\in E^-\mbox{ for some }i\}$
+the set of entry and exit locations of the call to the function $\mathtt{f}$.
 
 \begin{algorithm}
-  \KwIn{$P=\{\mbox{CFG }G_\fun{main}\}\cup\{\mbox{CFG } G_\fun{f} : \fun{f}\mbox{ is a function}\}$: a program; $G^-$: a CFG after unwinding;$\Pi (G^-, \TT)= \{ I_\ell : \ell \in V^-
+  \KwIn{$P=\{\mbox{CFG }G_\fun{main}\}\cup\{\mbox{CFG } G_\fun{f} : \fun{f}\mbox{ is a function}\}$: a program; $G^-= \langle V^-, E^-, \textmd{cmd}^-, \overline{u}, \overline{r},\ell_s,\ell_e \rangle$: a CFG after unwinding; $\Pi (G^-, \TT)= \{ I_\ell : \ell \in V^-
   \}$ : an inductive invariant of $G^-$}
-  \KwOut{$S$:function summaries}
+  \KwOut{$S[\bullet]$: function summaries}
 
   \ForEach{function $\fun{f}$ with $G_\fun{f}\in P$}
   {	
-  	Compute the set $L_\fun{f}$\;
+  	Compute the set $L_\fun{f}=\{(s_i^\fun{f},e_i^\fun{f}):s_i^\fun{f}, e_i^\fun{f}\in E^-\mbox{ for some }i\}$\;
   	$S[\fun{f}]:=\TT$\;
  	\ForEach{pair of locations $(\ell,\ell')\in L_\mathtt{f}$}
    	{
    		\lIf{$I_\ell$ does not contain any return variable of $\mathtt{f}$}
        	{
-         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall P_\mathtt{f}. (I_\ell \implies I_{\ell'})$\;
+         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall V_\mathtt{f}. (I_\ell \implies I_{\ell'})$\;
        	}	
    	}
     
   }
  
-  \Return $S$\;
+  \Return $S[\bullet]$\;
   \caption{$\textmd{UpdateSummary} (P, G^-,\Pi (G^-, \TT))$}
   \label{algorithm:update-summary}
 \end{algorithm}
 
-For each function $\fun{f}$ in the program $P$, we first compute the set $L_\fun{f}$  and initialize its summary $S[\fun{f}$ to $\TT$.
+For each function $\fun{f}$ in the program $P$, we first compute the set $L_\fun{f}$  and initialize its summary $S[\fun{f}]$ to $\TT$.
 Let $V_\fun{f}$ be the set of all variables appearing in $G^-$ except the set of formal parameter and return variables of $\fun{f}$.
-For each pairs of locations $(\ell,\ell')$ in the set $L_\fun{f}$, if the invariant of location $i$ does not contains any return variables of $\mathtt{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall P_\mathtt{f}. (I_\ell \implies I_{\ell'})$.
+For each pairs of locations $(\ell,\ell')$ in the set $L_\fun{f}$, if the invariant of location $l$ does not contain any return variable of $\fun{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall V_\fun{f}. (I_\ell \implies I_{\ell'})$.
 
 \begin{figure}
   \centering
   \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
 
-      \draw [fill=gray!10] (3, -1) ellipse (1 and 1.5);
-      \node (text) at (3, -1) {$\textsc{rename}(G_\fun{f})$};
+      \draw [fill=gray!10] (3, -1) ellipse (1.2 and 1.5);
+      \node (text) at (3, -1) {$\textsc{rename}(G_\fun{f},i)$};
       \node[node] (00) at (0, 0)  {$\ell$};
       \node[node] (01) at (0, -2) {$\ell'$};
-      \node[node] (10) at (3, 0)  {\smallnode{$\ell^{i, \fun{f}}_s$}};
-      \node[node] (11) at (3, -2) {\smallnode{$\ell^{i, \fun{f}}_e$}};
+      \node[node] (10) at (3, 0)  {$s_i^\fun{f}$};
+      \node[node] (11) at (3, -2) {$e_i^\fun{f}$};
 
       \node (arrow_s) at (4.5, -1) {};
       \node (arrow_e) at (6.5, -1) {};
       
       \node[rectangle,text centered,draw] (text) at (9, -1)
-      { add $\forall P_{\mathtt{f}}.
-        (I_{\ell^{i, \mathtt{f}}_s} \implies I_{\ell^{i, \mathtt{f}}_e})$
-        to $S[\mathtt{f}]$}; 
+      { add $\forall V_{\mathtt{f}}.
+        (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$
+        to $S[\fun{f}]$}; 
       
       \path
         (arrow_s) edge [dotted]
                   node {} (arrow_e)
         (00) edge 
-             node {$\overline{\mathtt{u}} := \overline{a}$} (10)
+             node {$\overline{\mathtt{u}}_i := \overline{\mathtt{a}}$} (10)
 
         (11) edge 
-             node {$\overline{\mathtt{x}} := \mathtt{\overline{ret}^f}$} (01) ;
+             node {$\overline{\mathtt{x}} := \mathtt{\overline{r}_i}$} (01) ;
     \end{tikzpicture}
 
   \caption{Updating Summary}
@@ -68,16 +67,27 @@ For each pairs of locations $(\ell,\ell')$ in the set $L_\fun{f}$, if the invari
 
 \begin{proposition}
   \label{propposition:strengthen_postcondition}
-  Let $G^- = \langle V^-, E^-, \textmd{cmd}^-, \overline{u}, \overline{r},\ell_s,\ell_e \rangle$ be a control flow graph obtained by unwinding $\fun{f}$ and $S=\textmd{UpdateSummary} (P, G^-,\Pi (G^-, \TT))$ be the summary computed by Algorithm~\ref{algorithm:update-summary}.
-  If $\assert{\top}\ \mathtt{\overline{r}} :=
-    \mathtt{f} (\overline{\mathtt{u}})\ \assert{S[\mathtt{f}]}$ for every
-  function $\mathtt{f}$, then $\assert{\top}\ \mathtt{\overline{ret}^f} :=
-  \mathtt{f} (\overline{\mathtt{u}})\ \assert{I_\ell \implies I_{\ell'}}$ for all $(\ell,\ell')$ in $L_\mathtt{f}$.
+  Given an unwound CFG $G^- = \langle V^-, E^-, \textmd{cmd}^-, \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ and
+  define $L'_\fun{f}=\{(s_i^\fun{f},e_i^\fun{f}):
+  I_{s_i^\fun{f}} \mbox{ contains no return variable of }\fun{f} \wedge
+  s_i^\fun{f}, e_i^\fun{f}\in E^-\}$.
+  If $\assert{\mathtt{true}}\ \mathtt{\overline{r}} := \mathtt{f}
+     (\overline{\mathtt{u}})\ \assert{S[\fun{f}]}$ holds, then
+  $\assert{\mathtt{true}}\ \mathtt{\overline{r}} := \mathtt{f}
+   (\overline{\mathtt{u}})\ \assert{(I_\ell \implies
+     I_{\ell'})}$ for all $(\ell,\ell')\in L'_\mathtt{f}$.
 \end{proposition}
-The above proposition hold because $S[\mathtt{f}]$ implies $\forall P_\mathtt{f}. (I_\ell \implies I_{\ell'})$, which implies $I_\ell \implies I_{\ell'}$.
+The proposition holds because $S[\mathtt{f}]= \bigwedge_{(\ell,\ell')\in L'_\fun{f}}\forall V_\mathtt{f}. (I_\ell \implies I_{\ell'})$ implies $\forall V_\mathtt{f}. (I_\ell \implies I_{\ell'})$ for any pair $(\ell,\ell')\in L'_\fun{f}$, which implies $I_\ell \implies I_{\ell'}$ for the same pair of locations $(\ell,\ell')$.
 
 \begin{proposition}
 \label{propposition:invariant}
-$\assert{I_\ell}\ \mathtt{\overline{r}} :=
-    \mathtt{f} (\overline{\mathtt{u}})\ \assert{I_\ell}$
+Given an unwound CFG $G^- = \langle V^-, E^-, \textmd{cmd}^-, \overline{\mathtt{u}}, \overline{\mathtt{r}},s,e \rangle$ and
+  define $L'_\fun{f}=\{(s_i^\fun{f},e_i^\fun{f}):
+  I_{s_i^\fun{f}} \mbox{ contains no return variable of }\fun{f} \wedge
+  s_i^\fun{f}, e_i^\fun{f}\in E^-\}$.
+We have $\assert{I_\ell}\
+  \mathtt{\overline{r}} := \mathtt{f}
+  (\overline{\mathtt{u}})\ \assert{I_\ell}$ for all $(\ell,\ell')\in L'_\mathtt{f}$
 \end{proposition}
+The proposition holds because $I_\ell$ is a formula over all variables in $G^-$ excepts $\mathtt{\overline{r}}$ and the only possible overlap with variables in $\mathtt{\overline{r}} := \mathtt{f} (\overline{\mathtt{u}})$ are the formal parameters $\overline{\mathtt{u}}$. However, we assume that values of formal parameters do not change in a function (see Section~\ref{section:preliminaries}), hence the values of all variables in $I_\ell$ will stay the same after the execution of the function call $\mathtt{\overline{r}} := \mathtt{f} (\overline{\mathtt{u}})$.
+
