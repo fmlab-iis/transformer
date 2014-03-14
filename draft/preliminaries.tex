@@ -47,7 +47,7 @@ A function $\fun{f}$ is represented as a \emph{control flow graph
 \overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}}, s,
 e \rangle$ where the nodes in $V$ are \emph{program locations}, $E
 \subseteq V \times V$ are \emph{edges}, each edge $(\ell, \ell') \in
-E$ is labled by the command $\textmd{cmd}^{\fun{f}} (\ell, \ell')$, $\overline{\mathtt{u}}^{\fun{f}}$ and $\overline{\mathtt{r}}^{\fun{f}}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $s,  e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The subscripted name in $G^{\fun{f}}$ denotes the CFG corresponds to the function $\fun{f}$.
+E$ is labled by the command $\textmd{cmd}^{\fun{f}} (\ell, \ell')$, $\overline{\mathtt{u}}^{\fun{f}}$ and $\overline{\mathtt{r}}^{\fun{f}}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $s,  e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The superscript in $G^{\fun{f}}$ denotes the CFG corresponds to the function $\fun{f}$.
 The special $\mathtt{main}$ function specifies where a program starts.
 To simplify presentation, we assume the functions in the programs uses disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there exist no global variables because they can be simulated by allowing simultaneous assignment to return variables. 
 
@@ -190,18 +190,20 @@ A program analyzer checks assertions by computing inductive invariants
 is called an \emph{inductive} program analyzer. Note that an inductive
 program analyzer need not give any information when an assertion fails. 
 Indeed, most inductive program analyzers simply report false positives
-when inductive invariants are too coarse. A \emph{program checker} is
+when inductive invariants are too coarse. 
+A \emph{program checker} is
 a program analyzer that returns an error trace when an assertion
 fails; an \emph{error trace} is a sequence of variable valuations from
 the program entry to the failed assertion. Rather than reporting false
 positives, program checkers have to return error traces to witness 
-failed assertions. Producing error traces (especially for recursive
-programs) complicates analysis algorithms. We hence consider a
-subclass of program checker. A \emph{recursion-free
-  inductive program checker} is a program checker that checks
+failed assertions. %Producing error traces (especially for recursive
+%programs) complicates analysis algorithms. We hence consider a
+%subclass of program checker. 
+A \emph{recursion-free
+  inductive program analyzer} is a program analyzer that checks
 recursion-free programs by computing inductive invariants, and reports
 an error trace when an assertion fails. Several recursion-free
-inductive program checkers are available such as \textsc{CPAChecker},
-\textsc{Blast}, \textsc{UFO}. Our goal is to check
+inductive program analyzer are available such as \textsc{CPAChecker},
+\textsc{Blast}, \textsc{UFO}, \textsc{Astr\'ee}. Our goal is to check
 recursive programs by using a recursion-free inductive program analyzer
 as a black box. 
