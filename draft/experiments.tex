@@ -11,8 +11,8 @@ A prototype tool of our approach has been implemented with
   invoke \textsc{CPAChecker} and use the configuration file
   verifier-conf/myCPA-PredAbstract-LIA.properties.} as the underlying
 intraprocedure analyzer.
-In addition, we used Redlog~\cite{} package, which is integrated in REDUCE
-algebra system~\cite{}, for universal quantification on logic formulae.
+In addition, we used Redlog~\cite{redlog} for quantifier elimination on
+logic formulae.
 
 To evaluate our tool, we used the \textbf{recursive} category of verification 
 tasks in the 2014 Competition on Software Verification(SV-COMP 2014)~\cite
@@ -107,7 +107,7 @@ Points & Program Correctness & Reported Result \\\hline
 \begin{tabular}{|c|cc|c|c|c|c|}
 \hline
 \multirow{2}{*}{Program} & \multicolumn{2}{c|}{Our Tool} &
-Ultimate Automizer & Ultimate Kojak & CMBC-4.5 & Blast 2.7.2 \\ \cline{2-7}
+Ultimate Automizer & Ultimate Kojak & CBMC-4.5 & Blast 2.7.2 \\ \cline{2-7}
 & $k$ & Time  & Time  & Time  & Time  & Time \\ \hline
 Ackermann01\_true.c      & 1 & 6.466                 & \timeout         & \timeout           & 850                   & \exception \\
 Ackermann02\_false.c     & 4 & 57.308                & 4.151            & \timeout           & 1.036                 & \exception \\
