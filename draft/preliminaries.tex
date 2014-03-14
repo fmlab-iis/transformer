@@ -46,7 +46,7 @@ V, E,\textmd{cmd},\overline{u}, \overline{r},  \ell_s,  \ell_e\rangle$ where the
 each edge $(\ell, \ell')$ in $E \subseteq V \times V$ is labeled by a
 command denoted by $\textmd{cmd} (\ell, \ell')$, $\overline{u}$ and $\overline{r}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $\ell_s,  \ell_e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The subscripted name in $G_\fun{f}$ denotes the CFG corresponds to the function $\fun{f}$.
 The special $\mathtt{main}$ function specifies where a program starts.
-For a sequence of variables $\overline{x}$, we use $x_i$ to denote its $i$-th element. To simplify presentation, we assume the functions in the programs uses different sets variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there exists no global variables because this can be simulated by allowing simultaneous assignment to return variables. 
+For a sequence of variables $\overline{x}$, we use $x_i$ to denote its $i$-th element. To simplify presentation, we assume the functions in the programs uses disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there exist no global variables because they can be simulated by allowing simultaneous assignment to return variables. 
 
 Figure~\ref{figure:mccarthy91} shows control flow graphs for the
 McCarthy 91 program. The $\mathtt{main}$ function assumes the
@@ -148,9 +148,9 @@ $Q$ provided that $T$ starts with a program state satisfying $P$ and
 terminates. The formula $P$ is called the \emph{precondition} and $Q$ is the \emph{postcondition} of the Hoare triple. We use the standard proof rules for weak correctness with
 two additional rules for the assumption and assertion commands:
 \begin{center}
-  \AxiomC{$P \wedge E \implies Q$}
+  \AxiomC{}
   \LeftLabel{Assume}
-  \UnaryInfC{$\assert{P} \mathtt{assume\ } E \assert{Q}$}
+  \UnaryInfC{$\assert{P} \mathtt{assume\ } E \assert{P \wedge E}$}
   \DisplayProof
   ~
   \AxiomC{$P \implies E$}
