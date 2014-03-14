@@ -26,7 +26,7 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
 \begin{algorithm}
   \KwIn{A program $P=\{\mbox{CFG }G^{\fun{main}}\}\cup\{\mbox{CFG } G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$}
 
-  $k \leftarrow 1$\;
+  $k \leftarrow 0$\;
   $P_0 \leftarrow P$\;
   %\lForEach{function $\fun{f}$ such that  $G_\fun{f} \in P$}
   %{
@@ -40,7 +40,7 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
     {
       \lCase{$\mathit{Pass(\Pi (\underline{G}^{\fun{main}}_k, \TT))}$:}
       {    
-        S := UpdateSummary ($P$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)\;
+        S := UpdateSummary ($P_k$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)\;
       }
       \lCase{$\mathit{Error}$:}
       {
