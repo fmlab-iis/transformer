@@ -1,14 +1,14 @@
 
-Let $G = \langle V, E, \textmd{cmd}, \overline{\texttt{u}}, \overline{\texttt{r}},s,e) \rangle$ be a control flow
-graph. The control flow graph $G^- = \langle V, E,
-\textmd{cmd}^-, \overline{\texttt{u}}, \overline{\texttt{r}},s,e \rangle$ is obtained by replacing every
+Let $G^\fun{f} = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ be a control flow
+graph. The control flow graph $\underline{G}^\fun{f} = \langle V, E,
+\underline{\textmd{cmd}}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ is obtained by replacing every
 function calls in $G$ with $\mathtt{assume\ false}$. That is,
 \begin{equation*}
-  \textmd{cmd}^- (\ell, \ell') =
+  \underline{\textmd{cmd}}^\fun{f} (\ell, \ell') =
   \left\{
     \begin{array}{ll}
-      \textmd{cmd} (\ell, \ell') & 
-      \textmd{if } \textmd{cmd} (\ell, \ell') 
+      \textmd{cmd}^\fun{f} (\ell, \ell') & 
+      \textmd{if } \textmd{cmd}^\fun{f} (\ell, \ell') 
       \textmd{ does not contain function calls}\\
       \mathtt{assume\ false} &
       \textmd{otherwise}
@@ -33,7 +33,7 @@ function calls in $G$ with $\mathtt{assume\ false}$. That is,
         (arrow_s) edge [dotted]
                   node {} (arrow_e)
         (0) edge 
-            node {$\overline{\mathtt{x}} := \mathtt{f} (\overline{a})$} (1)
+            node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{p})$} (1)
 
         (00) edge 
              node {$\mathtt{assume\ false}$} (01);
@@ -44,9 +44,9 @@ function calls in $G$ with $\mathtt{assume\ false}$. That is,
 \end{figure}
 
 \begin{proposition}
-  Let $G$ be a control flow graph, $P$ and $Q$ logic formulae with
+  Let $G^\fun{f}$ be a control flow graph, $P$ and $Q$ logic formulae with
   free variables over program variables of $G$. If $\assert{P}
-  G \assert{Q}$, then 
-  $\assert{P} G^- \assert{Q}$.
+  G^\fun{f} \assert{Q}$, then 
+  $\assert{P} \underline{G}^\fun{f} \assert{Q}$.
 \end{proposition}
-The above holds because the computations of $G^-$ under-approximate the computations of $G$. If all computations of $G$ from a state satisfying $P$ always end with a state satisfying $Q$, the same should also hold for the computations of $G^-$.
+The above holds because the computations of $\underline{G}^\fun{f}$ under-approximate the computations of $G^\fun{f}$. If all computations of $G^\fun{f}$ from a state satisfying $P$ always end with a state satisfying $Q$, the same should also hold for the computations of $\underline{G}^\fun{f}$.
