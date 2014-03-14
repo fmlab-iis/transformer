@@ -9,33 +9,35 @@
 A prototype tool of our approach has been implemented with
 \textsc{CPAChecker} 1.2.11-svcomp14b\footnote{We use script/cpa.sh to
   invoke \textsc{CPAChecker} and use the configuration file
-  verifier-conf/myCPA-PredAbstract-LIA.properties.} as the underlying
-intraprocedure analyzer.
+  available at \todo{Where?}.} as the underlying
+intraprocedural analyzer.
 In addition, we used Redlog~\cite{redlog} for quantifier elimination on
 logic formulae.
+To evaluate our tool, we performed experiments with the benchmarks
+from the \textbf{recursive} category in the 2014 Competition on
+Software Verification (SV-COMP 2014)~\cite{svcomp14} and followed the
+rules and the score schema (shown in Table~\ref{table:score-schema})
+of the competition.
+The experimental results show that our tool is quite competitive even
+compared with the winners of the competition.
+It is a solid evidence that our approach not merely extend program
+analyzer to handle recursion but also provide comparable
+effectiveness.
 
-To evaluate our tool, we used the \textbf{recursive} category of verification 
-tasks in the 2014 Competition on Software Verification(SV-COMP 2014)~\cite
-{svcomp14} and followed the rules and the score schema of the competition.
-The experiment results show that our tool is quite competitive even compared 
-with the winners of the competition. It is a solid evidence that our approach 
-not merely extend program analyzer to handle recursion but also provide 
-comparable effectiveness.
-
-We compared our tool based on experiments with four participants,
-namely Blast 2.7.2\footnote{We use the arguments \textbf{-alias empty
-    -enable-recursion -noprofile -cref -sv-comp -lattice
-    -include-lattice symb -nosserr} with Blast.}~\cite{BeyerHJM07},
+In the experiments, our tool was compared with four participants of
+SV-COMP 2014, namely \textsc{Blast} 2.7.2\footnote{We use the
+  arguments \textbf{-alias empty -enable-recursion -noprofile -cref
+    -sv-comp -lattice -include-lattice symb -nosserr} with
+  \textsc{Blast}.}~\cite{BeyerHJM07},
 CBMC 4.5-sv-comp-2014~\cite{ClarkeKL04} with a wrapper
 cbmc-wrapper.sh\footnote{The wrapper cbmc-wrapper.sh is provided by
   CBMC 4.5-sv-comp-2014, which is a special version for SV-COMP
   2014.}, Ultimate Automizer~\cite{HeizmannCDEHLNSP13}, and Ultimate
-Kojak~\cite{Kojak}, of SV-COMP 2014.
+Kojak~\cite{Kojak}.
 The latter three tools are the top three winners of the
-\textbf{recursive} category in the 2014 competition.
-In our experiments, the programs under verification, 16 bug-free and 
-7 buggy C programs in total, were the entire tasks in \textbf{recursive}
-category of SV-COMP 2014.
+\textbf{recursive} category in SV-COMP 2014.
+The recursive programs from the benchmarks of the \textbf{recursive}
+category include 16 bug-free and 7 buggy C programs.
 The experiments were performed on a virtual machine with 4 GB of memory
 running 64-bit Ubuntu 12.04 LTS. 
 The virtual machine ran on a host with an Intel Core i7-870 Quad-Core
@@ -48,16 +50,42 @@ recursive functions in Algorithm~\ref{algorithm:overview}, Time is
 measured in seconds, the superscript $!$ or $?$ indicates that the
 returned result is respectively incorrect or unknown, E indicates
 exceptions, and T.O. indicates timeouts.
-We use the score schema (shown in Table~\ref{table:score-schema}) in
-SV-COMP 2014 to evaluate these tools.
-Compared to Ultimate Automizer, Ultimate Kojak, and Blast, our tool
-can verify more programs and obtain a higher score.
+The parenthesized numbers of CBMC are obtained by excluding
+certain cases, which will be explained later.
+
+The results show that CBMC outperforms all the other tools.
+However, CBMC reports safe if no bug is found in a program within a
+given time bound\footnote{This was confirmed in a private
+  communication with the developers of CBMC.}, which is set to 850
+seconds in cbmc-wrapper.sh.
+In this case, the behaviors of the program within certain length
+bounds are proven to be safe, but the absence of bugs is not
+guaranteed (see EvenOdd01\_true.c in Table~\ref{table:experiments} for
+a counterexample).
+If we ignore such cases in the experiments, CBMC will obtain a score
+of 14, and the gap between the scores of CBMC and our tool becomes
+much smaller.
+Moreover, this gap may be narrowed if we turn on some important
+optimizations such as adjustment of block encoding provided in
+\textsc{CPAChecker}.
+We chose to disable the optimizations in order to simplify the
+implementation of our prototype tool.
+
+Compared to Ultimate Automizer, Ultimate Kojak, and \textsc{Blast},
+our tool can verify more programs and obtain a higher score.
 The scores of our tool and Ultimate Automizer are very close mainly
 because of a false positive produced by our tool.
-The false positive came from the spurious error trace reported by
-\textsc{CPAChecker} because modulo operation is approximated under our 
-configuration for \textsc{CPAChecker}. If results of tasks with modulo
-operation are excluded, we can obtain a score of 16.
+The false positive in fact came from a spurious error trace reported
+by \textsc{CPAChecker} because modulo operation is approximated in
+\textsc{CPAChecker}.
+If this case is excluded, our tool can obtain a score of 16.
+
+Besides the four participants of SV-COMP 2014, we also tried to
+compare our tool with \textsc{Whale}.
+Unfortunately, we always got segmentation fault when running
+\textsc{Whale} on the recursive programs in
+Table~\ref{table:experiments}.
+
 
 % Although CBMC got the highest score, several results returned by CBMC
 % may be \todo{doubtful} because CBMC always reports safe if no bug is found
@@ -66,19 +94,6 @@ operation are excluded, we can obtain a score of 16.
 % seconds in cbmc-wrapper.sh.
 % If we ignore the results returned by CBMC exactly in 850 seconds, CBMC
 
-Although CBMC got the highest score, it was confirmed that there were
-heuristics used in their implementaion for the competition, and the
-results provided by this version of CBMC might not be proper proofs 
-for several tasks. \footnote{This was confirmed in a private
-communication with the developers of CBMC.}
-If we ignore the results of those tasks, CBMC 
-will obtain a score of 14, and the gap between the scores of CBMC and
-our tool becomes much smaller.
-Note that in order to simplify the implementation of our prototype
-tool, we turned off important optimizations such as adjust block
-encoding provided in \textsc{CPAChecker}.
-The performance of the prototype tool can be even better with those
-optimizations turned on.
 
 \begin{table}
 \caption{Score schema in SV-COMP 2014.\label{table:score-schema}}
@@ -100,14 +115,16 @@ Points & Program Correctness & Reported Result \\\hline
 \begin{table}
 \caption{Experimental results of verifying programs in the
   \textbf{recursive} category of the 2014 Competition on Software
-  Verification. The superscript $!$ or $?$ indicates that the
-  returned result is respectively incorrect or unknown. E
-  indicates exceptions while T.O. indicates
-  timeouts.\label{table:experiments}}
+  Verification.\label{table:experiments}}
+% The superscript $!$ or $?$ indicates that the
+%  returned result is respectively incorrect or unknown. E
+%  indicates exceptions while T.O. indicates
+%  timeouts.
+\begin{center}
 \begin{tabular}{|c|cc|c|c|c|c|}
 \hline
-\multirow{2}{*}{Program} & \multicolumn{2}{c|}{Our Tool} &
-Ultimate Automizer & Ultimate Kojak & CBMC-4.5 & Blast 2.7.2 \\ \cline{2-7}
+\multirow{3}{*}{Program} & \multicolumn{2}{c|}{\multirow{2}{*}{Our Tool}} & Ultimate & Ultimate & \multirow{2}{*}{CBMC 4.5} & \multirow{2}{*}{\textsc{Blast} 2.7.2} \\ 
+& & & Automizer & Kojak & & \\ \cline{2-7}
 & $k$ & Time  & Time  & Time  & Time  & Time \\ \hline
 Ackermann01\_true.c      & 1 & 6.466                 & \timeout         & \timeout           & 850                   & \exception \\
 Ackermann02\_false.c     & 4 & 57.308                & 4.151            & \timeout           & 1.036                 & \exception \\
@@ -139,6 +156,7 @@ false positive           & \multicolumn{2}{c|}{1}    & 0                & 0     
 score                    & \multicolumn{2}{c|}{13}   & 12               & 9                  & 30 (14)               & -13 \\
 \hline
 \end{tabular}
+\end{center}
 \end{table}
 
 %%% Local Variables: 
