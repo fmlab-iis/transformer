@@ -1,10 +1,10 @@
 
 Let $\mathtt{Vars}$ denote the set of \emph{program variables} and
-$\mathtt{Vars}' = \{ \ox' : \ox \in \mathtt{Vars} \}$.
+$\mathtt{Vars}' = \{ \mathtt{x}' : \mathtt{x} \in \mathtt{Vars} \}$.
 We consider a variant of the WHILE language~\cite{}:
 \begin{equation*}
   \begin{array}{rccll}
-    \mathtt{Expression} & \ni E & ::= &
+    \mathtt{Expression} & \ni p, q & ::= &
     \mathtt{x} & \mathtt{x} \in \mathtt{Vars}\\
     & & \mid &
     \mathtt{false}\ \mid\ \mathtt{true}\ \mid\ 
@@ -13,25 +13,26 @@ We consider a variant of the WHILE language~\cite{}:
     & & \mid &
     \mathtt{nondet} & \textmd{nodeterministic value}\\
     & & \mid &
-    \mathtt{f}(E, E, \ldots, E) &
+    \mathtt{f}(\overline{p}) &
     \textmd{function invocation}\\
     & & \mid &
-    E \odot E  & \odot \in \{ +, -, =, >, \mathtt{and}, \mathtt{or} \}\\
-    & & \mid & \mathtt{not}\ E\\
-    \mathtt{Command} & \ni C & ::= &
-    \mathtt{x}, \mathtt{x}, \ldots, \mathtt{x} := 
-    E, E, \ldots, E & \textmd{assignment}\\
+    p \odot p  & \odot \in \{ +, -, =, >, \mathtt{and}, \mathtt{or} \}\\
+    & & \mid & \mathtt{not}\ p\\
+    \mathtt{Command} & \ni c & ::= &
+    \overline{\mathtt{x}} := \overline{p}
+    & \textmd{assignment}\\
     & & \mid &
-    C\mathtt{;}\ C &
+    c\mathtt{;}\ c &
     \textmd{sequential composition}\\
     & & \mid &
-    \mathtt{return}\ E, E, \ldots, E & \textmd{function return}\\
+    \mathtt{return}\ \overline{q} & \textmd{function return}\\
     & & \mid &
-    \mathtt{assume}\ E & \textmd{assumption}\\
+    \mathtt{assume}\ q & \textmd{assumption}\\
     & & \mid &
-    \mathtt{assert}\ E & \textmd{assertion}
+    \mathtt{assert}\ q & \textmd{assertion}
   \end{array}
 \end{equation*}
+Let $t_i$ denote the $i$-th element in the sequence $\overline{t}$.
 The $\mathtt{nondet}$ expression evaluates to a type-safe
 nondeterministic value.
 Note that simultaneous assignments are allowed in our language. To
@@ -41,24 +42,24 @@ The $\mathtt{return}$ command accepts several expressions as arguments.
 Together with simultaneous assignments, functions can have several
 return values. 
 
-A function $\fun{f}$ is represented as a \emph{control flow graph (CFG)} $G_\fun{f} = \langle
-V, E,\textmd{cmd},\overline{u}, \overline{r},  \ell_s,  \ell_e\rangle$ where the nodes in $V$ are \emph{program locations},
-each edge $(\ell, \ell')$ in $E \subseteq V \times V$ is labeled by a
-command denoted by $\textmd{cmd} (\ell, \ell')$, $\overline{u}$ and $\overline{r}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $\ell_s,  \ell_e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The subscripted name in $G_\fun{f}$ denotes the CFG corresponds to the function $\fun{f}$.
+A function $\fun{f}$ is represented as a \emph{control flow graph
+  (CFG)} $G^{\fun{f}} = \langle V, E, \textmd{cmd}^{\fun{f}},
+\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}}, s,
+e \rangle$ where the nodes in $V$ are \emph{program locations}, $E
+\subseteq V \times V$ are \emph{edges}, each edge $(\ell, \ell') \in
+E$ is labled by the command $\textmd{cmd}^{\fun{f}} (\ell, \ell')$, $\overline{\mathtt{u}}^{\fun{f}}$ and $\overline{\mathtt{r}}^{\fun{f}}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $s,  e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The subscripted name in $G^{\fun{f}}$ denotes the CFG corresponds to the function $\fun{f}$.
 The special $\mathtt{main}$ function specifies where a program starts.
-For a sequence of variables $\overline{x}$, we use $x_i$ to denote its $i$-th element. To simplify presentation, we assume the functions in the programs uses disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there exist no global variables because they can be simulated by allowing simultaneous assignment to return variables. 
+To simplify presentation, we assume the functions in the programs uses disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there exist no global variables because they can be simulated by allowing simultaneous assignment to return variables. 
 
 Figure~\ref{figure:mccarthy91} shows control flow graphs for the
 McCarthy 91 program. The $\mathtt{main}$ function assumes the
-variable $\mathtt{n}$ is non-negative. It then checks if the return
-value of $\mathtt{mc91(n)}$ is no less than 90
+variable $\mathtt{n}$ is non-negative. It then checks if the result
+of $\mathtt{mc91(n)}$ is no less than 90
 (Figure~\ref{figure:mccarthy91:main}). The $\mathtt{mc91}$ function
 branches on whether the variable $\mathtt{m}$ is greater than 100. If
-so, the it returns the value $\mathtt{m} -
-10$. Otherwise, 
-$\mathtt{mc91(m)}$ assigns the return value of $\mathtt{mc91(m + 11)}$
-to $\mathtt{s}$, and updates its own return value by calling
-$\mathtt{mc91(s)}$ recursively
+so, it returns $\mathtt{m} - 10$. Otherwise, 
+$\mathtt{mc91(m)}$ stores the result of $\mathtt{mc91(m + 11)}$
+in $\mathtt{s}$, and returns the result of $\mathtt{mc91(s)}$
 (Figure~\ref{figure:mccarthy91:mc91}). Observe that the 
 $\mathtt{assume}$ command models a conditional branch in the
 figure. Loops can be modeled similarly.
@@ -68,11 +69,11 @@ figure. Loops can be modeled similarly.
   \begin{subfigure}[b]{.3\textwidth}
     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (0) at (0, 0) {$\ell_s$}; %[label=above:$\mathtt{main()}$]
-      \node[node] (1) at (0, -1) {$\ell_1$};
-      \node[node] (2) at (0, -2) {$\ell_2$};
-      \node[node] (3) at (0, -3) {$\ell_3$};
-      \node[node] (4) at (0, -4) {$\ell_e$};
+      \node[node] (0) at (0, 0) {$s$}; %[label=above:$\mathtt{main()}$]
+      \node[node] (1) at (0, -1) {$1$};
+      \node[node] (2) at (0, -2) {$2$};
+      \node[node] (3) at (0, -3) {$3$};
+      \node[node] (4) at (0, -4) {$e$};
 
       \path
         (0) edge 
@@ -96,12 +97,12 @@ figure. Loops can be modeled similarly.
   \begin{subfigure}[b]{.6\textwidth}
     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (0) at ( 0,  0) {$\ell_{s'}$}; %[label=above:$\mathtt{mc91(n)}$]
-      \node[node] (1) at (-1, -2) {$\ell_{1'}$};
-      \node[node] (2) at ( 1, -0.8) {$\ell_{2'}$};
-      \node[node] (3) at ( 1, -2) {$\ell_{3'}$};
-      \node[node] (4) at ( 1, -3.2) {$\ell_{4'}$};
-      \node[node] (5) at ( 0, -4) {$\ell_{e'}$};
+      \node[node] (0) at ( 0,  0) {$s$}; %[label=above:$\mathtt{mc91(n)}$]
+      \node[node] (1) at (-1, -2) {$1$};
+      \node[node] (2) at ( 1, -0.8) {$2$};
+      \node[node] (3) at ( 1, -2) {$3$};
+      \node[node] (4) at ( 1, -3.2) {$4$};
+      \node[node] (5) at ( 0, -4) {$e$};
 
       \path
         (0) edge [bend right=30]
@@ -125,20 +126,23 @@ figure. Loops can be modeled similarly.
 \end{figure}
 
 %\todo{definitions of accessible variables, program states}
-Let $G = \langle V, E ,\textmd{cmd},\overline{u}, \overline{r},  \ell_s,  \ell_e\rangle$ be a CFG.
-An \emph{inductive invariant} $\Pi (G, I_0) = \{ I_\ell : \ell \in V
-\}$ for $G$ from $I_0$ is a set of first-order logic formulae such
-that $I_{\ell_s} = I_0$, and for every $(\ell, \ell') \in E$
+Let $G^{\fun{f}} = \langle V, E ,\textmd{cmd}^{\fun{f}},
+\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,
+e \rangle$ be a CFG. An \emph{inductive invariant} $\Pi (G^{\fun{f}},
+I_0) = \{ I_\ell : \ell \in V \}$ for $G^{\fun{f}}$ from $I_0$ is a
+set of first-order logic formulae such that $I_s = I_0$, and
+for every $(\ell, \ell') \in E$ 
 \begin{equation*}
 I_{\ell} \wedge \tau_{\textmd{cmd}(\ell, \ell')} \implies I'_{\ell'}
 \end{equation*}
-where $I'$ is the formula obtained by replacing every $\ox \in
-\mathtt{Vars}$ in $I$ with $\ox' \in \mathtt{Vars}'$, and
-$\tau_{\textmd{cmd} (e)}$ specifies the semantics of the command
-$\textmd{cmd} (e)$. An inductive invariant $\Pi (G, I_0)$ is an
-over-approximation to the computation of $G$ from $I_0$. More
-precisely, assume that the function $G$ starts from a state satisfying
-$I_0$. For every program location $\ell$, $G$ must arrive in a state
+where $I'$ is the formula obtained by replacing every $\mathtt{x} \in
+\mathtt{Vars}$ in $I$ with $\mathtt{x}' \in \mathtt{Vars}'$, and
+$\tau_{\textmd{cmd} (\ell, \ell')}$ specifies the semantics of the command
+$\textmd{cmd} (\ell, \ell')$. An inductive invariant $\Pi
+(G^{\fun{f}}, I_0)$ is an 
+over-approximation to the computation of $G^{\fun{f}}$ from $I_0$. More
+precisely, assume that the function $G^{\fun{f}}$ starts from a state satisfying
+$I_0$. For every program location $\ell$, $G^{\fun{f}}$ must arrive in a state
 satisfying $I_{\ell}$ when the computation reaches $\ell$. 
 
 Let $T$ be a program fragment (it can be either a function represented as a CFG or a sequence of program commands), and $P$, $Q$
@@ -150,12 +154,13 @@ two additional rules for the assumption and assertion commands:
 \begin{center}
   \AxiomC{}
   \LeftLabel{Assume}
-  \UnaryInfC{$\assert{P} \mathtt{assume\ } E \assert{P \wedge E}$}
+  \UnaryInfC{$\assert{P}\ \mathtt{assume\ } q\ 
+    \assert{P \wedge q}$} 
   \DisplayProof
   ~
-  \AxiomC{$P \implies E$}
+  \AxiomC{$P \implies q$}
   \LeftLabel{Assert}
-  \UnaryInfC{$\assert{P} \mathtt{assert\ } E \assert{P}$}
+  \UnaryInfC{$\assert{P}\ \mathtt{assert\ } q\  \assert{P}$}
   \DisplayProof
 \end{center}
 The assumption command excludes all computation not satisfying the given
@@ -165,20 +170,20 @@ abnormally if the given expression is not implied by the precondition. No postco
 %\begin{equation*}
 % \mathtt{assume\ false};\ \ \mathtt{assert\ false}
 %\end{equation*}
-Observe
-that an inductive invariant $\Pi (G, I_0)$ establishes 
-$\assert{I_0} G \assert{I_{\ell_e}}$.
+Observe that an inductive invariant $\Pi (G^{\fun{f}}, I_0)$ establishes 
+$\assert{I_0} G^{\fun{f}} \assert{I_{e}}$.
 
 A \emph{program analyzer} accepts programs as inputs and
 checks if all assertions (specified by the $\mathtt{assert}$ command)
 are satisfied. One way to implement program analyzers is to compute
 inductive invariants. 
 \begin{proposition}
-Let $G = \langle V, E,\textmd{cmd},\overline{u}, \overline{r},  \ell_s,  \ell_e \rangle$ be a control flow
-graph and $\Pi (G, \mathtt{true})$ an inductive invariant for $G$ from
+Let $G^{\fun{f}} = \langle V, E,\textmd{cmd}^{\fun{f}},\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,  e \rangle$ be a control flow
+graph and $\Pi (G^{\fun{f}}, \mathtt{true})$ an inductive invariant
+for $G^{\fun{f}}$ from 
 $\mathtt{true}$. If $\models I_{\ell} \implies B_{\ell}$ for every
 edge $(\ell, \ell') \in E$ with $\textmd{cmd} (\ell, \ell') =
-\mathtt{assert} (B_{\ell})$, then all assertions in $G$ are satisfied.
+\mathtt{assert} (B_{\ell})$, then all assertions in $G^{\fun{f}}$ are satisfied.
 \label{proposition:inductive-invariant}
 \end{proposition}
 A program analyzer checks assertions by computing inductive invariants
