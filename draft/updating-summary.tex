@@ -10,16 +10,15 @@ extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}
 
   \ForEach{function $\fun{f}$ in the program $P$}
   {	
-  	Compute the set $L_\fun{f}=\{(s_i^\fun{f},e_i^\fun{f}):s_i^\fun{f}, e_i^\fun{f}\in E\mbox{ for some }i\}$\;
   	$S[\fun{f}]:=\TT$\;
- 	\ForEach{pair of locations $(\ell,\ell')\in L_\mathtt{f}$}
+ 	\ForEach{pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$}
    	{
-   		\lIf{$I_\ell$ does not contain any return variable of $\mathtt{f}$}
+   		\lIf{$I_{s_i^\fun{f}}$ does not contain any return variable of $\mathtt{f}$}
        	{
-         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. (I_\ell \implies I_{\ell'})$\;
+         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$\;
        	}
        	\lElse{
-         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. (\TT \implies I_{\ell'})$\;       	}
+         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. I_{e_i^\fun{f}}$\;       	}
    	}
     
   }
@@ -30,9 +29,9 @@ extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}
   \label{algorithm:update-summary}
 \end{algorithm}
 
-For each function $\fun{f}$ in the program $P$, we first compute the set $L_\fun{f}$ of entry and exit locations of the call to the function $\mathtt{f}$  and initialize its summary $S[\fun{f}]$ to $\TT$.
-The set $X_\fun{f}$ contains all variables appearing in $\underline{G}^{\fun{main}}_k$ except the set of formal parameter and return variables of $\fun{main}$.
-For each pairs of locations $(\ell,\ell')$ in the set $L_\fun{f}$, if the invariant of location $l$ does not contain any return variable of $\fun{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall X_\fun{f}. (I_\ell \implies I_{\ell'})$. Otherwise, we update it to a most restricted version $S[\fun{f}]\wedge \forall X_\fun{f}. (\TT \implies I_{\ell'})$.
+For each function $\fun{f}$ in the program $P$, we first initialize its summary $S[\fun{f}]$ to $\TT$.
+The set $X_\fun{f}$ contains all variables appearing in $\underline{G}^{\fun{main}}_k$ except the set of formal parameter and return variables of $\fun{f}$.
+For each pairs of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$ in $\underline{G}^{\fun{main}}_k$, if the invariant of location $s_i^\fun{f}$ does not contain any return variable of $\fun{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall X_\fun{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$. Otherwise, we update it to a most restricted version $S[\fun{f}]\wedge \forall X_\fun{f}.I_{e_i^\fun{f}}$.
 
 \begin{figure}
   \centering
@@ -67,26 +66,62 @@ For each pairs of locations $(\ell,\ell')$ in the set $L_\fun{f}$, if the invari
   \caption{Updating Summary}
   \label{figure:updating-summary}
 \end{figure}
-
-\begin{proposition}
-  \label{propposition:strengthen_postcondition}
-  Given the CFG $\underline{G}^{\fun{main}}_k = \langle V, E, \underline{\textmd{cmd}}^{\fun{main}}, \overline{\mathtt{u}}^{\fun{main}}, \overline{\mathtt{r}}^{\fun{main}},s,e \rangle$ and
-  define $L_\fun{f}=\{(s_i^\fun{f},e_i^\fun{f}):
-  s_i^\fun{f}, e_i^\fun{f}\in E\}$.
-  If $\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}
-     (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ holds, then
-  $\assert{I_\ell}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}
-   (\overline{\mathtt{u}}^\fun{f})\ \assert{
-     I_{\ell'}}$ for all $(\ell,\ell')\in L_\mathtt{f}$.
-\end{proposition}
-The proposition holds because $S[\mathtt{f}]= \bigwedge_{(\ell,\ell')\in L'_\fun{f}}\forall V_\mathtt{f}. (I_\ell \implies I_{\ell'})$ implies $\forall V_\mathtt{f}. (I_\ell \implies I_{\ell'})$ for any pair $(\ell,\ell')\in L'_\fun{f}$, which implies $I_\ell \implies I_{\ell'}$ for the same pair of locations $(\ell,\ell')$.
-
 \begin{proposition}
 \label{propposition:invariant}
-Let $Q$ be a formula over all variables in $\underline{G}^{\fun{main}}_k$ excepts $\mathtt{\overline{r}}^\fun{r}$. We
+Let $Q$ be a formula over all variables in $\underline{G}^{\fun{main}}_k$ excepts $\mathtt{\overline{r}}^\fun{r}$.
 We have $\assert{Q}\
   \mathtt{\overline{r}}^\fun{f} := \mathtt{f}
   (\overline{\mathtt{u}}^\fun{f})\ \assert{Q}$.
 \end{proposition}
-The proposition holds because the only possible overlap with variables in $Q$ and $\mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})$ are the formal parameters $\overline{\mathtt{u}}^\fun{f}$. However, we assume that values of formal parameters do not change in a function (see Section~\ref{section:preliminaries}), hence the values of all variables in $Q$ will stay the same after the execution of the function call $\mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})$.
+The proposition holds because the only possible overlap of variables in $Q$ and $\mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})$ are the formal parameters $\overline{\mathtt{u}}^\fun{f}$. However, we assume that values of formal parameters do not change in a function (see Section~\ref{section:preliminaries}), hence the values of all variables in $Q$ will stay the same after the execution of the function call $\mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})$.
+
+
+\begin{proposition}
+  \label{propposition:strengthen_postcondition}
+  Given the CFG $\underline{G}^{\fun{main}}_k = \langle V, E, \underline{\textmd{cmd}}^{\fun{main}}, \overline{\mathtt{u}}^{\fun{main}}, \overline{\mathtt{r}}^{\fun{main}},s,e \rangle$.
+  If $\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}
+     (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ holds, then
+  $\assert{I_{s_i^\fun{f}}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}
+   (\overline{\mathtt{u}}^\fun{f})\ \assert{
+     I_{e_i^\fun{f}}}$ for all $(s_i^\fun{f},e_i^\fun{f})\in V\times V$.
+\end{proposition}
+For each pair $(s_i^\fun{f},e_i^\fun{f})\in V\times V$, we consider two cases:
+\begin{enumerate}
+\item $I_{s_i^\fun{f}}$ contains some return variables of $\fun{f}$:\\
+In this case, the conjunct $\forall X_\mathtt{f}.I_{e_i^\fun{f}}$ is a part of $S[\fun{f}]$, we then have
+\begin{prooftree}
+  \AxiomC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}
+       (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ }
+  \RightLabel{Weakening}
+    \UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f}:=\mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{\forall X_\mathtt{f}. I_{e_i^\fun{f}}}$}
+  \RightLabel{Weakening}
+  \UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{e_i^\fun{f}}}$}
+  \RightLabel{Stregthening}
+    \UnaryInfC{$\assert{I_{s_i^\fun{f}}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{e_i^\fun{f}}}$}
+\end{prooftree}
+
+\item $I_{s_i^\fun{f}}$ does not contain any return variables of $\fun{f}$:\\
+In this case, the conjunct $\forall X_\mathtt{f}.(I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$ is a part of $S[\fun{f}]$, we then have
+\begin{prooftree}
+ \AxiomC{}
+ \LeftLabel{Prop.~\ref{propposition:invariant}}
+ \UnaryInfC{$\assert{I^-_{s_k^\fun{f}}}\ 
+    \mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ 
+    \assert{I^-_{s_k^\fun{f}}}$}
+\AxiomC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}
+       (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ }
+  %\RightLabel{Weakening}
+\UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f}:=\mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{\forall X_\mathtt{f}. (I^-_{s_k^\fun{f}} \implies I^-_{e_k^\fun{f}})}$}
+%\RightLabel{Weakening}
+\UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f}:=\mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I^-_{s_k^\fun{f}} \implies I^-_{e_k^\fun{f}}}$}
+%\RightLabel{Stregthening}
+ \UnaryInfC{$\assert{I^-_{s_k^\fun{f}}}\ 
+    \mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ 
+    \assert{I^-_{s_k^\fun{f}} \implies I^-_{e_k^\fun{f}}}$}
+
+ \BinaryInfC{$\assert{I^-_{s_k^\fun{f}}}\ 
+    \mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ 
+    \assert{I^-_{e_k^\fun{f}}}$}
+\end{prooftree}
+\end{enumerate}
 
