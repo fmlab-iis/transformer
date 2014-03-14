@@ -12,13 +12,9 @@ Notice that in order to simplify the implementation effort, we turned off import
 }
 
 \subsection*{Related Works}
-Inter-Procedure analyzers
-Whale~\cite{AlbarghouthiGC12},
-Ultimate Automizer~\cite{HeizmannCDEHLNSP13}
-Ultimiate Kojak~\cite{Kojak}
-RHS~\cite{RepsHS95} (say we can achieve the same by ...)
-SLAM~\cite{BallR01}
+In~\cite{LalR08,LalR09}, a reduction technique for checking context-bounded concurrent programs to sequential analysis is developed. Numerous intraprocedural analysis techniques have been developed over the years. Many tools are in fact freely available (see, for instance, \textsc{Blast}~\cite{BeyerHJM07}, \textsc{CPAChecker}~\cite{BeyerK11}, and \textsc{UFO}~\cite{AlbarghouthiLGC12}). Interprocedural analysis techniques are also available (see~\cite{RepsHS95,BallR01} for a hopelessly incomplete list). Recently, recursive analysis attracts new attention. The Competition on Software Verification adds a new category for recursive programs in 2014~\cite{svcomp14}. Among the participants, \textsc{CBMC}~\cite{ClarkeKL04}, \textsc{Ultimate Automizer}~\cite{HeizmannCDEHLNSP13}, and \textsc{Ultimiate Kojak}~\cite{Kojak} are the top three tools for the recursive category. Our work is inspired by \textsc{Whale}~\cite{AlbarghouthiGC12}. Similar to \textsc{What}, we apply a Hoare logic proof rule for recursive calls. However, our technique works on control flow graphs and builds on an intraprocedural analysis tool. It is hence very lightweight and modular. Better intraprocedural analysis tools can easily be adopted to obtain better recursive analysis through our technique. \textsc{Whale}, on the other hand, analyzes by exploring abstract reachability graphs. Thus it refines summary computation and covering relations for intraprocedural analysis.
 
+\hide{
 Difference compared with Whale
 
 In general, Whale tries to extend Lazy Abstraction to verify interprocedual program.
@@ -33,10 +29,4 @@ In our work, the function call is unwinded and transformed, and the exploration 
 With our method, we can create more precise under-approximation by unwinding more times before tranforming.
 
 For proving summaries, Whale and our work apply the Hoare rule of recursion. Whale defines the covering relation between summaries upon Hoare rule of consequence for proving. Our work, in other way, directly proves by the used program analyzer.
-
-Intra-procedure analyzers
-UFO~\cite{AlbarghouthiLGC12}
-Blast~\cite{BeyerHJM07}
-
-
-
+}
