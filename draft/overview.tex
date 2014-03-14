@@ -1,6 +1,6 @@
 
 Let \textsc{BasicAnalyzer} denote a recursion-free inductive program
-analyzer and a program $P=\{\mbox{CFG }G^{\fun{main}}\}\cup\{\mbox{CFG } G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$ consists of the CFGs of the $\fun{main}$ function and functions that may invoked (transitively) from $\fun{main}$.
+analyzer and a program $P=\{\mbox{CFG }G^{\fun{main}}\}\cup\{\mbox{CFG } G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$ consists of the CFGs of the $\fun{main}$ function and functions that may be invoked (transitively) from $\fun{main}$.
 Since non-recursive functions can be replaced by their control flow graphs
 after proper variable renaming, we assume that $P$ only contains the
 $\mathtt{main}$ and recursive functions. If $P$ does not contain
@@ -17,10 +17,10 @@ algorithm terminates and reports it. Otherwise,
 recursive-free under-approximation $\underline{G}^{\fun{main}}$. Our algorithm
 updates function summaries of functions in $P$ from the inductive invariant of
 $\underline{G}^{\fun{main}}$. It then checks if every function summary
-over-approximations the computation of the corresponding function. If
+over-approximates the computation of the corresponding function. If
 so, the algorithm terminates and reports that all assertions in $P$
 are satisified. If a function summary does not over-approximate the
-computation, our algorithm unwind the recursive function and
+computation, our algorithm unwinds the recursive function and
 reiterates~(Algorithm~\ref{algorithm:overview}).
 
 \begin{algorithm}
@@ -54,7 +54,7 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
   \label{algorithm:overview}
 \end{algorithm}
 
-To see how to under approximate computation, consider a control flow
+To see how to under-approximate computation, consider a control flow
 graph $G^{\fun{main}}_k$. The
 under-approximation $\underline{G}^{\fun{main}}_k$ is 
 obtained by substituting the command $\mathtt{assume\ false}$ for
@@ -252,7 +252,7 @@ is obtained by unwinding every function calls in $G^{\fun{main}}_k$.
 Figure~\ref{figure:unwind-mccarthy91} shows the control flow graph
 obtained by unwinding $\mathtt{main}$ twice. Note that the
 unwinding graph $G^{\fun{main}}_{k+1}$ still has recursive function calls. Its
-under approximation $\underline{G}^{\fun{main}}_{k+1}$ is more
+under-approximation $\underline{G}^{\fun{main}}_{k+1}$ is more
 accurate than $\underline{G}^{\fun{main}}_k$. 
 
 \begin{figure}
