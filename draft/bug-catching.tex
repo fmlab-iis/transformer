@@ -45,8 +45,8 @@ function calls in $G$ with $\mathtt{assume\ false}$. That is,
 
 \begin{proposition}
   Let $G^\fun{f}$ be a control flow graph, $P$ and $Q$ logic formulae with
-  free variables over program variables of $G$. If $\assert{P}
+  free variables over program variables of $G^\fun{f}$. If $\assert{P}
   G^\fun{f} \assert{Q}$, then 
   $\assert{P} \underline{G}^\fun{f} \assert{Q}$.
 \end{proposition}
-The above holds because the computations of $\underline{G}^\fun{f}$ under-approximate the computations of $G^\fun{f}$. If all computations of $G^\fun{f}$ from a state satisfying $P$ always end with a state satisfying $Q$, the same should also hold for the computations of $\underline{G}^\fun{f}$.
+The above holds because the computation of $\underline{G}^\fun{f}$ under-approximates the computation of $G^\fun{f}$. If all computation of $G^\fun{f}$ from a state satisfying $P$ always ends with a state satisfying $Q$, the same should also hold for the computation of $\underline{G}^\fun{f}$.

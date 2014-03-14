@@ -20,7 +20,7 @@ $\hat{G}^\fun{f}_{k,S} = \langle V, E, \hat{\textmd{cmd}}^\fun{f}, \overline{\ma
         &
         \textmd{ if } \textmd{cmd}^\fun{f} (\ell, \ell') = 
         \overline{\mathtt{x}} := \mathtt{g} (\overline{p})\\
-		\mathtt{\overline{r}} := \overline{q}
+		\mathtt{\overline{r}}^\fun{f} := \overline{q}
         &
         \textmd{ if } \textmd{cmd}^\fun{f} (\ell, \ell') = \mathtt{return\ }
         \overline{q}\\
@@ -129,7 +129,7 @@ above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
   $\fun{f}$, and $S[\bullet]$ an array of logic formulae over the formal
   parameters and return variables of each function. If $\textsc{BasicChecker}
   (\tilde{G}^\fun{g}_{k,S})$ returns $\mathit{Pass}$ for every function
-  $\fun{g}$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
+  $\fun{g}$ in $P$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
   \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\mathtt{f}]}$.
   \label{corollary:check-summary}
 \end{corollary}
