@@ -9,9 +9,9 @@
 A prototype tool of our approach has been implemented with
 \textsc{CPAChecker} 1.2.11-svcomp14b\footnote{We use script/cpa.sh to
   invoke \textsc{CPAChecker} and use the configuration file
-  available at \todo{Where?}.} as the underlying
+  available at \url{https://github.com/fmlab-iis/transformer/blob/master/tool/verifier-conf/myCPA-PredAbstract-LIA.properties}.} as the underlying
 intraprocedural analyzer.
-In addition, we used Redlog~\cite{redlog} for quantifier elimination on
+In addition, because \textsc{CPAChecker} does not support universal quantifiers in the expression of an assume command, we used Redlog~\cite{redlog} for quantifier elimination on
 logic formulae.
 To evaluate our tool, we performed experiments with the benchmarks
 from the \textbf{recursive} category in the 2014 Competition on

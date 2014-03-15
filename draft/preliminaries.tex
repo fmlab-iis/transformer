@@ -135,14 +135,14 @@ for every $(\ell, \ell') \in E$
 \begin{equation*}
 I_{\ell} \wedge \tau_{\textmd{cmd}(\ell, \ell')} \implies I'_{\ell'}
 \end{equation*}
-where $I'$ is the formula obtained by replacing every $\mathtt{x} \in
+where $I'$ is obtained by replacing every $\mathtt{x} \in
 \mathtt{Vars}$ in $I$ with $\mathtt{x}' \in \mathtt{Vars}'$, and
 $\tau_{\textmd{cmd} (\ell, \ell')}$ specifies the semantics of the command
 $\textmd{cmd} (\ell, \ell')$. An inductive invariant $\Pi
 (G^{\fun{f}}, I_0)$ is an 
 over-approximation to the computation of $G^{\fun{f}}$ from $I_0$. More
-precisely, assume that the function $G^{\fun{f}}$ starts from a state satisfying
-$I_0$. For every program location $\ell$, $G^{\fun{f}}$ must arrive in a state
+precisely, assume that the function ${\fun{f}}$ starts from a state satisfying
+$I_0$. For every $\ell\in V$, $G^{\fun{f}}$ must arrive in a state
 satisfying $I_{\ell}$ when the computation reaches $\ell$. 
 
 Let $T$ be a program fragment (it can be either a function represented as a CFG or a sequence of program commands), and $P$, $Q$
@@ -163,7 +163,7 @@ two additional rules for the assumption and assertion commands:
   \UnaryInfC{$\assert{P}\ \mathtt{assert\ } q\  \assert{P}$}
   \DisplayProof
 \end{center}
-The assumption command excludes all computation not satisfying the given
+The assume command excludes all computation not satisfying the given
 expression. The assert command terminates computation
 abnormally if the given expression is not implied by the precondition. No postcondition can be guaranteed in such a case.
 %For instance, the following command always terminates normally:
@@ -172,14 +172,12 @@ abnormally if the given expression is not implied by the precondition. No postco
 %\end{equation*}
 Observe that an inductive invariant $\Pi (G^{\fun{f}}, I_0)$ establishes 
 $\assert{I_0} G^{\fun{f}} \assert{I_{e}}$.
-
 A \emph{program analyzer} accepts programs as inputs and
 checks if all assertions (specified by the $\mathtt{assert}$ command)
 are satisfied. One way to implement program analyzers is to compute
 inductive invariants. 
 \begin{proposition}
-Let $G^{\fun{f}} = \langle V, E,\textmd{cmd}^{\fun{f}},\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,  e \rangle$ be a control flow
-graph and $\Pi (G^{\fun{f}}, \mathtt{true})$ be an inductive invariant
+Let $G^{\fun{f}} = \langle V, E,\textmd{cmd}^{\fun{f}},\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,  e \rangle$ be a CFG and $\Pi (G^{\fun{f}}, \mathtt{true})$ be an inductive invariant
 for $G^{\fun{f}}$ from 
 $\mathtt{true}$. If $\models I_{\ell} \implies B_{\ell}$ for every
 edge $(\ell, \ell') \in E$ with $\textmd{cmd} (\ell, \ell') =
@@ -206,4 +204,4 @@ an error trace when an assertion fails. Several recursion-free
 inductive program analyzer are available such as \textsc{CPAChecker},
 \textsc{Blast}, \textsc{UFO}, \textsc{Astr\'ee}. Our goal is to check
 recursive programs by using a recursion-free inductive program analyzer
-as a black box. 
+as a black box.

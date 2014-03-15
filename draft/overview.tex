@@ -6,6 +6,7 @@ $\mathtt{main}$ and recursive functions. If $P$ does not contain
 recursive functions, \textsc{BasicAnalyzer} is able to check $P$ by
 computing inductive invariants.
 
+
 When $P$ contains recursive functions, we transform $G^{\fun{main}}$ into a
 recursion-free program $\underline{G}^{\fun{main}}$. The program $\underline{G}^{\fun{main}}$
 under-approximates the computation of $G^{\fun{main}}$. That is, every computation
@@ -22,7 +23,7 @@ are satisified. If a function summary does not over-approximate the
 computation, our algorithm unwinds the recursive function and
 reiterates~(Algorithm~\ref{algorithm:overview}).
 
-\begin{algorithm}
+\begin{algorithm}[htb]
   \KwIn{A program $P=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$}
 
   $k \leftarrow 0$\;
@@ -51,7 +52,8 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
   \Return $\mathit{Pass} (\Pi (\underline{G}^{\fun{main}}_k, \TT))$, $S$\;
   \caption{Overview}
   \label{algorithm:overview}
-\end{algorithm}
+\end{algorithm} 
+
 
 To see how to under-approximate computation, consider a control flow
 graph $G^{\fun{main}}_k$. The
@@ -63,9 +65,9 @@ effectively blocks all recursive invocations. Any computation of
 $\underline{G}^{\fun{main}}_k$ hence is also a computation of $G^{\fun{main}}_k$. Note that
 $\underline{G}^{\fun{main}}_k$ is recursion-free. \textsc{BasicAnalyzer} is able to
 check the under-approximation~$\underline{G}^{\fun{main}}_k$.
-
-\begin{figure}
+\begin{figure}[htb]
   \centering
+    \scalebox{0.8}{
     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
       \node[node] (0) at (-4, 0) {$s$}; %[label=above:$\mathtt{main()}$]
@@ -116,6 +118,7 @@ check the under-approximation~$\underline{G}^{\fun{main}}_k$.
              node [below=8] {$\mathtt{r := r^{mc91}_1}$} (2);
 
     \end{tikzpicture}
+	}  
   \caption{Under Approximation of McCarthy 91}
   \label{figure:under-mccarthy91}
 \end{figure}

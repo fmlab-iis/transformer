@@ -2,14 +2,14 @@ We first define the rename function $\textsc{rename}(G^\fun{f},i)$. It returns a
 
 Given a CFG $G^\fun{f}=\langle
 V, E,\textmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$.
-We use $\hat{E} =\{e\in E: \textmd{cmd}^\fun{f} (e)= (\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\textsc{index}(e)$ that maps a call edge $e$ to a unique index value.
+We use $\hat{E} =\{e\in E: \textmd{cmd}^\fun{f} (e)= (\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\textsc{idx}(e)$ that maps a call edge $e$ to a unique index value.
 The function $\textsc{mark}_\fun{f}(G^\fun{g})$ returns a CFG that is identical to $G^\fun{g}$, except that for the case that no location with superscript $\fun{g}$ appears in $V$ (the locations of $G^\fun{f}$), it annotates the entry and exit locations, $s_k$ and $e_k$, of the returned CFG with superscript $\fun{g}$, i.e., $s_k^\fun{g}$ and $e_k^\fun{g}$. Note that for each unwinding of function call we mark only the outermost pair of its entry and exit locations.
 Formally, $\textsc{unwind}(G^\fun{f}) = \langle V_u, E_u,\textmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ such that 
-(1) $V_u = V\cup \bigcup\{V_i:(\ell, \ell')\in \hat{E} \wedge \textmd{cmd}^\fun{f}(\ell, \ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge \textsc{index}(\ell, \ell')=i \wedge 
+(1) $V_u = V\cup \bigcup\{V_i:(\ell, \ell')\in \hat{E} \wedge \textmd{cmd}^\fun{f}(\ell, \ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge \textsc{idx}(\ell, \ell')=i \wedge 
 \textsc{mark}_\fun{f}(\textsc{rename}(G^\fun{g},i))=
 \langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s',e'\rangle \}$ 
 (2) $E_u= E \setminus \hat{E} \cup \bigcup\{E_i\cup\{(\ell, s'),(e', \ell')\}: (\ell, \ell')\in \hat{E} \wedge 
-\textmd{cmd}^\fun{f}(\ell, \ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge \textsc{index}(\ell, \ell')=i \wedge 
+\textmd{cmd}^\fun{f}(\ell, \ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge \textsc{idx}(\ell, \ell')=i \wedge 
 \textsc{mark}_\fun{f}(\textsc{rename}(G^\fun{g},i))=
 \langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s',e'\rangle \}$ with $\textmd{cmd}_u^\fun{f} (\ell, s') = (\overline{\texttt{u}}_i^\fun{g}:=\overline{p})$ and $\textmd{cmd}_u^\fun{f} (e', \ell') = (\overline{\texttt{x}}:=\overline{\texttt{r}}^\fun{g}_i)$.
 
@@ -18,7 +18,7 @@ Formally, $\textsc{unwind}(G^\fun{f}) = \langle V_u, E_u,\textmd{cmd}_u^\fun{f},
 %V', E' \rangle$ such that 
 %(1) For all edges $(\ell, \ell')\in E$ with $\textmd{cmd} (\ell, \ell')=$
 
-\begin{figure}
+\begin{figure}[t]
   \centering
   \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
