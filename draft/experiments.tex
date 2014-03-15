@@ -11,7 +11,7 @@ A prototype tool of our approach has been implemented with
   invoke \textsc{CPAChecker} and use the configuration file
   available at \url{https://github.com/fmlab-iis/transformer/blob/master/tool/verifier-conf/myCPA-PredAbstract-LIA.properties}.} as the underlying
 intraprocedural analyzer.
-In addition, because \textsc{CPAChecker} does not support universal quantifiers in the expression of an assume command, we used Redlog~\cite{redlog} for quantifier elimination on
+In addition, because \textsc{CPAChecker} does not support universal quantifiers in the expression of an $\mathtt{assume}$ command, we used Redlog~\cite{redlog} for quantifier elimination on
 logic formulae.
 To evaluate our tool, we performed experiments with the benchmarks
 from the \textbf{recursive} category in the 2014 Competition on
@@ -32,8 +32,8 @@ SV-COMP 2014, namely \textsc{Blast} 2.7.2\footnote{We use the
 CBMC 4.5-sv-comp-2014~\cite{ClarkeKL04} with a wrapper
 cbmc-wrapper.sh\footnote{The wrapper cbmc-wrapper.sh is provided by
   CBMC 4.5-sv-comp-2014, which is a special version for SV-COMP
-  2014.}, Ultimate Automizer~\cite{HeizmannCDEHLNSP13}, and Ultimate
-Kojak~\cite{Kojak}.
+  2014.}, \textsc{Ultimate Automizer}~\cite{HeizmannCDEHLNSP13}, and \textsc{Ultimate
+Kojak}~\cite{Kojak}.
 The latter three tools are the top three winners of the
 \textbf{recursive} category in SV-COMP 2014.
 The recursive programs from the benchmarks of the \textbf{recursive}
@@ -71,9 +71,9 @@ optimizations such as adjustment of block encoding provided in
 We chose to disable the optimizations in order to simplify the
 implementation of our prototype tool.
 
-Compared to Ultimate Automizer, Ultimate Kojak, and \textsc{Blast},
+Compared to \textsc{Ultimate Automizer}, \textsc{Ultimate Kojak}, and \textsc{Blast},
 our tool can verify more programs and obtain a higher score.
-The scores of our tool and Ultimate Automizer are very close mainly
+The scores of our tool and \textsc{Ultimate Automizer} are very close mainly
 because of a false positive produced by our tool.
 The false positive in fact came from a spurious error trace reported
 by \textsc{CPAChecker} because modulo operation is approximated in
@@ -123,8 +123,8 @@ Points & Program Correctness & Reported Result \\\hline
 \begin{center}
 \begin{tabular}{|c|cc|c|c|c|c|}
 \hline
-\multirow{3}{*}{Program} & \multicolumn{2}{c|}{\multirow{2}{*}{Our Tool}} & Ultimate & Ultimate & \multirow{2}{*}{CBMC 4.5} & \multirow{2}{*}{\textsc{Blast} 2.7.2} \\ 
-& & & Automizer & Kojak & & \\ \cline{2-7}
+\multirow{3}{*}{Program} & \multicolumn{2}{c|}{\multirow{2}{*}{Our Tool}} & \textsc{Ultimate} & \textsc{Ultimate} & \multirow{2}{*}{CBMC 4.5} & \multirow{2}{*}{\textsc{Blast} 2.7.2} \\ 
+& & & \textsc{Automizer} & \textsc{Kojak} & & \\ \cline{2-7}
 & $k$ & Time  & Time  & Time  & Time  & Time \\ \hline
 Ackermann01\_true.c      & 1 & 6.466                 & \timeout         & \timeout           & 850                   & \exception \\
 Ackermann02\_false.c     & 4 & 57.308                & 4.151            & \timeout           & 1.036                 & \exception \\

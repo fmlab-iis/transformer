@@ -49,7 +49,7 @@ e \rangle$ where the nodes in $V$ are \emph{program locations}, $E
 \subseteq V \times V$ are \emph{edges}, each edge $(\ell, \ell') \in
 E$ is labled by the command $\textmd{cmd}^{\fun{f}} (\ell, \ell')$, $\overline{\mathtt{u}}^{\fun{f}}$ and $\overline{\mathtt{r}}^{\fun{f}}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $s,  e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The superscript in $G^{\fun{f}}$ denotes the CFG corresponds to the function $\fun{f}$.
 The special $\mathtt{main}$ function specifies where a program starts.
-To simplify presentation, we assume the functions in the programs uses disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there exist no global variables because they can be simulated by allowing simultaneous assignment to return variables. 
+To simplify presentation, we assume the functions in a program use disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there are no global variables because they can be simulated by allowing simultaneous assignment to return variables. 
 
 Figure~\ref{figure:mccarthy91} shows control flow graphs for the
 McCarthy 91 program. The $\mathtt{main}$ function assumes the
@@ -145,7 +145,7 @@ precisely, assume that the function ${\fun{f}}$ starts from a state satisfying
 $I_0$. For every $\ell\in V$, $G^{\fun{f}}$ must arrive in a state
 satisfying $I_{\ell}$ when the computation reaches $\ell$. 
 
-Let $T$ be a program fragment (it can be either a function represented as a CFG or a sequence of program commands), and $P$, $Q$
+Let $T$ be a program fragment (it can be either a function represented as a CFG or a sequence of program commands). $P$ and $Q$
 are logic formulae. A \emph{Hoare triple} $\assert{P} T \assert{Q}$
 specifies that the program fragment $T$ will reach a program state satisfying
 $Q$ provided that $T$ starts with a program state satisfying $P$ and
@@ -163,8 +163,8 @@ two additional rules for the assumption and assertion commands:
   \UnaryInfC{$\assert{P}\ \mathtt{assert\ } q\  \assert{P}$}
   \DisplayProof
 \end{center}
-The assume command excludes all computation not satisfying the given
-expression. The assert command terminates computation
+The $\mathtt{assume}$ command excludes all computation not satisfying the given
+expression. The $\mathtt{assert}$ command terminates computation
 abnormally if the given expression is not implied by the precondition. No postcondition can be guaranteed in such a case.
 %For instance, the following command always terminates normally:
 %\begin{equation*}

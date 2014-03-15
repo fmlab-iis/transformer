@@ -1,4 +1,4 @@
-Here we explain how to handle the function $\textmd{CheckSummary} (P_k, S[\bullet])$, where $P_k$ is a unwound program and $S[\bullet]$ an
+Here we explain how to handle the function $\textmd{CheckSummary} (P_k, S[\bullet])$, where $P_k$ is an unwound program and $S[\bullet]$ is an
 array of function summaries.
 Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be a
 control flow graph for the function $\fun{f}$ in $P_k$. In order to check whether the function
@@ -95,7 +95,7 @@ following proposition:
 \begin{proposition}
   \label{proposition:check_summary}
   Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
-  $\mathtt{f}$, and $S[\bullet]$ an array of logic formulae over the formal
+  $\mathtt{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
   parameters and return variables of each function. If $\assert{\TT}\
   \hat{G}^\fun{g}_{k,S}\ \assert{S[\mathtt{g}]}$ for every
   function $\mathtt{g}$ in $P$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
@@ -126,7 +126,7 @@ above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
 
 \begin{corollary}
   Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
-  $\fun{f}$, and $S[\bullet]$ an array of logic formulae over the formal
+  $\fun{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
   parameters and return variables of each function. If $\textsc{BasicChecker}
   (\tilde{G}^\fun{g}_{k,S})$ returns $\mathit{Pass}$ for every function
   $\fun{g}$ in $P$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
@@ -135,7 +135,7 @@ above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
 \end{corollary}
 
 \begin{algorithm}[t]
-  \KwIn{$P$ : a unwound program; $S[\bullet]$ : an array of function summaries}
+  \KwIn{$P$ : an unwound program; $S[\bullet]$ : an array of function summaries}
   \KwOut{$\TT$ if all function summaries are valid; $\FF$ otherwise}
   \ForEach{function $G_k^\fun{g} \in P$}
   {
