@@ -1,5 +1,5 @@
 
-Let \textsc{BasicAnalyzer} denote a recursion-free inductive program analyzer and a program $P=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$ consists of the CFGs of the $\fun{main}$ function and functions that may invoked (transitively) from $\fun{main}$.
+Let \textsc{BasicAnalyzer} denote a recursion-free inductive program analyzer, and let a program $P=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$ consist of the CFGs of the $\fun{main}$ function and functions that may be invoked (transitively) from $\fun{main}$.
 Since non-recursive functions can be replaced by their control flow graphs
 after proper variable renaming, we assume that $P$ only contains the
 $\mathtt{main}$ and recursive functions. If $P$ does not contain
