@@ -244,10 +244,10 @@ $\mathtt{f}$ with the assignment $\mathtt{\overline{r}}^{\fun{f}} :=
 \ell')$ labeled with the command $\overline{\mathtt{x}} :=
 \mathtt{f}(\overline{p})$ in $G^{\fun{main}}_k$, we remove 
 the edge $(\ell, \ell')$, make a fresh $K^{\mathtt{f}}$ by
-renaming all nodes and variables in $H^{\mathtt{f}}$, add an edge
+renaming all nodes and variables in $H^{\mathtt{f}}$, and then add two edges, an edge
 from $\ell$ to the entry node of $K^{\mathtt{f}}$ that assigns
 $\overline{p}$ to fresh copies of formal parameters in 
-$K^{\mathtt{f}}$, and another edge from the exit node to $\ell'$ that
+$K^{\mathtt{f}}$ and another edge from the exit node to $\ell'$ that
 assigns fresh copies of return variables to
 $\overline{\mathtt{x}}$. The control flow graph $G^{\fun{main}}_{k+1}$ 
 is obtained by unwinding every function call in $G^{\fun{main}}_k$. 

@@ -37,7 +37,7 @@ The $\mathtt{nondet}$ expression evaluates to a type-safe
 nondeterministic value.
 Note that simultaneous assignments are allowed in our language. To
 execute a simultaneous assignment, all expressions on the right hand
-side are first evaluated and then assign to respective variables. 
+side are first evaluated and then assigned to respective variables. 
 The $\mathtt{return}$ command accepts several expressions as arguments.
 Together with simultaneous assignments, functions can have several
 return values. 
@@ -60,8 +60,8 @@ branches on whether the variable $\mathtt{m}$ is greater than 100. If
 so, it returns $\mathtt{m} - 10$. Otherwise, 
 $\mathtt{mc91(m)}$ stores the result of $\mathtt{mc91(m + 11)}$
 in $\mathtt{s}$, and returns the result of $\mathtt{mc91(s)}$
-(Figure~\ref{figure:mccarthy91:mc91}). Observe that the 
-$\mathtt{assume}$ command models a conditional branch in the
+(Figure~\ref{figure:mccarthy91:mc91}). Observe that a conditional
+branch is modeled with the $\mathtt{assume}$ command in the
 figure. Loops can be modeled similarly.
 
 \begin{figure}
@@ -199,9 +199,9 @@ failed assertions. %Producing error traces (especially for recursive
 %subclass of program checker. 
 A \emph{recursion-free
   inductive program analyzer} is a program analyzer that checks
-recursion-free programs by computing inductive invariants, and reports
-an error trace when an assertion fails. Several recursion-free
-inductive program analyzer are available such as \textsc{CPAChecker},
-\textsc{Blast}, \textsc{UFO}, \textsc{Astr\'ee}. Our goal is to check
+recursion-free programs by computing inductive invariants and reports
+error traces when assertions fail. Several recursion-free
+inductive program analyzers are available, such as \textsc{CPAChecker},
+\textsc{Blast}, \textsc{UFO}, and \textsc{Astr\'ee}. Our goal is to check
 recursive programs by using a recursion-free inductive program analyzer
 as a black box.
