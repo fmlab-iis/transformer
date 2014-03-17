@@ -105,23 +105,23 @@ In this case, the conjunct $\forall X_\mathtt{f}.(I_{s_i^\fun{f}} \implies I_{e_
 \begin{prooftree}
  \AxiomC{}
  \LeftLabel{Prop.~\ref{propposition:invariant}}
- \UnaryInfC{$\assert{I^-_{s_k^\fun{f}}}\ 
+ \UnaryInfC{$\assert{I_{s_k^\fun{f}}}\ 
     \mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ 
-    \assert{I^-_{s_k^\fun{f}}}$}
+    \assert{I_{s_k^\fun{f}}}$}
 \AxiomC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}
        (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ }
   %\RightLabel{Weakening}
-\UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f}:=\mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{\forall X_\mathtt{f}. (I^-_{s_k^\fun{f}} \implies I^-_{e_k^\fun{f}})}$}
+\UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f}:=\mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{\forall X_\mathtt{f}. (I_{s_k^\fun{f}} \implies I_{e_k^\fun{f}})}$}
 %\RightLabel{Weakening}
-\UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f}:=\mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I^-_{s_k^\fun{f}} \implies I^-_{e_k^\fun{f}}}$}
+\UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f}:=\mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{s_k^\fun{f}} \implies I_{e_k^\fun{f}}}$}
 %\RightLabel{Stregthening}
- \UnaryInfC{$\assert{I^-_{s_k^\fun{f}}}\ 
+ \UnaryInfC{$\assert{I_{s_k^\fun{f}}}\ 
     \mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ 
-    \assert{I^-_{s_k^\fun{f}} \implies I^-_{e_k^\fun{f}}}$}
+    \assert{I_{s_k^\fun{f}} \implies I_{e_k^\fun{f}}}$}
 
- \BinaryInfC{$\assert{I^-_{s_k^\fun{f}}}\ 
+ \BinaryInfC{$\assert{I_{s_k^\fun{f}}}\ 
     \mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ 
-    \assert{I^-_{e_k^\fun{f}}}$}
+    \assert{I_{e_k^\fun{f}}}$}
 \end{prooftree}
 \end{enumerate}
 
