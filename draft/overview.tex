@@ -1,5 +1,5 @@
 
-Let \textsc{BasicAnalyzer} denote a recursion-free inductive program analyzer and a program $P=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$ consists of the CFGs of the $\fun{main}$ function and functions that may invoked (transitively) from $\fun{main}$.
+Let \textsc{BasicAnalyzer} denote a recursion-free inductive program analyzer, and let a program $P=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$ consist of the CFGs of the $\fun{main}$ function and functions that may be invoked (transitively) from $\fun{main}$.
 Since non-recursive functions can be replaced by their control flow graphs
 after proper variable renaming, we assume that $P$ only contains the
 $\mathtt{main}$ and recursive functions. If $P$ does not contain
@@ -14,7 +14,7 @@ of $\underline{G}^{\fun{main}}$ is also a computation of $G^{\fun{main}}$. If
 \textsc{BasicAnalyzer} finds an error in $\underline{G}^{\fun{main}}$, our
 algorithm terminates and reports it. Otherwise,
 \textsc{BasicAnalyzer} has computed an inductive invariant for the
-recursive-free under-approximation $\underline{G}^{\fun{main}}$. Our algorithm
+recursion-free under-approximation $\underline{G}^{\fun{main}}$. Our algorithm
 computes function summaries of functions in $P$ from the inductive invariant of
 $\underline{G}^{\fun{main}}$. It then checks if every function summary
 over-approximates the computation of the corresponding function. If
@@ -246,7 +246,7 @@ the edge $(\ell, \ell')$, make a fresh copy $K^{\mathtt{f}}$ of $H^{\mathtt{f}}$
 renaming all nodes and variables, and then add two edges: add an edge
 from $\ell$ to the entry node of $K^{\mathtt{f}}$ that assigns
 $\overline{p}$ to fresh copies of formal parameters in 
-$K^{\mathtt{f}}$, and another edge from the exit node to $\ell'$ that
+$K^{\mathtt{f}}$ and another edge from the exit node to $\ell'$ that
 assigns fresh copies of return variables to
 $\overline{\mathtt{x}}$. The control flow graph $G^{\fun{main}}_{k+1}$ 
 is obtained by unwinding every function call in $G^{\fun{main}}_k$. 
