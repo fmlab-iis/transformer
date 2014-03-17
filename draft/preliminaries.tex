@@ -37,7 +37,7 @@ The $\mathtt{nondet}$ expression evaluates to a type-safe
 nondeterministic value.
 Note that simultaneous assignments are allowed in our language. To
 execute a simultaneous assignment, all expressions on the right hand
-side are first evaluated and then assign to respective variables. 
+side are first evaluated and then assigned to respective variables. 
 We assume that simultaneous assignments are type-safe in the sense that the number of variables on the left-hand-side always matches that of the right-hand-side.
 The $\mathtt{return}$ command accepts several expressions as arguments.
 Together with simultaneous assignments, functions can have several
@@ -165,7 +165,7 @@ two additional rules for the assumption and assertion commands:
   \DisplayProof
 \end{center}
 The $\mathtt{assume}$ command excludes all computation not satisfying the given
-expression. The $\mathtt{assert}$ command abort the computation
+expression. The $\mathtt{assert}$ command aborts the computation
 if the given expression is not implied by the precondition. No postcondition can be guaranteed in such a case.
 %For instance, the following command always terminates normally:
 %\begin{equation*}
@@ -201,7 +201,7 @@ when inductive invariants are too coarse.
 A \emph{recursion-free
   inductive program analyzer} is a program analyzer that checks
 recursion-free programs by computing inductive invariants. Several recursion-free
-inductive program analyzer are available such as \textsc{CPAChecker},
-\textsc{Blast}, \textsc{UFO}, \textsc{Astr\'ee}. Our goal is to check
+inductive program analyzers are available, such as \textsc{CPAChecker},
+\textsc{Blast}, \textsc{UFO}, \textsc{Astr\'ee}, etc. Our goal is to check
 recursive programs by using a recursion-free inductive program analyzer
 as a black box.
