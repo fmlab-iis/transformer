@@ -38,6 +38,7 @@ nondeterministic value.
 Note that simultaneous assignments are allowed in our language. To
 execute a simultaneous assignment, all expressions on the right hand
 side are first evaluated and then assign to respective variables. 
+We assume that simultaneous assignments are type-safe in the sense that the number of variables on the left-hand-side always matches that of the right-hand-side.
 The $\mathtt{return}$ command accepts several expressions as arguments.
 Together with simultaneous assignments, functions can have several
 return values. 
@@ -133,12 +134,12 @@ I_0) = \{ I_\ell : \ell \in V \}$ for $G^{\fun{f}}$ from $I_0$ is a
 set of first-order logic formulae such that $I_s = I_0$, and
 for every $(\ell, \ell') \in E$ 
 \begin{equation*}
-I_{\ell} \wedge \tau_{\textmd{cmd}(\ell, \ell')} \implies I'_{\ell'}
+I_{\ell} \wedge \tau_{\textmd{cmd}^\fun{f}(\ell, \ell')} \implies I'_{\ell'}
 \end{equation*}
 where $I'$ is obtained by replacing every $\mathtt{x} \in
 \mathtt{Vars}$ in $I$ with $\mathtt{x}' \in \mathtt{Vars}'$, and
-$\tau_{\textmd{cmd} (\ell, \ell')}$ specifies the semantics of the command
-$\textmd{cmd} (\ell, \ell')$. An inductive invariant $\Pi
+$\tau_{\textmd{cmd}^\fun{f} (\ell, \ell')}$ specifies the semantics of the command
+$\textmd{cmd}^\fun{f} (\ell, \ell')$. An inductive invariant $\Pi
 (G^{\fun{f}}, I_0)$ is an 
 over-approximation to the computation of $G^{\fun{f}}$ from $I_0$. More
 precisely, assume that the function ${\fun{f}}$ starts from a state satisfying
@@ -164,8 +165,8 @@ two additional rules for the assumption and assertion commands:
   \DisplayProof
 \end{center}
 The $\mathtt{assume}$ command excludes all computation not satisfying the given
-expression. The $\mathtt{assert}$ command terminates computation
-abnormally if the given expression is not implied by the precondition. No postcondition can be guaranteed in such a case.
+expression. The $\mathtt{assert}$ command abort the computation
+if the given expression is not implied by the precondition. No postcondition can be guaranteed in such a case.
 %For instance, the following command always terminates normally:
 %\begin{equation*}
 % \mathtt{assume\ false};\ \ \mathtt{assert\ false}
@@ -189,18 +190,17 @@ is called an \emph{inductive} program analyzer. Note that an inductive
 program analyzer need not give any information when an assertion fails. 
 Indeed, most inductive program analyzers simply report false positives
 when inductive invariants are too coarse. 
-A \emph{program checker} is
-a program analyzer that returns an error trace when an assertion
-fails; an \emph{error trace} is a sequence of variable valuations from
-the program entry to the failed assertion. Rather than reporting false
-positives, program checkers have to return error traces to witness 
-failed assertions. %Producing error traces (especially for recursive
+%A \emph{program checker} is
+%a program analyzer that returns an error trace when an assertion
+%fails; an \emph{error trace} is a sequence of variable valuations from
+%the program entry to the failed assertion. Rather than reporting false
+%positives, program checkers have to return error traces to witness 
+%failed assertions. %Producing error traces (especially for recursive
 %programs) complicates analysis algorithms. We hence consider a
 %subclass of program checker. 
 A \emph{recursion-free
   inductive program analyzer} is a program analyzer that checks
-recursion-free programs by computing inductive invariants, and reports
-an error trace when an assertion fails. Several recursion-free
+recursion-free programs by computing inductive invariants. Several recursion-free
 inductive program analyzer are available such as \textsc{CPAChecker},
 \textsc{Blast}, \textsc{UFO}, \textsc{Astr\'ee}. Our goal is to check
 recursive programs by using a recursion-free inductive program analyzer

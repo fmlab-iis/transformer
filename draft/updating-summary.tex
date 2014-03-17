@@ -1,14 +1,14 @@
 Let the CFG for the $\fun{main}$ function $\underline{G}^{\fun{main}}_k = \langle V, E, \underline{\textmd{cmd}}^{\fun{main}}, \overline{\mathtt{u}}^{\fun{main}}, \overline{\mathtt{r}}^{\fun{main}},s,e \rangle$.
 Function 
-UpdateSummary($P_k$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)
+ComputeSummary($P_k$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)
 extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}_k, \TT)= \{ I_\ell : \ell \in V
 \}$ (Algorithm~\ref{algorithm:update-summary}). 
 
 \begin{algorithm}
-  \KwIn{$P$: a program; $\{ I_\ell : \ell \in V \}$: an inductive invariant of $\underline{G}^{\fun{main}}_k$}
+  \KwIn{$P_k$: a program; $\{ I_\ell : \ell \in V \}$: an inductive invariant of $\underline{G}^{\fun{main}}_k$}
   \KwOut{$S[\bullet]$: function summaries}
 
-  \ForEach{function $\fun{f}$ in the program $P$}
+  \ForEach{function $\fun{f}$ in the program $P_k$}
   {	
   	$S[\fun{f}]:=\TT$\;
  	\ForEach{pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$}
@@ -25,11 +25,11 @@ extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}
  
   \Return $S[\bullet]$\;
   \caption{
-  $\textmd{UpdateSummary}(P_k, \Pi (\underline{G}^{\fun{main}}_k, \TT))$}
+  $\textmd{ComputeSummary}(P_k, \Pi (\underline{G}^{\fun{main}}_k, \TT))$}
   \label{algorithm:update-summary}
 \end{algorithm}
 
-For each function $\fun{f}$ in the program $P$, we first initialize its summary $S[\fun{f}]$ to $\TT$.
+For each function $\fun{f}$ in the program $P_k$, we first initialize its summary $S[\fun{f}]$ to $\TT$.
 The set $X_\fun{f}$ contains all variables appearing in $\underline{G}^{\fun{main}}_k$ except the set of formal parameter and return variables of $\fun{f}$.
 For each pairs of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$ in $\underline{G}^{\fun{main}}_k$, if the invariant of location $s_i^\fun{f}$ does not contain any return variable of $\fun{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall X_\fun{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$. Otherwise, we update it to a more restricted version $S[\fun{f}]\wedge \forall X_\fun{f}.I_{e_i^\fun{f}}$.
 
