@@ -30,7 +30,7 @@ extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}
 \end{algorithm}
 
 For each function $\fun{f}$ in the program $P$, we first initialize its summary $S[\fun{f}]$ to $\TT$.
-The set $X_\fun{f}$ contains all variables appearing in $\underline{G}^{\fun{main}}_k$ except the set of formal parameter and return variables of $\fun{f}$.
+The set $X_\fun{f}$ contains all variables appearing in $\underline{G}^{\fun{main}}_k$ except the set of formal parameters and return variables of $\fun{f}$.
 For each pairs of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$ in $\underline{G}^{\fun{main}}_k$, if the invariant of location $s_i^\fun{f}$ does not contain any return variable of $\fun{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall X_\fun{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$. Otherwise, we update it to a more restricted version $S[\fun{f}]\wedge \forall X_\fun{f}.I_{e_i^\fun{f}}$.
 
 \begin{figure}[t]
