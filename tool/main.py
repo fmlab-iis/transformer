@@ -1,19 +1,16 @@
-# System Modules
 import sys
-from ConfigParser import SafeConfigParser
-
 # Avoid writing Python Bytecode
 sys.dont_write_bytecode=True
 
-# Project Modules
-import engine# .verifier_manager as verifier_mgr
-
-conf_parser = SafeConfigParser()
-conf_parser.read("default.conf")
+import config
+import engine
 
 # TODO Command Line Parser
 design_file = sys.argv[1]
 
-engine.config( design_file, conf_parser )
+# Set Configurations
+config.config(design_file)
 
-engine.run( design_file )
+# Main Procedure
+proof = engine.run( design_file )
+

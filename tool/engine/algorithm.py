@@ -1,5 +1,6 @@
 import time
 import fileinput
+import logging
 
 import cil_manager as cil_mgr
 import verifier_manager as verifier_mgr
@@ -18,7 +19,8 @@ def main(design_path):
   printProcessStatus("Parsing Design " + design_path)
   out_name = cil_mgr.createUnderApproxFile(0)
   design_analysis.setRecursiveFuncList(out_name)
-  print design_analysis.getRecursiveFuncList()
+  print "Recursive Functions:"
+  print "  " + str(list(design_analysis.getRecursiveFuncList()))
 
   uw_count = 0
   result = "CONTINUE"
@@ -29,7 +31,7 @@ def main(design_path):
   if result == "CONTINUE": result = "UNKNOWN"
 
   # TODO Print results and statistics
-  printProcessStatus("Verification Result")
+  printProcessStatus("Return Result")
   print "Result: " + result
   if result == "SAFE":
     # TODO Proved SAFE. Provide SAFE proof
@@ -41,7 +43,7 @@ def main(design_path):
   tUsage = time.time() - tStart
   print "Iterations: " + str(uw_count)
   print "Time Usage: " + str(round(tUsage, 2)) + " sec."
-  return
+  return result
 
 def oneIteration(unwind_times):
   printProcessStatus("Create Under-approximation of main()")
@@ -73,6 +75,10 @@ def oneIteration(unwind_times):
       can_refine, sum_list=refineSummaries(under_design_name, func_call, proof)
 
   if check_result == "SAFE":
+    # TODO
+    print "Summary For Proving:"
+    for func_call, summary in sum_list:
+      print "  " + func_call.name + ": " + summary
     return "SAFE"
   # Finished one iteration, continue on next
   return "CONTINUE"
@@ -85,7 +91,6 @@ def refineSummaries(under_name, func_call, unsafe_proof):
   for var, value in var_value_map.items():
     cexpr += func_call.getActualPara(var) + "==" + value + "&&"
   cexpr = cexpr[:-len("&&")] + ")"
-  print cexpr
 
   c_stmt = " __VERIFIER_assert(!%s);\n" % cexpr
   # Insert assertion
@@ -115,12 +120,10 @@ def guessSummaries(design_name, proof_info):
   design_info = design_analysis.TransformedDesignInfo(design_name)
   sum_list = proof_analysis.guessSummaries(design_info, proof_info)
   for func_call, summary in sum_list:
-    print "Function Name: " + func_call.name
-    print "  Guess Summary: "+ summary
+    logging.info("Function Name: " + func_call.name)
+    logging.info("  Guess Summary: "+ summary)
   return sum_list
 
 def printProcessStatus(string):
-  print 
-  print (' '+string+' ').center(70, '=')
-  print
+  logging.info( (' '+string+' ').center(70, '=') )
 

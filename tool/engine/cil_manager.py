@@ -1,3 +1,4 @@
+import logging
 import subprocess
 import os
 
@@ -58,7 +59,8 @@ def createUnderApproxFile(uw_times):
   # Set Input File
   args.append(_in_name_g)
   # Call the process
-  subprocess.call(args)
+  out_str = subprocess.check_output(args, stderr=subprocess.STDOUT)
+  logging.info(out_str)
   _count_g = _count_g + 1
   return output_file_name
 
@@ -81,7 +83,8 @@ def createCheckSummaryFile(func_name, summary, uw_times):
   # Set Input File
   args.append(_in_name_g)
   # Call the process
-  subprocess.call(args)
+  out_str = subprocess.check_output(args, stderr=subprocess.STDOUT)
+  logging.info(out_str)
   _count_g = _count_g + 1
   return output_file_name
 

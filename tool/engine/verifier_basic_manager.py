@@ -1,3 +1,4 @@
+import logging
 import os
 import subprocess
 
@@ -43,7 +44,8 @@ def verify(in_file, entry_func="main"):
   args.append(in_file);
   with open(os.devnull, "w") as null_file:
     # Call Verifier
-    subprocess.call(args, universal_newlines=True, stdout=None, stderr=null_file)
+    out_str = subprocess.check_output(args, universal_newlines=True, stderr=null_file)
+    logging.info(out_str)
   null_file.close()
 
   return ProofInfo(__paths_g["out_dir"]) 

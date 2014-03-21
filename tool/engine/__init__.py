@@ -7,7 +7,6 @@ import redlog_manager as rl_mgr
 
 def config(design_file, conf_parser):
   options = dict(conf_parser.items("general"))
-  out_dir = options["output_dir"] + '/'
   tmp_dir = options["temp_dir"] + '/'
 
   # TODO Handle relative path problem
@@ -32,7 +31,7 @@ def config(design_file, conf_parser):
   options = dict(conf_parser.items("quantifier"))
   rl_mgr.setExePath( options["bin_file"] )
   rl_mgr.setScriptPath(tmp_dir + "rl_script")
-  rl_mgr.setOutputPath("summary")
+  rl_mgr.setOutputPath(tmp_dir + "summary")
 
 def run(design_file):
   algorithm.main(design_file)

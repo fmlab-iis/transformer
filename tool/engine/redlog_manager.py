@@ -39,9 +39,9 @@ def eliminateQuantifier(formula, var_list):
       rl_list += var + ','
     rl_list = rl_list[:-len(',')] + '}'
     cmd += "psi := all(" + rl_list + ',' + formula + ");\n"
-  cmd += "out " + _out_path_g + ";\n"
+  cmd += "out \"" + _out_path_g + "\";\n"
   cmd += "rlqe psi;\n"
-  cmd += "shut " + _out_path_g + ";\n"
+  cmd += "shut \"" + _out_path_g + "\";\n"
   cmd += "quit;"
   with open(_script_path_g, "w") as script_file:
     script_file.write(cmd)
