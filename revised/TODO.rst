@@ -82,13 +82,9 @@ Others
     "q"? Why not continue using "p", since that is the default symbol for
     Expressions?
 
+
 - p3
-
-.. preliminaries.tex
-  + (O) You say "Let t_i denote the i-th element in the sequence \bar{t}", but I
-    *think* I'm correct in saying that you don't actually go on to use this
-    notation. -> Remove the sentence
-
+ 
   + "The superscript in Gf denotes the CFG corresponds to the function f."
     -> delete this, it's already obvious.
   + (O) "We assume that there are no global variables because they can be 
@@ -99,6 +95,11 @@ Others
     function's return values. If this is a well-known trick, perhaps you could
     provide a reference, and if not, perhaps you could emphasise its novelty.
   + (O) McCarthy's 91 program could use a citation.
+.. preliminaries.tex
+  + (O) You say "Let t_i denote the i-th element in the sequence \bar{t}", but I
+    *think* I'm correct in saying that you don't actually go on to use this
+    notation. -> Remove the sentence
+
 
 - p4
 
@@ -106,22 +107,23 @@ Others
     single formula, e.g. a loop invariant. But \Pi is a *set* of formulas.
     So I would consider calling \Pi an "inductive invariant family" (or maybe
     just an "invariant family").
-.. preliminaries.tex
-  + (O) "weak correctness" -- I would say "partial correctness" is the standard term
-    here.
-
   + (X) "Proposition 1" -- this feels more like a Definition.
   + (X) I'm confused by "Indeed, most inductive program analyzers simply report
     false positives when inductive invariants are too coarse." By "coarse"
     do you mean "weak"? And if so, is this not a "false negative", because
     the assertion is spuriously *failing*?
 .. preliminaries.tex
+  + (O) "weak correctness" -- I would say "partial correctness" is the standard term
+    here.
+.. preliminaries.tex
   + (O) "such as CPAChecker, Blast, UFO, Astree, etc" -- these need citations.
+
 
 - p5
 
   + (X) In Algorithm 1, I would omit the semicolons at the end of each line --
     they hamper readability.
+
 
 - p6
 .. overview.tex
@@ -131,15 +133,18 @@ Others
     where "not(m>=0)" comes from, and explain that BasicAnalyzer will fail when
     checking Fig 3.
 
+
 - p7
 .. unwinding-recursion.tex
   + (O) Remove "the proof rules for recursive functions and"
+
 
 - p8
 .. unwinding.tex
   + (O) There is no reference to Figure 5.
   + (O) Second paragraph of Section 5.1 begins with an incomplete sentence
     ("Given...").
+
 
 - p9
 .. bug-catching.tex
@@ -150,6 +155,7 @@ Others
     swapping the then- and else-branches. Plus, this brings you into line with
     the order you discuss the two branches on page 10. -> reorder all related phrases
 
+
 - p10
 .. updating-summary.tex
   + (O) There is no reference to Figure 7
@@ -158,10 +164,12 @@ Others
     strengthening" rather than just "weakening" and "strengthening".
     It looks a bit odd otherwise.
 
+
 - p11
 .. property-proving.tex
   + (O) There is no reference to Figure 8
     (and its caption should be "Instantiating a Summary").
+
 
 - p12
 .. experiments.tex
@@ -170,10 +178,12 @@ Others
     with all the benchmarks", or (on p13) "category include 16" to "category
     comprise 16".
 
+
 - p13
 .. experiments.tex
   + (O) You mention problems with the Whale tool -- seg faults when you run it
     -> Remove it
+
 
 - p14
 .. experiments.tex
@@ -182,15 +192,13 @@ Others
     figures would be more appropriate here. Also, your timing columns should
     mention the units (seconds) explicitly. -> One digit after point
 
+
 - p15
 
   + No need to cite both [13] and [14], since [14] is just the extended journal
     version of [13]. In fact, it's not clear why you're citing either of them,
     since they're about verifying concurrent programs, and your work is
     entirely sequential.
-.. related.tex
-  + (O) "hopelessly incomplete" is a bit too informal. -> "partial"
-
   + You mention the "Hoare Logic proof rule for recursive calls" several times
     -- can you state the rule in the paper?
   + The sentence "Our work is inspired by Whale" is weak. Inspired in what way?
@@ -201,6 +209,8 @@ Others
     that is easily fixed. If you can get Whale working, and do a proper
     comparison of it with your tool, then your Related Work discussion could
     become much more meaningful.
+.. related.tex
+  + (O) "hopelessly incomplete" is a bit too informal. -> "partial"
 .. related.tex
   + Remove "Although Whale is able to analyze recursive program in theory,
     its implementation does not appear to support this feature."
