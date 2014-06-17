@@ -2,7 +2,8 @@
 Let $G^\fun{f} = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ be a control flow
 graph. The control flow graph $\underline{G}^\fun{f} = \langle V, E,
 \underline{\textmd{cmd}}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ is obtained by replacing every
-function call in $G$ with $\mathtt{assume\ false}$. That is,
+function call in $G$ with $\mathtt{assume\ false}$
+(Figure~\ref{figure:under-approximation}). That is,
 \begin{equation*}
   \underline{\textmd{cmd}}^\fun{f} (\ell, \ell') =
   \left\{

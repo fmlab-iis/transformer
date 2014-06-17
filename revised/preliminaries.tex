@@ -4,7 +4,7 @@ $\mathtt{Vars}' = \{ \mathtt{x}' : \mathtt{x} \in \mathtt{Vars} \}$.
 We consider a variant of the WHILE language~\cite{NielsonHC99}:
 \begin{equation*}
   \begin{array}{rccll}
-    \mathtt{Expression} & \ni p, q & ::= &
+    \mathtt{Expression} & \ni p & ::= &
     \mathtt{x} & \mathtt{x} \in \mathtt{Vars}\\
     & & \mid &
     \mathtt{false}\ \mid\ \mathtt{true}\ \mid\ 
@@ -25,14 +25,14 @@ We consider a variant of the WHILE language~\cite{NielsonHC99}:
     c\mathtt{;}\ c &
     \textmd{sequential composition}\\
     & & \mid &
-    \mathtt{return}\ \overline{q} & \textmd{function return}\\
+    \mathtt{return}\ \overline{p} & \textmd{function return}\\
     & & \mid &
-    \mathtt{assume}\ q & \textmd{assumption}\\
+    \mathtt{assume}\ p & \textmd{assumption}\\
     & & \mid &
-    \mathtt{assert}\ q & \textmd{assertion}
+    \mathtt{assert}\ p & \textmd{assertion}
   \end{array}
 \end{equation*}
-Let $t_i$ denote the $i$-th element in the sequence $\overline{t}$.
+%Let $t_i$ denote the $i$-th element in the sequence $\overline{t}$.
 The $\mathtt{nondet}$ expression evaluates to a type-safe
 nondeterministic value.
 Note that simultaneous assignments are allowed in our language. To
@@ -150,7 +150,7 @@ Let $T$ be a program fragment (it can be either a function represented as a CFG 
 are logic formulae. A \emph{Hoare triple} $\assert{P} T \assert{Q}$
 specifies that the program fragment $T$ will reach a program state satisfying
 $Q$ provided that $T$ starts with a program state satisfying $P$ and
-terminates. The formula $P$ is called the \emph{precondition} and $Q$ is the \emph{postcondition} of the Hoare triple. We use the standard proof rules for weak correctness with
+terminates. The formula $P$ is called the \emph{precondition} and $Q$ is the \emph{postcondition} of the Hoare triple. We use the standard proof rules for partial correctness with
 two additional rules for the assumption and assertion commands:
 \begin{center}
   \AxiomC{}
@@ -201,7 +201,7 @@ when inductive invariants are too coarse.
 A \emph{recursion-free
   inductive program analyzer} is a program analyzer that checks
 recursion-free programs by computing inductive invariants. Several recursion-free
-inductive program analyzers are available, such as \textsc{CPAChecker},
-\textsc{Blast}, \textsc{UFO}, \textsc{Astr\'ee}, etc. Our goal is to check
+inductive program analyzers are available, such as \textsc{CPAChecker}~\cite{BeyerK11},
+\textsc{Blast}~\cite{BeyerHJM07}, \textsc{UFO}~\cite{AlbarghouthiLGC12}, \textsc{Astr\'ee}~\cite{CousotCFMMMR05}, etc. Our goal is to check
 recursive programs by using a recursion-free inductive program analyzer
 as a black box.

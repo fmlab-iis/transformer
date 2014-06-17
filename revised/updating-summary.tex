@@ -13,12 +13,12 @@ extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}
   	$S[\fun{f}]:=\TT$\;
  	\ForEach{pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$}
    	{
-   		\lIf{$I_{s_i^\fun{f}}$ does not contain any return variable of $\mathtt{f}$}
+   		\lIf{$I_{s_i^\fun{f}}$ contains return variables of $\mathtt{f}$}
        	{
-         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$\;
+         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. I_{e_i^\fun{f}}$\;       	}
        	}
        	\lElse{
-         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. I_{e_i^\fun{f}}$\;       	}
+         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$\;
    	}
     
   }
@@ -31,7 +31,7 @@ extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}
 
 For each function $\fun{f}$ in the program $P_k$, we first initialize its summary $S[\fun{f}]$ to $\TT$.
 The set $X_\fun{f}$ contains all variables appearing in $\underline{G}^{\fun{main}}_k$ except the set of formal parameters and return variables of $\fun{f}$.
-For each pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$ in $\underline{G}^{\fun{main}}_k$, if the invariant of location $s_i^\fun{f}$ does not contain any return variable of $\fun{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall X_\fun{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$. Otherwise, we update it to a more restricted version $S[\fun{f}]\wedge \forall X_\fun{f}.I_{e_i^\fun{f}}$.
+For each pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$ in $\underline{G}^{\fun{main}}_k$, if the invariant of location $s_i^\fun{f}$ contains return variables of $\fun{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall X_\fun{f}.I_{e_i^\fun{f}}$. Otherwise, we update it to a looser version $S[\fun{f}]\wedge \forall X_\fun{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$ (Figure~\ref{figure:updating-summary}).
 
 \begin{figure}[t]
   \centering
@@ -92,11 +92,11 @@ In this case, the conjunct $\forall X_\mathtt{f}.I_{e_i^\fun{f}}$ is a part of $
 \begin{prooftree}
   \AxiomC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}
        (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ }
-  \RightLabel{Weakening}
+  \RightLabel{Postcondition Weakening}
     \UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f}:=\mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{\forall X_\mathtt{f}. I_{e_i^\fun{f}}}$}
-  \RightLabel{Weakening}
+  \RightLabel{Postcondition Weakening}
   \UnaryInfC{$\assert{\mathtt{true}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{e_i^\fun{f}}}$}
-  \RightLabel{Strengthening}
+  \RightLabel{Precondition Strengthening}
     \UnaryInfC{$\assert{I_{s_i^\fun{f}}}\ \mathtt{\overline{r}}^\fun{f} := \mathtt{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{e_i^\fun{f}}}$}
 \end{prooftree}
 
