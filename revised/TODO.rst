@@ -72,11 +72,11 @@ Typos
 Others
 ------
 - p2
-
-  + Could you briefly explain what Vars' is for? This would have helped me
+.. preliminaries.tex
+  + (O) Could you briefly explain what Vars' is for? This would have helped me
     understand the definition of inductive invariants (top of p4). My 
-    understanding: x' represents the "new" value of x after execution of a
-    command.
+    understanding: 
+    -> Add "x' represents the new value of x after execution of a command."
 .. preliminaries.tex
   + (O) In the last three reductions for Command (bottom of p2), why do you use
     "q"? Why not continue using "p", since that is the default symbol for
@@ -85,8 +85,9 @@ Others
 
 - p3
  
-  + "The superscript in Gf denotes the CFG corresponds to the function f."
+  + (X) "The superscript in Gf denotes the CFG corresponds to the function f."
     -> delete this, it's already obvious.
+.. preliminaries.tex
   + (O) "We assume that there are no global variables because they can be 
     simulated by allowing simultaneous assignment to return variables." -> I 
     thought this was rather neat. It could warrant a little more explanation,
@@ -94,7 +95,10 @@ Others
     as formal parameters, and then passed out (possibly modified) in the
     function's return values. If this is a well-known trick, perhaps you could
     provide a reference, and if not, perhaps you could emphasise its novelty.
-  + (O) McCarthy's 91 program could use a citation.
+    -> Add citation
+.. preliminaries.tex
+  + (O) McCarthy's 91 program could use a citation. 
+    -> Add citation
 .. preliminaries.tex
   + (O) You say "Let t_i denote the i-th element in the sequence \bar{t}", but I
     *think* I'm correct in saying that you don't actually go on to use this
@@ -103,7 +107,7 @@ Others
 
 - p4
 
-  + I wouldn't call \Pi an "inductive invariant". To me, an invariant is a
+  + (X) I wouldn't call \Pi an "inductive invariant". To me, an invariant is a
     single formula, e.g. a loop invariant. But \Pi is a *set* of formulas.
     So I would consider calling \Pi an "inductive invariant family" (or maybe
     just an "invariant family").
@@ -194,14 +198,21 @@ Others
 
 
 - p15
-
-  + No need to cite both [13] and [14], since [14] is just the extended journal
+.. related.tex
+  + (O) No need to cite both [13] and [14], since [14] is just the extended journal
     version of [13]. In fact, it's not clear why you're citing either of them,
     since they're about verifying concurrent programs, and your work is
     entirely sequential.
+    -> "a reduction technique" to "a program transformation technique"
+.. related.tex
   + You mention the "Hoare Logic proof rule for recursive calls" several times
     -- can you state the rule in the paper?
+    -> Add citation
+.. related.tex
   + The sentence "Our work is inspired by Whale" is weak. Inspired in what way?
+	-> "The idea of using inductive invariants obtained from verifying under approx.
+    as candidates of summaries."
+.. related.tex
   + You mention problems with the Whale tool -- seg faults when you run it, and
     an implementation that doesn't actually support recursion. I wonder if it
     would be better to discuss these problems with the Whale authors, rather

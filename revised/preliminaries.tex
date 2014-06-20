@@ -1,6 +1,4 @@
 
-Let $\mathtt{Vars}$ denote the set of \emph{program variables} and
-$\mathtt{Vars}' = \{ \mathtt{x}' : \mathtt{x} \in \mathtt{Vars} \}$.
 We consider a variant of the WHILE language~\cite{NielsonHC99}:
 \begin{equation*}
   \begin{array}{rccll}
@@ -32,6 +30,10 @@ We consider a variant of the WHILE language~\cite{NielsonHC99}:
     \mathtt{assert}\ p & \textmd{assertion}
   \end{array}
 \end{equation*}
+The $\mathtt{Vars}$ denotes the set of \emph{program variables}, and let
+$\mathtt{Vars}' = \{ \mathtt{x}' : \mathtt{x} \in \mathtt{Vars} \}$
+where $\mathtt{x}'$ represents the new value of $\mathtt{x}$ after
+execution of a command.
 %Let $t_i$ denote the $i$-th element in the sequence $\overline{t}$.
 The $\mathtt{nondet}$ expression evaluates to a type-safe
 nondeterministic value.
@@ -50,10 +52,10 @@ e \rangle$ where the nodes in $V$ are \emph{program locations}, $E
 \subseteq V \times V$ are \emph{edges}, each edge $(\ell, \ell') \in
 E$ is labeled by the command $\textmd{cmd}^{\fun{f}} (\ell, \ell')$, $\overline{\mathtt{u}}^{\fun{f}}$ and $\overline{\mathtt{r}}^{\fun{f}}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $s,  e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The superscript in $G^{\fun{f}}$ denotes the CFG corresponds to the function $\fun{f}$.
 The special $\mathtt{main}$ function specifies where a program starts.
-To simplify presentation, we assume the functions in a program use disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there are no global variables because they can be simulated by allowing simultaneous assignment to return variables. 
+To simplify presentation, we assume the functions in a program use disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there are no global variables because they can be simulated by allowing simultaneous assignment to return variables~\cite{BallR00}. 
 
 Figure~\ref{figure:mccarthy91} shows control flow graphs for the
-McCarthy 91 program. The $\mathtt{main}$ function assumes the
+McCarthy 91 program from~\cite{MannaP70}. The $\mathtt{main}$ function assumes the
 variable $\mathtt{n}$ is non-negative. It then checks if the result
 of $\mathtt{mc91(n)}$ is no less than 90
 (Figure~\ref{figure:mccarthy91:main}). The $\mathtt{mc91}$ function
