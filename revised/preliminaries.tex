@@ -30,14 +30,14 @@ We consider a variant of the WHILE language~\cite{NielsonHC99}:
     \mathtt{assert}\ p & \textmd{assertion}
   \end{array}
 \end{equation*}
-The $\mathtt{Vars}$ denotes the set of \emph{program variables}, and let
+$\mathtt{Vars}$ denotes the set of \emph{program variables}, and 
 $\mathtt{Vars}' = \{ \mathtt{x}' : \mathtt{x} \in \mathtt{Vars} \}$
 where $\mathtt{x}'$ represents the new value of $\mathtt{x}$ after
 execution of a command.
 %Let $t_i$ denote the $i$-th element in the sequence $\overline{t}$.
 The $\mathtt{nondet}$ expression evaluates to a type-safe
 nondeterministic value.
-Note that simultaneous assignments are allowed in our language. To
+Simultaneous assignments are allowed in our language. To
 execute a simultaneous assignment, all expressions on the right hand
 side are first evaluated and then assigned to respective variables. 
 We assume that simultaneous assignments are type-safe in the sense that the number of variables on the left-hand-side always matches that of the right-hand-side.

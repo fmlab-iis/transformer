@@ -38,13 +38,13 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
     $P_{k} \leftarrow $ unwind every CFG in $P_{k-1}$\;
     \Switch{\textsc{BasicAnalyzer} ($\underline{G}^{\fun{main}}_k$)}
     {
-      \lCase{$\mathit{Pass(\Pi (\underline{G}^{\fun{main}}_k, \TT))}$:}
+      \Case{$\mathit{Pass(\Pi (\underline{G}^{\fun{main}}_k, \TT))}$:}
       {    
-        S := ComputeSummary($P_k$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)\;
+        S := ComputeSummary($P_k,$ $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)
       }
       \lCase{$\mathit{Error}$:}
       {
-        \Return $\mathit{Error}$\;
+        \Return $\mathit{Error}$
       }
     }
     $\textmd{complete?} \leftarrow \textmd{CheckSummary} (P_k, S)$\;
